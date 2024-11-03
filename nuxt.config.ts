@@ -1,0 +1,51 @@
+// https://nuxt.com/docs/api/configuration/nuxt-config
+export default defineNuxtConfig({
+    compatibilityDate: '2024-04-03',
+    devtools: {
+        enabled: true
+    },
+    runtimeConfig: {
+        public: {
+            baseUrl: process.env.BASE_URL || 'http://localhost:3000',
+        },
+    },
+    modules: [
+      '@nuxtjs/supabase',
+      '@nuxt/ui',
+      '@prisma/nuxt',
+      '@nuxtjs/google-fonts',
+      '@nuxt/eslint',
+    ],
+    supabase: {
+        redirect: true,
+        redirectOptions: {
+            login: '/sign-in',
+            callback: '/confirm',
+            include: undefined,
+            exclude: ['/sign-up'],
+            cookieRedirect: false,
+        }
+    },
+    prisma: {
+        autoSetupPrisma: true,
+    },
+    colorMode: {
+        preference: 'light',
+    },
+    googleFonts: {
+        families: {
+            Montserrat: true,
+        }
+    },
+    tailwindcss: {
+        config: {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    }
+})
