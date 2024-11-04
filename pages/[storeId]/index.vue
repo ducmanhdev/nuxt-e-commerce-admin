@@ -37,10 +37,10 @@ const handleDeleteStore = async () => {
 </script>
 
 <template>
-  <div class="py-4">
+  <section class="py-4">
     <UContainer>
       <div class="flex items-center justify-between">
-        <div>{{ store?.name }}</div>
+        <h2 class="text-xl font-bold">Overview</h2>
         <UButton
             trailing-icon="ion:trash-outline"
             label="Delete"
@@ -50,5 +50,5 @@ const handleDeleteStore = async () => {
         />
       </div>
     </UContainer>
-  </div>
+  </section>
 </template>

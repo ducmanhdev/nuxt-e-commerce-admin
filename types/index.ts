@@ -1,1 +1,1 @@
-export { type Store } from '@prisma/client'
+export type {Store, Billboard} from '@prisma/client'

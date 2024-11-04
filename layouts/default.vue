@@ -7,9 +7,10 @@ const router = useRouter();
 
 const currentStoreId = ref<string | undefined>(route.params.storeId as string);
 
-const {data: stores} = await useFetch<Store[]>('/api/stores', {
+const {data: stores, status} = await useLazyFetch<Store[]>('/api/stores', {
   key: 'stores'
 });
+const isFetchingStores = computed(() => status.value === 'pending');
 
 const storesOptions = computed(() => {
   return (stores.value || []).map(item => ({
@@ -29,7 +30,6 @@ watchEffect(() => {
 });
 
 watch(currentStoreId, (newStoreId) => {
-  if (!newStoreId) return;
   router.push(`/${newStoreId}`);
 })
 
@@ -68,6 +68,7 @@ const userDropdownItems = computed(() => {
 });
 
 const {handleShow: handleModalStore} = useModalStore();
+
 const links = computed(() => {
   if (!currentStoreId.value) {
     return [];
@@ -149,6 +150,7 @@ const links = computed(() => {
             <USelectMenu
                 v-model="currentStoreId"
                 :options="storesOptions"
+                :loading="isFetchingStores"
                 leading-icon="ion:storefront-sharp"
                 searchable
                 value-attribute="id"

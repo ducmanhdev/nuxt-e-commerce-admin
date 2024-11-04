@@ -5,7 +5,7 @@
 
     <ClientOnly>
       <UNotifications />
-      <ModalStore />
+      <LazyModalStore />
     </ClientOnly>
 
     <NuxtLayout>

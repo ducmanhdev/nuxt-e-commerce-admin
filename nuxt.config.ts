@@ -10,11 +10,12 @@ export default defineNuxtConfig({
         },
     },
     modules: [
-      '@nuxtjs/supabase',
-      '@nuxt/ui',
-      '@prisma/nuxt',
-      '@nuxtjs/google-fonts',
-      '@nuxt/eslint',
+        '@nuxtjs/supabase',
+        '@nuxt/ui',
+        '@prisma/nuxt',
+        '@nuxtjs/google-fonts',
+        '@nuxt/eslint',
+        "@nuxtjs/cloudinary"
     ],
     supabase: {
         redirect: true,
@@ -47,5 +48,9 @@ export default defineNuxtConfig({
                 }
             }
         }
+    },
+    cloudinary: {
+        apiKey: process.env.CLOUDINARY_API_KEY,
+        uploadPreset: 'image-present',
     }
 })
