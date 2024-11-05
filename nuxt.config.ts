@@ -69,5 +69,10 @@ export default defineNuxtConfig({
                 duration: 3000
             }
         }
+    },
+    eslint: {
+        config: {
+            standalone: false
+        }
     }
 })

@@ -7,7 +7,9 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@nuxt/eslint": "^0.6.1",
@@ -24,6 +26,7 @@
   },
   "packageManager": "pnpm@9.11.0+sha1.4cd20e68438613738e8f2bc9aece61eaa6b3e649",
   "devDependencies": {
+    "@antfu/eslint-config": "^3.8.0",
     "@iconify-json/heroicons": "^1.2.1",
     "@iconify-json/ion": "^1.2.1",
     "@prisma/client": "^5.21.1",
