@@ -4,10 +4,7 @@ import type {z} from "zod";
 import schema from "~/schemas/store.schema";
 
 export const useModalStore = () => {
-    const toast = useCustomToast();
-
     const isOpen = useState(() => false);
-
     const modalTitle = computed(() => true ? 'Create store' : 'Update store');
     const submitButtonLabel = computed(() => true ? 'Create store' : 'Update store');
     const successToastMessage = computed(() => true ? 'Create store successfully' : 'Update store successfully');
@@ -39,11 +36,11 @@ export const useModalStore = () => {
                 }
             });
             await refreshNuxtData('stores');
-            toast.success(successToastMessage.value);
+            push.success(successToastMessage.value);
             handleHide();
         } catch (error: any) {
             console.log(error);
-            toast.error(error.statusMessage || 'Something went wrong');
+            push.error(error.statusMessage || 'Something went wrong');
         } finally {
             isSubmitLoading.value = false;
         }

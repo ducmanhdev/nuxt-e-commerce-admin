@@ -15,7 +15,13 @@ export default defineNuxtConfig({
         '@prisma/nuxt',
         '@nuxtjs/google-fonts',
         '@nuxt/eslint',
-        "@nuxtjs/cloudinary"
+        '@nuxtjs/cloudinary',
+        'notivue/nuxt'
+    ],
+    css: [
+        'notivue/notification.css',
+        'notivue/animations.css',
+        'notivue/notification-progress.css'
     ],
     supabase: {
         redirect: true,
@@ -52,5 +58,16 @@ export default defineNuxtConfig({
     cloudinary: {
         apiKey: process.env.CLOUDINARY_API_KEY,
         uploadPreset: 'image-present',
+    },
+    notivue: {
+        position: 'top-right',
+        limit: 4,
+        enqueue: false,
+        avoidDuplicates: false,
+        notifications: {
+            global: {
+                duration: 3000
+            }
+        }
     }
 })

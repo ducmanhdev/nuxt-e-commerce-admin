@@ -4,8 +4,14 @@
     <NuxtRouteAnnouncer />
 
     <ClientOnly>
-      <UNotifications />
       <LazyModalStore />
+      <Notivue v-slot="item">
+        <NotivueSwipe :item="item">
+          <Notification :item="item" :theme="pastelTheme">
+            <NotificationProgress :item="item"/>
+          </Notification>
+        </NotivueSwipe>
+      </Notivue>
     </ClientOnly>
 
     <NuxtLayout>
@@ -13,5 +19,3 @@
     </NuxtLayout>
   </div>
 </template>
-<script setup lang="ts">
-</script>

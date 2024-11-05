@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type {Billboard} from "~/types";
-import {useModalBillboard} from "~/composables/useModalBillboard";
 
 useHead({
   title: 'Billboards',
@@ -8,7 +7,6 @@ useHead({
 
 const route = useRoute();
 const storeId = computed(() => route.params.storeId as string);
-const toast = useCustomToast();
 
 const {
   data: billboards,
@@ -58,7 +56,7 @@ const handleDeleteBillboard = async (billboardId: string) => {
       method: 'DELETE',
     });
     await refreshNuxtData('billboards')
-    toast.success('Delete successfully');
+    push.success('Delete successfully');
   } catch (error: any) {
     console.log(error)
   } finally {

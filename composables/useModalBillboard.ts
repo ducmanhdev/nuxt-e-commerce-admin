@@ -4,10 +4,7 @@ import type {z} from "zod";
 import schema from "~/schemas/billboard.schema";
 
 export const useModalBillboard = () => {
-    const toast = useCustomToast();
-
     const isOpen = useState(() => false);
-
     const modalTitle = computed(() => true ? 'Create billboard' : 'Update billboard');
     const submitButtonLabel = computed(() => true ? 'Create billboard' : 'Update billboard');
     const successToastMessage = computed(() => true ? 'Create billboard successfully' : 'Update billboard successfully');
@@ -56,11 +53,11 @@ export const useModalBillboard = () => {
                 }
             });
             await refreshNuxtData('billboards');
-            toast.success(successToastMessage.value);
+            push.success(successToastMessage.value);
             handleHide();
         } catch (error: any) {
             console.log(error);
-            toast.error(error.statusMessage || 'Something went wrong');
+            push.error(error.statusMessage || 'Something went wrong');
         } finally {
             isSubmitLoading.value = false;
         }

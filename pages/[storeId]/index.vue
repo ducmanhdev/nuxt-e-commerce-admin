@@ -5,7 +5,6 @@ useHead({
   title: 'Overview',
 })
 
-const toast = useCustomToast();
 const route = useRoute();
 const {storeId} = route.params;
 
@@ -29,7 +28,7 @@ const handleDeleteStore = async () => {
     navigateTo('/');
   } catch (error: any) {
     console.log(error);
-    toast.error(error.statusMessage || 'Something went wrong');
+    push.error(error.statusMessage || 'Something went wrong');
   } finally {
     isDeleteStoreLoading.value = false;
   }
