@@ -8,5 +8,9 @@ watch(user, () => {
 </script>
 
 <template>
-  <div>Waiting for login...</div>
+  <section class="py-4">
+    <UContainer>
+      Waiting for login...
+    </UContainer>
+  </section>
 </template>
