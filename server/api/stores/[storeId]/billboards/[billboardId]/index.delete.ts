@@ -3,14 +3,14 @@ import prisma from "~/lib/prisma";
 export default defineEventHandler(async (event) => {
     const {storeId, billboardId} = getRouterParams(event);
     if (!storeId) {
-        return createError({
+        throw createError({
             statusCode: 404,
             statusMessage: 'Store ID not found or invalid',
         });
     }
 
     if (!billboardId) {
-        return createError({
+        throw createError({
             statusCode: 404,
             statusMessage: 'Billboard ID not found or invalid',
         });
@@ -24,9 +24,12 @@ export default defineEventHandler(async (event) => {
     });
 
     if (count === 0) {
-        return new Error("Billboard not found");
+        throw  createError({
+            statusCode: 404,
+            statusMessage: 'Billboard not found',
+        });
     }
 
-    setResponseStatus(event, 204, "No Content");
+    setResponseStatus(event, 204);
     return;
 })

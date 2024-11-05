@@ -1,7 +1,7 @@
 export default defineEventHandler(async (event) => {
     const storeId = getRouterParam(event, 'storeId');
     if (!storeId) {
-        return createError({
+        throw createError({
             statusCode: 404,
             statusMessage: 'Store ID not found or invalid',
         });

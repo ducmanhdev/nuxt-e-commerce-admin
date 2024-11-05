@@ -1,14 +1,12 @@
 <script setup lang="ts">
-import type {Store} from "~/types";
-
 useHead({
   title: 'Overview',
 })
 
 const route = useRoute();
-const {storeId} = route.params;
+const storeId = computed(() => route.params.storeId);
 
-const {data: store} = await useFetch<Store>(() => `/api/stores/${storeId}`, {
+const {data: store} = await useFetch(() => `/api/stores/${storeId.value}`, {
   key: 'store'
 });
 

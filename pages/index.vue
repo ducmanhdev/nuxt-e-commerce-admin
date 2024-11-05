@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import type {Store} from "~/types";
-
 useHead({
   title: 'Home'
 })
 
-const {data: stores} = await useFetch<Store[]>('/api/stores', {
+const {data: stores} = await useFetch('/api/stores', {
   key: 'stores'
 });
 

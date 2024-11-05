@@ -1,5 +1,4 @@
 import type {FormSubmitEvent} from "#ui/types";
-import type {Billboard} from "~/types";
 import type {z} from "zod";
 import schema from "~/schemas/billboard.schema";
 
@@ -45,7 +44,7 @@ export const useModalBillboard = () => {
     const handleSubmit = async (event: FormSubmitEvent<SchemaOutput>) => {
         try {
             isSubmitLoading.value = true;
-            await $fetch<Billboard>(`/api/stores/${storeId.value}/billboards`, {
+            await $fetch(`/api/stores/${storeId.value}/billboards`, {
                 method: 'POST',
                 body: {
                     label: event.data.label,

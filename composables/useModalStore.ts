@@ -1,5 +1,4 @@
 import type {FormSubmitEvent} from "#ui/types";
-import type {Store} from "~/types";
 import type {z} from "zod";
 import schema from "~/schemas/store.schema";
 
@@ -29,7 +28,7 @@ export const useModalStore = () => {
     const handleSubmit = async (event: FormSubmitEvent<Schema>) => {
         try {
             isSubmitLoading.value = true;
-            await $fetch<Store>('/api/stores', {
+            await $fetch('/api/stores', {
                 method: 'POST',
                 body: {
                     name: event.data.name,

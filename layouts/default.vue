@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import {useSupabaseUser} from "#imports";
-import type {Store} from '~/types';
 
 const route = useRoute();
 const router = useRouter();
 
 const currentStoreId = ref<string | undefined>(route.params.storeId as string);
 
-const {data: stores, status} = await useLazyFetch<Store[]>('/api/stores', {
+const {data: stores, status} = await useLazyFetch('/api/stores', {
   key: 'stores'
 });
 const isFetchingStores = computed(() => status.value === 'pending');
