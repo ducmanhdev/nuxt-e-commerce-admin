@@ -16,7 +16,7 @@
     "@nuxtjs/google-fonts": "^3.2.0",
     "@nuxtjs/supabase": "^1.4.1",
     "@prisma/nuxt": "^0.0.35",
-    "nuxt": "3.13.2",
+    "nuxt": "3.14.0",
     "vue": "latest",
     "vue-router": "latest",
     "zod": "^3.23.8"
