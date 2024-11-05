@@ -1,5 +1,9 @@
 import {serverSupabaseUser} from "#supabase/server";
 
 export default defineEventHandler(async (event) => {
-    event.context.user = await serverSupabaseUser(event)
+    try {
+        event.context.user = await serverSupabaseUser(event);
+    } catch (error) {
+        event.context.user = null;
+    }
 })
