@@ -37,7 +37,7 @@ export default defineNuxtConfig({
         autoSetupPrisma: true,
     },
     colorMode: {
-        preference: 'light',
+        preference: 'system',
     },
     googleFonts: {
         families: {
