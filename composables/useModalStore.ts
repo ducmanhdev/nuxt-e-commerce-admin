@@ -6,7 +6,7 @@ export const useModalStore = () => {
   const isOpen = useState(() => false)
   const storeId = useState<string | undefined>(() => undefined)
   const modalTitle = computed(() => storeId.value ? 'Update store' : 'Create store')
-  const submitButtonLabel = computed(() => storeId.value ? 'Update store' : 'Create store')
+  const submitButtonLabel = computed(() => storeId.value ? 'Update' : 'Create')
 
   type SchemaInfer = z.infer<typeof schema>
   type SchemaOutput = z.output<typeof schema>

@@ -17,7 +17,7 @@ const {
 
 const isFetchBillboardsLoading = computed(() => status.value === 'pending')
 
-interface Column {
+type Column = {
   key: keyof Billboard | 'actions'
   label?: string
 }
@@ -69,7 +69,7 @@ const handleDeleteBillboard = async (billboardId: string) => {
       </div>
       <UTable v-model="selected" :rows="billboards || []" :columns="columns" :loading="isFetchBillboardsLoading">
         <template #name-data="{ row }">
-          <span :class="[selected.find(person => person.id === row.id) && 'text-primary-500 dark:text-primary-400']">
+          <span :class="[selected.find(item => item.id === row.id) && 'text-primary-500 dark:text-primary-400']">
             {{ row.label }}
           </span>
         </template>

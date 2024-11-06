@@ -5,7 +5,7 @@ import schema from '~/schemas/billboard.schema'
 export const useModalBillboard = () => {
   const isOpen = useState(() => false)
   const modalTitle = computed(() => true ? 'Create billboard' : 'Update billboard')
-  const submitButtonLabel = computed(() => true ? 'Create billboard' : 'Update billboard')
+  const submitButtonLabel = computed(() => true ? 'Create' : 'Update')
   const successToastMessage = computed(() => true ? 'Create billboard successfully' : 'Update billboard successfully')
 
     type SchemaInfer = z.infer<typeof schema>
