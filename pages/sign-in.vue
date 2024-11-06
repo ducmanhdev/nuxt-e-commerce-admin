@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import {z} from 'zod'
-import type {FormSubmitEvent} from '#ui/types'
+import type { FormSubmitEvent } from '#ui/types'
+import { z } from 'zod'
 
 useHead({
-  title: 'Sign In'
+  title: 'Sign In',
 })
 
 definePageMeta({
   layout: false,
-  middleware: ['redirect-if-authenticated']
+  middleware: ['redirect-if-authenticated'],
 })
 
 const schema = z.object({
@@ -17,40 +17,39 @@ const schema = z.object({
   }).email('Invalid email'),
   password: z.string({
     required_error: 'Please enter your password',
-  }).min(8, 'Must be at least 8 characters')
+  }).min(8, 'Must be at least 8 characters'),
 })
 
 type Schema = z.output<typeof schema>
 
 const state = reactive({
   email: undefined,
-  password: undefined
+  password: undefined,
 })
 
-const supabase = useSupabaseClient();
-const runtimeConfig = useRuntimeConfig();
+const supabase = useSupabaseClient()
+const runtimeConfig = useRuntimeConfig()
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  const {error} = await supabase.auth.signInWithPassword({
+  const { error } = await supabase.auth.signInWithPassword({
     email: event.data.email,
     password: event.data.password,
   })
   if (error) {
-    console.log(error);
+    console.log(error)
   }
 }
 
 async function signInWithGithub() {
-  const {error} = await supabase.auth.signInWithOAuth({
+  const { error } = await supabase.auth.signInWithOAuth({
     provider: 'github',
     options: {
-      redirectTo: `${runtimeConfig.public.baseUrl}/confirm`
-    }
+      redirectTo: `${runtimeConfig.public.baseUrl}/confirm`,
+    },
   })
 
   if (error) {
-    console.log(error);
-    return;
+    console.log(error)
   }
 }
 </script>
@@ -64,24 +63,27 @@ async function signInWithGithub() {
       <div class="space-y-4">
         <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
           <UFormGroup label="Email" name="email">
-            <UInput v-model="state.email"/>
+            <UInput v-model="state.email" />
           </UFormGroup>
           <UFormGroup label="Password" name="password">
-            <UInput v-model="state.password" type="password"/>
+            <UInput v-model="state.password" type="password" />
           </UFormGroup>
           <div class="text-center">
             Already have an account?
-            <RouterLink to="/sign-in" class="text-primary text-underline">Sign In</RouterLink>
+            <RouterLink to="/sign-in" class="text-primary text-underline">
+              Sign In
+            </RouterLink>
           </div>
           <UButton type="submit" block>
             Submit
           </UButton>
         </UForm>
-        <UDivider label="OR"/>
+        <UDivider label="OR" />
         <UButton
-            color="black" label="Sign in with GitHub" icon="i-simple-icons-github" block
-            @click="signInWithGithub"/>
-        <UButton color="black" label="Sign in with Google" icon="i-simple-icons-google" block/>
+          color="black" label="Sign in with GitHub" icon="i-simple-icons-github" block
+          @click="signInWithGithub"
+        />
+        <UButton color="black" label="Sign in with Google" icon="i-simple-icons-google" block />
       </div>
     </UCard>
   </div>

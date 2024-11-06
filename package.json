@@ -1,7 +1,8 @@
 {
   "name": "nuxt-app",
-  "private": true,
   "type": "module",
+  "private": true,
+  "packageManager": "pnpm@9.11.0+sha1.4cd20e68438613738e8f2bc9aece61eaa6b3e649",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -24,7 +25,6 @@
     "vue-router": "latest",
     "zod": "^3.23.8"
   },
-  "packageManager": "pnpm@9.11.0+sha1.4cd20e68438613738e8f2bc9aece61eaa6b3e649",
   "devDependencies": {
     "@antfu/eslint-config": "^3.8.0",
     "@iconify-json/heroicons": "^1.2.1",

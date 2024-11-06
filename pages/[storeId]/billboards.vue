@@ -1,66 +1,55 @@
 <script setup lang="ts">
-import type {Billboard} from "~/types";
+import type { Billboard } from '~/types'
 
 useHead({
   title: 'Billboards',
 })
 
-const route = useRoute();
-const storeId = computed(() => route.params.storeId as string);
+const route = useRoute()
+const storeId = computed(() => route.params.storeId as string)
 
 const {
   data: billboards,
   status,
 } = await useLazyFetch(() => `/api/stores/${storeId.value}/billboards`, {
   key: 'billboards',
-});
+})
 
-const isFetchBillboardsLoading = computed(() => status.value === 'pending');
+const isFetchBillboardsLoading = computed(() => status.value === 'pending')
 
-type Column = {
-  key: keyof Billboard | 'actions';
-  label?: string;
+interface Column {
+  key: keyof Billboard | 'actions'
+  label?: string
 }
 
 const columns: Column[] = [
-  {
-    key: 'label',
-    label: 'Label'
-  },
-  {
-    key: 'imageUrl',
-    label: 'Image'
-  },
-  {
-    key: 'createdAt',
-    label: 'Created at'
-  },
-  {
-    key: 'updatedAt',
-    label: 'Updated at'
-  },
-  {
-    key: 'actions'
-  }
+  { key: 'label', label: 'Label' },
+  { key: 'imageUrl', label: 'Image' },
+  { key: 'createdAt', label: 'Created at' },
+  { key: 'updatedAt', label: 'Updated at' },
+  { key: 'actions' },
 ]
 
-const selected = ref<Billboard[]>([]);
+const selected = ref<Billboard[]>([])
 
-const {handleShow} = useModalBillboard();
+const { handleShow } = useModalBillboard()
 
-const isDeleteBillboardLoading = ref(false);
-const handleDeleteBillboard = async (billboardId: string) => {
+const isDeleteBillboardLoading = ref(false)
+
+async function handleDeleteBillboard(billboardId: string) {
   try {
-    isDeleteBillboardLoading.value = true;
+    isDeleteBillboardLoading.value = true
     await $fetch(`/api/stores/${storeId.value}/billboards/${billboardId}`, {
       method: 'DELETE',
-    });
+    })
     await refreshNuxtData('billboards')
-    push.success('Delete successfully');
-  } catch (error: any) {
+    push.success('Delete successfully')
+  }
+  catch (error: any) {
     console.log(error)
-  } finally {
-    isDeleteBillboardLoading.value = false;
+  }
+  finally {
+    isDeleteBillboardLoading.value = false
   }
 }
 </script>
@@ -69,11 +58,13 @@ const handleDeleteBillboard = async (billboardId: string) => {
   <section class="py-4">
     <UContainer>
       <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-bold">Billboards</h2>
+        <h2 class="text-xl font-bold">
+          Billboards
+        </h2>
         <UButton
-            leading-icon="ion:add-outline"
-            label="Create"
-            @click="handleShow({storeId})"
+          leading-icon="ion:add-outline"
+          label="Create"
+          @click="handleShow({ storeId })"
         />
       </div>
       <UTable v-model="selected" :rows="billboards || []" :columns="columns" :loading="isFetchBillboardsLoading">
@@ -84,29 +75,29 @@ const handleDeleteBillboard = async (billboardId: string) => {
         </template>
         <template #imageUrl-data="{ row }">
           <CldImage
-              v-if="row.imageUrl"
-              :src="row.imageUrl"
-              :alt="row.imageUrl"
-              width="100"
-              height="100"
+            v-if="row.imageUrl"
+            :src="row.imageUrl"
+            :alt="row.imageUrl"
+            width="100"
+            height="100"
           />
         </template>
         <template #actions-data="{ row }">
           <div class="text-right space-x-2">
             <UButton
-                color="red"
-                label="Delete"
-                leading-icon="ion:trash-outline"
-                :loading="isDeleteBillboardLoading"
-                @click="handleDeleteBillboard(row.id)"
+              color="red"
+              label="Delete"
+              leading-icon="ion:trash-outline"
+              :loading="isDeleteBillboardLoading"
+              @click="handleDeleteBillboard(row.id)"
             />
             <UButton
-                label="Edit"
-                leading-icon="ion:pencil-outline"
-                @click="handleShow({
-                  storeId,
-                  ...row
-                })"
+              label="Edit"
+              leading-icon="ion:pencil-outline"
+              @click="handleShow({
+                storeId,
+                ...row,
+              })"
             />
           </div>
         </template>
@@ -115,7 +106,7 @@ const handleDeleteBillboard = async (billboardId: string) => {
 
     <Teleport to="body">
       <ClientOnly>
-        <LazyModalBillboard/>
+        <LazyModalBillboard />
       </ClientOnly>
     </Teleport>
   </section>

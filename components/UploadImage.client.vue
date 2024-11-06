@@ -1,8 +1,8 @@
 <script setup lang="ts">
-type Props = {
-  multiple?: boolean;
-  initialImages?: string[];
-  uploadButtonLabel?: string;
+interface Props {
+  multiple?: boolean
+  initialImages?: string[]
+  uploadButtonLabel?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -11,58 +11,59 @@ const props = withDefaults(defineProps<Props>(), {
   uploadButtonLabel: 'Upload images',
 })
 
-type Emit = {
+const emit = defineEmits<Emit>()
+
+interface Emit {
   (e: 'change', imageUrls: string[]): void
 }
 
-const emit = defineEmits<Emit>()
+const images = ref<string[]>(props.initialImages)
 
-const images = ref<string[]>(props.initialImages);
-
-type Result = {
+interface Result {
   info: {
-    secure_url: string,
-    url: string,
-    public_id: number,
+    secure_url: string
+    url: string
+    public_id: number
   }
-};
+}
 
-const handleUploadSuccess = (result: Result) => {
-  images.value.push(result.info.secure_url);
-  emit('change', images.value);
-};
+function handleUploadSuccess(result: Result) {
+  images.value.push(result.info.secure_url)
+  emit('change', images.value)
+}
 </script>
 
 <template>
   <div>
     <div
-        v-if="images?.length"
-        class="grid gap-2 mb-4"
-        :class="{
-            'grid-cols-4': multiple,
-            'grid-cols-1': !multiple,
-          }
-        ">
+      v-if="images?.length"
+      class="grid gap-2 mb-4"
+      :class="{
+        'grid-cols-4': multiple,
+        'grid-cols-1': !multiple,
+      }
+      "
+    >
       <CldImage
-          v-for="imageUrl in images"
-          :key="imageUrl"
-          :src="imageUrl"
-          width=""
-          height=""
-          alt=""
+        v-for="imageUrl in images"
+        :key="imageUrl"
+        :src="imageUrl"
+        width=""
+        height=""
+        alt=""
       />
     </div>
     <CldUploadWidget
-        v-slot="{ open, isLoading }"
-        upload-preset="image-present"
-        :options="{
-          multiple: props.multiple,
-          sources: ['local', 'url'],
-          clientAllowedFormats: ['png', 'jpeg', 'jpg'],
-        }"
-        @success="handleUploadSuccess"
+      v-slot="{ open, isLoading }"
+      upload-preset="image-present"
+      :options="{
+        multiple: props.multiple,
+        sources: ['local', 'url'],
+        clientAllowedFormats: ['png', 'jpeg', 'jpg'],
+      }"
+      @success="handleUploadSuccess"
     >
-      <UButton type="button" block variant="soft" :label="uploadButtonLabel" :loading="isLoading" @click="open"/>
+      <UButton type="button" block variant="soft" :label="uploadButtonLabel" :loading="isLoading" @click="open" />
     </CldUploadWidget>
   </div>
 </template>

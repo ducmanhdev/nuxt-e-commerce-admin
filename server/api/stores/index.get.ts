@@ -1,5 +1,5 @@
-import prisma from "~/lib/prisma";
+import prisma from '~/lib/prisma'
 
 export default defineEventHandler(async () => {
-    return prisma.store.findMany();
+  return prisma.store.findMany()
 })
