@@ -2,7 +2,7 @@ import type { FormSubmitEvent } from '#ui/types'
 import type { z } from 'zod'
 import schema from '~/schemas/billboard.schema'
 
-export function useModalBillboard() {
+export const useModalBillboard = () => {
   const isOpen = useState(() => false)
   const modalTitle = computed(() => true ? 'Create billboard' : 'Update billboard')
   const submitButtonLabel = computed(() => true ? 'Create billboard' : 'Update billboard')
@@ -76,4 +76,4 @@ export function useModalBillboard() {
       modalTitle,
       submitButtonLabel,
     }
-}
+};

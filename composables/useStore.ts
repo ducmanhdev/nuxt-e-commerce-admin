@@ -49,23 +49,27 @@ export const useStore = () => {
     }
   }
 
+  const { handleShow: handleShowConfirm } = useModalConfirm()
   const isDeleteStoreLoading = useState(() => false)
-  const handleDeleteStore = async (storeId: string) => {
-    try {
-      isDeleteStoreLoading.value = true
-      await $fetch(`/api/stores/${storeId}`, {
-        method: 'DELETE',
-      })
-      await navigateTo('/')
-    }
-    catch (error: any) {
-      console.log(error)
-      push.error(error.statusMessage || 'Something went wrong')
-    }
-    finally {
-      isDeleteStoreLoading.value = false
-    }
-  }
+  const handleDeleteStore = (storeId: string) => handleShowConfirm({
+    message: 'Are you absolutely to delete this store?',
+    callbackFn: async () => {
+      try {
+        isDeleteStoreLoading.value = true
+        await $fetch(`/api/stores/${storeId}`, {
+          method: 'DELETE',
+        })
+        await navigateTo('/')
+      }
+      catch (error: any) {
+        console.log(error)
+        push.error(error.statusMessage || 'Something went wrong')
+      }
+      finally {
+        isDeleteStoreLoading.value = false
+      }
+    },
+  })
 
   return {
     isCreateStoreLoading,

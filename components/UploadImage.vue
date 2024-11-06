@@ -27,7 +27,7 @@ interface Result {
   }
 }
 
-function handleUploadSuccess(result: Result) {
+const handleUploadSuccess = (result: Result) => {
   images.value.push(result.info.secure_url)
   emit('change', images.value)
 }

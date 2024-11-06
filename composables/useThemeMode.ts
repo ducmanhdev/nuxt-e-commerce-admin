@@ -1,4 +1,4 @@
-export function useThemeMode() {
+export const useThemeMode = () => {
   const colorMode = useColorMode()
   const isDark = computed({
     get() {
@@ -14,4 +14,4 @@ export function useThemeMode() {
     isDark,
     handleToggleMode,
   }
-}
+};

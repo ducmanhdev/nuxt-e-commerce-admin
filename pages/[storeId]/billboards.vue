@@ -36,7 +36,7 @@ const { handleShow } = useModalBillboard()
 
 const isDeleteBillboardLoading = ref(false)
 
-async function handleDeleteBillboard(billboardId: string) {
+const handleDeleteBillboard = async (billboardId: string) => {
   try {
     isDeleteBillboardLoading.value = true
     await $fetch(`/api/stores/${storeId.value}/billboards/${billboardId}`, {

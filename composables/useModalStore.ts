@@ -2,7 +2,7 @@ import type { FormSubmitEvent } from '#ui/types'
 import type { z } from 'zod'
 import schema from '~/schemas/store.schema'
 
-export function useModalStore() {
+export const useModalStore = () => {
   const isOpen = useState(() => false)
   const storeId = useState<string | undefined>(() => undefined)
   const modalTitle = computed(() => storeId.value ? 'Update store' : 'Create store')
@@ -56,4 +56,4 @@ export function useModalStore() {
     modalTitle,
     submitButtonLabel,
   }
-}
+};

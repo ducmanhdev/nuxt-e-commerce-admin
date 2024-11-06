@@ -34,7 +34,7 @@ const {
             />
           </UFormGroup>
           <div class="grid grid-cols-2 gap-2">
-            <UButton type="button" block :loading="isSubmitLoading" label="Cancel" variant="ghost" @click="handleHide" />
+            <UButton type="button" block :loading="isSubmitLoading" label="Cancel" variant="soft" @click="handleHide" />
             <UButton type="submit" block :loading="isSubmitLoading" :label="submitButtonLabel" />
           </div>
         </UForm>
