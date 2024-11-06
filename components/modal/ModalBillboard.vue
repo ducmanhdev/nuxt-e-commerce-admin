@@ -21,6 +21,7 @@ const {
         <UForm
           :schema="schema"
           :state="state"
+          :validate-on="['submit']"
           class="space-y-4"
           @submit="handleSubmit"
         >
