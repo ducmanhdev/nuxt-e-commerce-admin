@@ -145,23 +145,27 @@ const links = computed(() => {
             :ui="{ wrapper: 'w-[160px] shrink-0' }"
             @change="handleSelectStore"
           />
-          <UButton
-            icon="ion:add-outline"
-            aria-label="Create store"
-            color="primary"
-            variant="ghost"
-            class="shrink-0"
-            @click="handleModalStore"
-          />
+          <UTooltip text="Create new store">
+            <UButton
+              icon="ion:add-outline"
+              aria-label="Create store"
+              color="primary"
+              variant="ghost"
+              class="shrink-0"
+              @click="handleModalStore"
+            />
+          </UTooltip>
           <UHorizontalNavigation :links="links" />
         </div>
         <div class="flex items-center gap-2">
-          <UButton
-            :icon="isDark ? 'ion:moon' : 'ion:sunny'"
-            variant="ghost"
-            aria-label="Theme"
-            @click="handleToggleMode"
-          />
+          <UTooltip text="Toggle dark mode">
+            <UButton
+              :icon="isDark ? 'ion:moon' : 'ion:sunny'"
+              variant="ghost"
+              aria-label="Theme"
+              @click="handleToggleMode"
+            />
+          </UTooltip>
           <UDropdown
             :items="userDropdownItems"
             :popper="{ placement: 'bottom-start' }"

@@ -37,7 +37,7 @@ const handleUploadSuccess = (result: Result) => {
   <div>
     <div
       v-if="images?.length"
-      class="grid gap-2 mb-4"
+      class="grid gap-2 mb-2"
       :class="{
         'grid-cols-4': multiple,
         'grid-cols-1': !multiple,

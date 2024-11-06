@@ -84,30 +84,30 @@ const handleDeleteBillboard = async (billboardId: string) => {
         </template>
         <template #actions-data="{ row }">
           <div class="text-right space-x-2">
-            <UButton
-              color="red"
-              label="Delete"
-              leading-icon="ion:trash-outline"
-              :loading="isDeleteBillboardLoading"
-              @click="handleDeleteBillboard(row.id)"
-            />
-            <UButton
-              label="Edit"
-              leading-icon="ion:pencil-outline"
-              @click="handleShow({
-                storeId,
-                ...row,
-              })"
-            />
+            <UTooltip text="Edit">
+              <UButton
+                leading-icon="ion:pencil-outline"
+                @click="handleShow({
+                  storeId,
+                  ...row,
+                })"
+              />
+            </UTooltip>
+            <UTooltip text="Delete">
+              <UButton
+                color="red"
+                leading-icon="ion:trash-outline"
+                :loading="isDeleteBillboardLoading"
+                @click="handleDeleteBillboard(row.id)"
+              />
+            </UTooltip>
           </div>
         </template>
       </UTable>
     </UContainer>
 
     <Teleport to="body">
-      <ClientOnly>
-        <LazyModalBillboard />
-      </ClientOnly>
+      <LazyModalBillboard />
     </Teleport>
   </section>
 </template>
