@@ -63,7 +63,15 @@ const handleUploadSuccess = (result: Result) => {
       }"
       @success="handleUploadSuccess"
     >
-      <UButton type="button" block variant="soft" :label="uploadButtonLabel" :loading="isLoading" @click="open" />
+      <UButton
+        type="button"
+        block
+        variant="outline"
+        :label="uploadButtonLabel"
+        leading-icon="ion:md-cloud-upload"
+        :loading="isLoading"
+        @click="open"
+      />
     </CldUploadWidget>
   </div>
 </template>
