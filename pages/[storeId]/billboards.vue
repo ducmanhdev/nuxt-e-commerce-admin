@@ -11,7 +11,7 @@ const storeId = computed(() => route.params.storeId as string)
 const {
   data: billboards,
   status,
-} = await useLazyFetch(() => `/api/stores/${storeId.value}/billboards`, {
+} = await useFetch(() => `/api/stores/${storeId.value}/billboards`, {
   key: 'billboards',
 })
 
