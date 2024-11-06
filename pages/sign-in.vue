@@ -30,7 +30,7 @@ const state = reactive({
 const supabase = useSupabaseClient()
 const runtimeConfig = useRuntimeConfig()
 
-async function onSubmit(event: FormSubmitEvent<Schema>) {
+const onSubmit = async (event: FormSubmitEvent<Schema>) => {
   const { error } = await supabase.auth.signInWithPassword({
     email: event.data.email,
     password: event.data.password,
@@ -40,7 +40,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   }
 }
 
-async function signInWithGithub() {
+const signInWithGithub = async () => {
   const { error } = await supabase.auth.signInWithOAuth({
     provider: 'github',
     options: {

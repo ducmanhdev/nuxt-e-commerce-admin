@@ -1,4 +1,5 @@
 import prisma from '~/lib/prisma'
+import storeSchema from '~/schemas/store.schema'
 
 export default defineEventHandler(async (event) => {
   const user = event.context.user
@@ -10,7 +11,6 @@ export default defineEventHandler(async (event) => {
   }
 
   const storeId = getRouterParam(event, 'storeId')
-
   if (!storeId) {
     throw createError({
       statusCode: 404,
@@ -18,36 +18,26 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const storeAndBillboardCheck = await prisma.store.findFirst({
-    where: {
-      id: storeId,
-      userId: user.id,
-    },
-    include: {
-      billboards: true,
-    },
-  })
-
-  if (!storeAndBillboardCheck) {
-    throw createError({
-      statusCode: 404,
-      statusMessage: 'Store does not exist',
-    })
-  }
-
-  if (storeAndBillboardCheck.billboards.length > 0) {
-    throw createError({
-      statusCode: 404,
-      statusMessage: 'Cannot delete this store. Please delete all associated billboards first.',
-    })
-  }
-
-  await prisma.store.deleteMany({
+  const store = await prisma.store.findFirst({
     where: {
       id: storeId,
       userId: user.id,
     },
   })
+  if (!store) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'Store not found',
+    })
+  }
 
-  setResponseStatus(event, 204)
+  const { name } = await readValidatedBody(event, storeSchema.parse)
+  return prisma.store.update({
+    where: {
+      id: storeId,
+    },
+    data: {
+      name,
+    },
+  })
 })

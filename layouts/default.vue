@@ -1,42 +1,30 @@
 <script setup lang="ts">
-import { useSupabaseUser } from '#imports'
-
 const route = useRoute()
-const router = useRouter()
 
 const currentStoreId = ref<string | undefined>(route.params.storeId as string)
+watch(() => route.params.storeId, (newStoreId) => {
+  if (newStoreId) {
+    currentStoreId.value = route.params.storeId as string
+  }
+})
 
-const { data: stores, status } = await useLazyFetch('/api/stores', {
+const { data: stores, status } = useLazyFetch('/api/stores', {
   key: 'stores',
 })
 const isFetchingStores = computed(() => status.value === 'pending')
-
 const storesOptions = computed(() => {
   return (stores.value || []).map(item => ({
     id: item.id,
     label: item.name,
   }))
 })
-
-watchEffect(() => {
-  const hasStores = storesOptions.value.length > 0
-  const isStoreNotSelected = !currentStoreId.value
-  const isStoreNotInOptions = !storesOptions.value.some(store => store.id === currentStoreId.value)
-
-  if (hasStores && (isStoreNotSelected || isStoreNotInOptions)) {
-    currentStoreId.value = storesOptions.value[0].id
-  }
-})
-
-watch(currentStoreId, (newStoreId) => {
-  router.push(`/${newStoreId}`)
-})
-
-const { isDark, handleToggleMode } = useThemeMode()
+const handleSelectStore = async (newStoreId: string) => {
+  await navigateTo(`/${newStoreId}`)
+}
 
 const supabase = useSupabaseClient()
 const user = useSupabaseUser()
-async function handleSignOut() {
+const handleSignOut = async () => {
   const { error } = await supabase.auth.signOut()
   if (error) {
     console.log(error)
@@ -66,6 +54,7 @@ const userDropdownItems = computed(() => {
   ]
 })
 
+const { isDark, handleToggleMode } = useThemeMode()
 const { handleShow: handleModalStore } = useModalStore()
 
 const links = computed(() => {
@@ -145,56 +134,45 @@ const links = computed(() => {
     <header class="py-4 shadow border-b border-transparent dark:border-gray-800">
       <UContainer class="flex items-center justify-between">
         <div class="flex items-center gap-2">
-          <ClientOnly>
-            <USelectMenu
-              v-model="currentStoreId"
-              :options="storesOptions"
-              :loading="isFetchingStores"
-              leading-icon="ion:storefront-sharp"
-              searchable
-              value-attribute="id"
-              option-attribute="label"
-              :ui="{ wrapper: 'w-[160px] shrink-0' }"
-            />
-            <UButton
-              icon="ion:add-outline"
-              aria-label="Create store"
-              color="primary"
-              variant="ghost"
-              class="shrink-0"
-              @click="handleModalStore"
-            />
-            <template #fallback>
-              <USkeleton class="h-8 w-[160px] shrink-0" />
-              <USkeleton class="h-8 w-8 shrink-0" />
-            </template>
-          </ClientOnly>
+          <USelectMenu
+            v-model="currentStoreId"
+            :options="storesOptions"
+            :loading="isFetchingStores"
+            leading-icon="ion:storefront-sharp"
+            searchable
+            value-attribute="id"
+            option-attribute="label"
+            :ui="{ wrapper: 'w-[160px] shrink-0' }"
+            @change="handleSelectStore"
+          />
+          <UButton
+            icon="ion:add-outline"
+            aria-label="Create store"
+            color="primary"
+            variant="ghost"
+            class="shrink-0"
+            @click="handleModalStore"
+          />
           <UHorizontalNavigation :links="links" />
         </div>
         <div class="flex items-center gap-2">
-          <ClientOnly>
-            <UButton
-              :icon="isDark ? 'ion:moon' : 'ion:sunny'"
-              variant="ghost"
-              aria-label="Theme"
-              @click="handleToggleMode"
+          <UButton
+            :icon="isDark ? 'ion:moon' : 'ion:sunny'"
+            variant="ghost"
+            aria-label="Theme"
+            @click="handleToggleMode"
+          />
+          <UDropdown
+            :items="userDropdownItems"
+            :popper="{ placement: 'bottom-start' }"
+          >
+            <UAvatar
+              size="xs"
+              :src="user?.user_metadata?.avatar_url"
+              :alt="user?.user_metadata?.name"
+              icon="ion:person-circle"
             />
-            <UDropdown
-              :items="userDropdownItems"
-              :popper="{ placement: 'bottom-start' }"
-            >
-              <UAvatar
-                size="xs"
-                :src="user?.user_metadata?.avatar_url"
-                :alt="user?.user_metadata?.name"
-                icon="ion:person-circle"
-              />
-            </UDropdown>
-
-            <template #fallback>
-              <USkeleton v-for="item in 2" :key="item" class="h-8 w-8 rounded-full" />
-            </template>
-          </ClientOnly>
+          </UDropdown>
         </div>
       </UContainer>
     </header>

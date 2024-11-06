@@ -7,13 +7,11 @@ const { data: stores } = await useFetch('/api/stores', {
   key: 'stores',
 })
 
-const { handleShow: handleModalStore } = useModalStore()
+if (stores.value?.length) {
+  await navigateTo(`/${stores.value[0].id}`)
+}
 
-watchEffect(() => {
-  if (stores.value?.length) {
-    return navigateTo(`/${stores.value[0].id}`)
-  }
-})
+const { handleShow: handleModalStore } = useModalStore()
 </script>
 
 <template>

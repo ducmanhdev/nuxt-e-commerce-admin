@@ -16,10 +16,7 @@ const handleError = () => clearError({ redirect: '/' })
           {{ error?.statusCode }}
         </h2>
         <p class="text-xl my-3 text-gray-900 dark:text-gray-300">
-          Oops! It seems something went wrong.
-        </p>
-        <p class="text-lg text-gray-900 dark:text-gray-300 mb-5">
-          We’re sorry for the inconvenience. The page you're looking for might have been moved or doesn’t exist anymore.
+          {{ error?.statusMessage || 'Oops! It seems something went wrong.' }}
         </p>
         <UButton
           icon="ion:ios-arrow-thin-left"

@@ -4,59 +4,56 @@ import schema from '~/schemas/store.schema'
 
 export function useModalStore() {
   const isOpen = useState(() => false)
-  const modalTitle = computed(() => true ? 'Create store' : 'Update store')
-  const submitButtonLabel = computed(() => true ? 'Create store' : 'Update store')
-  const successToastMessage = computed(() => true ? 'Create store successfully' : 'Update store successfully')
+  const storeId = useState<string | undefined>(() => undefined)
+  const modalTitle = computed(() => storeId.value ? 'Update store' : 'Create store')
+  const submitButtonLabel = computed(() => storeId.value ? 'Update store' : 'Create store')
 
-    type Schema = z.output<typeof schema>
+  type SchemaInfer = z.infer<typeof schema>
+  type SchemaOutput = z.output<typeof schema>
+  const DEFAULT_STATE: SchemaInfer = {
+    name: '',
+  }
+  const state = useState(() => ({ ...DEFAULT_STATE }))
 
-    const DEFAULT_STATE = {
-      name: undefined,
-    }
-    const state = useState(() => ({ ...DEFAULT_STATE }))
+  const handleShow = ({ id, name }: { id: string, name: string }) => {
+    storeId.value = id ?? undefined
+    state.value.name = name ?? DEFAULT_STATE.name
+    isOpen.value = true
+  }
 
-    const handleShow = () => {
-      state.value = { ...DEFAULT_STATE }
-      isOpen.value = true
-    }
+  const handleHide = () => {
+    isOpen.value = false
+  }
 
-    const handleHide = () => {
-      isOpen.value = false
-    }
+  const {
+    handleCreateStore,
+    isCreateStoreLoading,
+    handleUpdateStore,
+    isUpdateStoreLoading,
+  } = useStore()
 
-    const isSubmitLoading = useState(() => false)
-    const handleSubmit = async (event: FormSubmitEvent<Schema>) => {
-      try {
-        isSubmitLoading.value = true
-        await $fetch('/api/stores', {
-          method: 'POST',
-          body: {
-            name: event.data.name,
-          },
-        })
-        await refreshNuxtData('stores')
-        push.success(successToastMessage.value)
-        handleHide()
-      }
-      catch (error: any) {
-        console.log(error)
-        push.error(error.statusMessage || 'Something went wrong')
-      }
-      finally {
-        isSubmitLoading.value = false
-      }
-    }
+  const isSubmitLoading = computed(() => isCreateStoreLoading.value || isUpdateStoreLoading.value)
+  const handleSubmit = async (event: FormSubmitEvent<SchemaOutput>) => {
+    storeId.value
+      ? await handleUpdateStore({
+        storeId: storeId.value,
+        payload: event.data,
+      })
+      : await handleCreateStore(event.data)
 
-    return {
-      isOpen,
-      handleShow,
-      handleHide,
-      state,
-      schema,
-      isSubmitLoading,
-      handleSubmit,
+    handleHide()
+  }
 
-      modalTitle,
-      submitButtonLabel,
-    }
+  return {
+    isOpen,
+    handleShow,
+    handleHide,
+    state,
+    schema,
+    isSubmitLoading,
+    handleSubmit,
+
+    modalTitle,
+    submitButtonLabel,
+  }
 }

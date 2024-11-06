@@ -6,10 +6,11 @@ export default withNuxt(
   antfu(),
   {
     rules: {
-      'no-console': 'off',
       'antfu/top-level-function': 'off',
       'node/prefer-global/process': 'off',
       'no-restricted-globals': 'off',
+      'no-console': 'off',
+      'ts/consistent-type-definitions': 'off',
     },
   },
 )
