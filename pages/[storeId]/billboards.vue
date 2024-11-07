@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { Billboard } from '~/types'
-
 useHead({
   title: 'Billboards',
 })
@@ -9,49 +7,25 @@ const route = useRoute()
 const storeId = computed(() => route.params.storeId as string)
 
 const {
-  data: billboards,
-  status,
-} = await useFetch(() => `/api/stores/${storeId.value}/billboards`, {
-  key: 'billboards',
-})
-
-const isFetchBillboardsLoading = computed(() => status.value === 'pending')
-
-type Column = {
-  key: keyof Billboard | 'actions'
-  label?: string
-}
-
-const columns: Column[] = [
-  { key: 'label', label: 'Label' },
-  { key: 'imageUrl', label: 'Image' },
-  { key: 'createdAt', label: 'Created at' },
-  { key: 'updatedAt', label: 'Updated at' },
-  { key: 'actions' },
-]
-
-const selected = ref<Billboard[]>([])
+  columns,
+  selectedRows,
+  selectedColumns,
+  columnsTable,
+  search,
+  isDisableResetButton,
+  handleResetFilters,
+  sort,
+  page,
+  pageCount,
+  isFetchBillboardsLoading,
+  billboards,
+  pageTotal,
+  pageFrom,
+  pageTo,
+} = useTableBillboard(storeId)
 
 const { handleShow } = useModalBillboard()
-
-const isDeleteBillboardLoading = ref(false)
-
-const handleDeleteBillboard = async (billboardId: string) => {
-  try {
-    isDeleteBillboardLoading.value = true
-    await $fetch(`/api/stores/${storeId.value}/billboards/${billboardId}`, {
-      method: 'DELETE',
-    })
-    await refreshNuxtData('billboards')
-    push.success('Delete successfully')
-  }
-  catch (error: any) {
-    console.log(error)
-  }
-  finally {
-    isDeleteBillboardLoading.value = false
-  }
-}
+const { handleDeleteBillboard, isDeleteBillboardLoading } = useBillboard()
 </script>
 
 <template>
@@ -67,9 +41,40 @@ const handleDeleteBillboard = async (billboardId: string) => {
           @click="handleShow({ storeId })"
         />
       </div>
-      <UTable v-model="selected" :rows="billboards || []" :columns="columns" :loading="isFetchBillboardsLoading">
+
+      <div class="flex items-center justify-between gap-3 py-3">
+        <UInput v-model="search" icon="i-heroicons-magnifying-glass-20-solid" placeholder="Search..." />
+        <div class="flex gap-1.5 items-center">
+          <USelectMenu
+            v-model="selectedColumns"
+            :options="columns"
+            multiple
+          >
+            <UButton
+              icon="i-heroicons-view-columns"
+              color="gray"
+              label="Columns"
+            />
+          </USelectMenu>
+          <UButton
+            icon="i-heroicons-funnel"
+            color="gray"
+            :disabled="isDisableResetButton"
+            label="Reset"
+            @click="handleResetFilters"
+          />
+        </div>
+      </div>
+      <UTable
+        v-model="selectedRows"
+        v-model:sort="sort"
+        :rows="billboards"
+        :columns="columnsTable"
+        :loading="isFetchBillboardsLoading"
+        sort-mode="manual"
+      >
         <template #name-data="{ row }">
-          <span :class="[selected.find(item => item.id === row.id) && 'text-primary-500 dark:text-primary-400']">
+          <span :class="[selectedRows.find(item => item.id === row.id) && 'text-primary-500 dark:text-primary-400']">
             {{ row.label }}
           </span>
         </template>
@@ -98,12 +103,36 @@ const handleDeleteBillboard = async (billboardId: string) => {
                 color="red"
                 leading-icon="ion:trash-outline"
                 :loading="isDeleteBillboardLoading"
-                @click="handleDeleteBillboard(row.id)"
+                @click="handleDeleteBillboard({
+                  storeId,
+                  billboardId: row.id,
+                })"
               />
             </UTooltip>
           </div>
         </template>
       </UTable>
+      <div class="flex items-center justify-end gap-4 pt-3.5 mt-3.5 border-t border-gray-200 dark:border-gray-700">
+        <div>
+          <span class="text-sm leading-5">
+            Showing
+            <span class="font-medium">{{ pageFrom }}</span>
+            to
+            <span class="font-medium">{{ pageTo }}</span>
+            of
+            <span class="font-medium">{{ pageTotal }}</span>
+            results
+          </span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="text-sm leading-5">Rows per page:</span>
+          <USelect
+            v-model.number="pageCount"
+            :options="[3, 5, 10, 20, 30, 40]"
+          />
+        </div>
+        <UPagination v-model="page" :page-count="pageCount" :total="pageTotal" />
+      </div>
     </UContainer>
 
     <Teleport to="body">

@@ -9,12 +9,11 @@ export default defineEventHandler(async (event) => {
       statusMessage: 'Store ID not found or invalid',
     })
   }
-  const { label, imageUrl } = await readValidatedBody(event, billboardSchema.parse)
+  const data = await readValidatedBody(event, billboardSchema.parse)
   return prisma.billboard.create({
     data: {
       storeId,
-      label,
-      imageUrl,
+      ...data,
     },
   })
 })

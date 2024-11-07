@@ -4,9 +4,9 @@ import type schema from '~/schemas/store.schema'
 export const useStore = () => {
   type Schema = z.infer<typeof schema>
 
-  type CreateStorePayload = Schema
+  type CreateStoreArgs = Schema
   const isCreateStoreLoading = useState(() => false)
-  const handleCreateStore = async (payload: CreateStorePayload) => {
+  const handleCreateStore = async (payload: CreateStoreArgs) => {
     try {
       isCreateStoreLoading.value = true
       const store = await $fetch('/api/stores', {
@@ -25,18 +25,19 @@ export const useStore = () => {
     }
   }
 
-  type UpdateStorePayload = {
+  type UpdateStoreArgs = {
     storeId: string
     payload: Schema
   }
   const isUpdateStoreLoading = useState(() => false)
-  const handleUpdateStore = async ({ storeId, payload }: UpdateStorePayload) => {
+  const handleUpdateStore = async ({ storeId, payload }: UpdateStoreArgs) => {
     try {
       isUpdateStoreLoading.value = true
       await $fetch(`/api/stores/${storeId}`, {
         method: 'PATCH',
         body: payload,
       })
+      push.success('Updated store successfully')
       await refreshNuxtData('stores')
       await refreshNuxtData('store')
     }
@@ -59,6 +60,7 @@ export const useStore = () => {
         await $fetch(`/api/stores/${storeId}`, {
           method: 'DELETE',
         })
+        push.success('Deleted store successfully')
         await navigateTo('/')
       }
       catch (error: any) {

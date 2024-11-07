@@ -1,10 +1,45 @@
+import prisma from '~/lib/prisma'
+import billboardSchema from '~/schemas/billboard.schema'
+
 export default defineEventHandler(async (event) => {
-  const storeId = getRouterParam(event, 'storeId')
+  const user = event.context.user
+  if (!user) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Unauthorized',
+    })
+  }
+
+  const { storeId, billboardId } = getRouterParams(event)
   if (!storeId) {
     throw createError({
       statusCode: 404,
       statusMessage: 'Store ID not found or invalid',
     })
   }
-  return 'Updated'
+
+  const billboard = await prisma.billboard.findFirst({
+    where: {
+      id: billboardId,
+      storeId: storeId,
+      store: {
+        userId: user.id,
+      },
+    },
+  })
+
+  if (!billboard) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'Billboard not found or unauthorized access',
+    })
+  }
+
+  const data = await readValidatedBody(event, billboardSchema.parse)
+  return prisma.billboard.update({
+    where: {
+      id: billboardId,
+    },
+    data,
+  })
 })

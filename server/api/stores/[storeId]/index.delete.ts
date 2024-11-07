@@ -42,10 +42,9 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  await prisma.store.deleteMany({
+  await prisma.store.delete({
     where: {
       id: storeId,
-      userId: user.id,
     },
   })
 

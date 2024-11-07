@@ -4,76 +4,76 @@ import schema from '~/schemas/billboard.schema'
 
 export const useModalBillboard = () => {
   const isOpen = useState(() => false)
-  const modalTitle = computed(() => true ? 'Create billboard' : 'Update billboard')
-  const submitButtonLabel = computed(() => true ? 'Create' : 'Update')
-  const successToastMessage = computed(() => true ? 'Create billboard successfully' : 'Update billboard successfully')
+  const storeId = useState<string | undefined>(() => undefined)
+  const billboardId = useState<string | undefined>(() => undefined)
+  const modalTitle = computed(() => storeId.value ? 'Update billboard' : 'Create billboard')
+  const submitButtonLabel = computed(() => storeId.value ? 'Update' : 'Create')
 
-    type SchemaInfer = z.infer<typeof schema>
-    type SchemaOutput = z.output<typeof schema>
+  type SchemaInfer = z.infer<typeof schema>
+  type SchemaOutput = z.output<typeof schema>
 
-    const DEFAULT_STATE: Partial<SchemaInfer> = {
-      label: undefined,
-      imageUrl: undefined,
-    }
-    const state = useState(() => ({ ...DEFAULT_STATE }))
+  const DEFAULT_STATE: SchemaInfer = {
+    label: '',
+    imageUrl: '',
+  }
 
-    interface ShowArgs {
-      storeId: string
-      id?: string
-      label?: string
-      imageUrl?: string
-    }
-    const storeId = useState<ShowArgs['storeId'] | undefined>()
-    const billboardId = useState<ShowArgs['id'] | undefined>()
+  const state = useState(() => ({ ...DEFAULT_STATE }))
 
-    const handleShow = (args: ShowArgs) => {
-      storeId.value = args.storeId ?? undefined
-      billboardId.value = args.id ?? undefined
-      state.value = {
-        label: args.label ?? DEFAULT_STATE.label,
-        imageUrl: args.imageUrl ?? DEFAULT_STATE.imageUrl,
-      }
-      isOpen.value = true
-    }
+  type ShowArgs = Partial<SchemaInfer> & {
+    storeId: string
+    id?: string
+  }
 
-    const handleHide = () => {
-      isOpen.value = false
-    }
+  const handleShow = ({ storeId: inputStoreId, id, ...args }: ShowArgs) => {
+    storeId.value = inputStoreId ?? undefined
+    billboardId.value = id ?? undefined
 
-    const isSubmitLoading = useState(() => false)
-    const handleSubmit = async (event: FormSubmitEvent<SchemaOutput>) => {
-      try {
-        isSubmitLoading.value = true
-        await $fetch(`/api/stores/${storeId.value}/billboards`, {
-          method: 'POST',
-          body: {
-            label: event.data.label,
-            imageUrl: event.data.imageUrl,
-          },
-        })
-        await refreshNuxtData('billboards')
-        push.success(successToastMessage.value)
-        handleHide()
-      }
-      catch (error: any) {
-        console.log(error)
-        push.error(error.statusMessage || 'Something went wrong')
-      }
-      finally {
-        isSubmitLoading.value = false
-      }
+    Object.assign(state.value, { ...DEFAULT_STATE, ...args })
+    isOpen.value = true
+  }
+
+  const handleHide = () => {
+    isOpen.value = false
+  }
+
+  const {
+    isCreateBillboardLoading,
+    handleCreateBillboard,
+    isUpdateBillboardLoading,
+    handleUpdateBillboard,
+  } = useBillboard()
+
+  const isSubmitLoading = computed(() => isCreateBillboardLoading.value || isUpdateBillboardLoading.value)
+  const handleSubmit = async (event: FormSubmitEvent<SchemaOutput>) => {
+    if (!storeId.value) {
+      console.error('Store ID is required')
+      return
     }
 
-    return {
-      isOpen,
-      handleShow,
-      handleHide,
-      state,
-      schema,
-      isSubmitLoading,
-      handleSubmit,
+    billboardId.value
+      ? await handleUpdateBillboard({
+        storeId: storeId.value,
+        billboardId: billboardId.value,
+        payload: event.data,
+      })
+      : await handleCreateBillboard({
+        storeId: storeId.value,
+        payload: event.data,
+      })
 
-      modalTitle,
-      submitButtonLabel,
-    }
-};
+    handleHide()
+  }
+
+  return {
+    isOpen,
+    handleShow,
+    handleHide,
+    state,
+    schema,
+    isSubmitLoading,
+    handleSubmit,
+
+    modalTitle,
+    submitButtonLabel,
+  }
+}

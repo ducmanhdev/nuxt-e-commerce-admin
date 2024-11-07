@@ -14,5 +14,8 @@ export default defineEventHandler(async (event) => {
     where: {
       userId: user.id,
     },
+    orderBy: {
+      createdAt: 'desc',
+    },
   })
 })

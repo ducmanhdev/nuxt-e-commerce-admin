@@ -18,6 +18,7 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxtjs/cloudinary',
     'notivue/nuxt',
+    '@vueuse/nuxt',
   ],
   css: [
     'notivue/notification.css',

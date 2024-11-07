@@ -15,7 +15,11 @@ export const useModalStore = () => {
   }
   const state = useState(() => ({ ...DEFAULT_STATE }))
 
-  const handleShow = ({ id, name }: { id: string, name: string }) => {
+  type ShowArgs = {
+    id: string
+    name: string
+  }
+  const handleShow = ({ id, name }: ShowArgs) => {
     storeId.value = id ?? undefined
     state.value.name = name ?? DEFAULT_STATE.name
     isOpen.value = true
@@ -56,4 +60,4 @@ export const useModalStore = () => {
     modalTitle,
     submitButtonLabel,
   }
-};
+}

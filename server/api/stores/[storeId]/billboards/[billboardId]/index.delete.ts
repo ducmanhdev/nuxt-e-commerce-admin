@@ -1,6 +1,14 @@
 import prisma from '~/lib/prisma'
 
 export default defineEventHandler(async (event) => {
+  const user = event.context.user
+  if (!user) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Unauthorized',
+    })
+  }
+
   const { storeId, billboardId } = getRouterParams(event)
   if (!storeId) {
     throw createError({
@@ -9,26 +17,26 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  if (!billboardId) {
-    throw createError({
-      statusCode: 404,
-      statusMessage: 'Billboard ID not found or invalid',
-    })
-  }
-
-  const { count } = await prisma.billboard.deleteMany({
+  const billboard = await prisma.billboard.findFirst({
     where: {
-      storeId,
       id: billboardId,
+      storeId: storeId,
+      store: {
+        userId: user.id,
+      },
     },
   })
 
-  if (count === 0) {
+  if (!billboard) {
     throw createError({
       statusCode: 404,
-      statusMessage: 'Billboard not found',
+      statusMessage: 'Billboard not found or unauthorized access',
     })
   }
 
-  setResponseStatus(event, 204)
+  return prisma.billboard.delete({
+    where: {
+      id: billboardId,
+    },
+  })
 })
