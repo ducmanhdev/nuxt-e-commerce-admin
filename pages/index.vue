@@ -19,11 +19,15 @@ const { handleShow: handleModalStore } = useModalStore()
     <UContainer>
       <UCard>
         <div class="text-center space-y-4">
-          <UIcon name="ion:file-tray-outline" size="50px" />
+          <UIcon name="heroicons:information-circle" size="50px" />
           <p class="text-2xl font-bold">
             No stores found
           </p>
-          <UButton label="Create store" leading-icon="ion:add-outline" @click="handleModalStore" />
+          <UButton
+            label="Create store"
+            leading-icon="heroicons:pencil-square"
+            @click="handleModalStore"
+          />
         </div>
       </UCard>
     </UContainer>

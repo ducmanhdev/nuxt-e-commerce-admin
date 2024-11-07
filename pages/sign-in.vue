@@ -80,10 +80,18 @@ const signInWithGithub = async () => {
         </UForm>
         <UDivider label="OR" />
         <UButton
-          color="black" label="Sign in with GitHub" icon="i-simple-icons-github" block
+          color="black"
+          label="Sign in with GitHub"
+          leading-icon="i-simple-icons-github"
+          block
           @click="signInWithGithub"
         />
-        <UButton color="black" label="Sign in with Google" icon="i-simple-icons-google" block />
+        <UButton
+          color="black"
+          label="Sign in with Google"
+          icon="i-simple-icons-google"
+          block
+        />
       </div>
     </UCard>
   </div>

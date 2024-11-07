@@ -14,4 +14,4 @@ export const useThemeMode = () => {
     isDark,
     handleToggleMode,
   }
-};
+}

@@ -1,7 +1,7 @@
 import { refDebounced } from '@vueuse/core'
 import type { Billboard } from '~/types'
 
-export const useTableBillboard = (storeId: ComputedRef<string>) => {
+export const useTableBillboard = async (storeId: ComputedRef<string>) => {
   const columns = [
     { key: 'label', label: 'Label', sortable: true },
     { key: 'imageUrl', label: 'Image' },
@@ -22,57 +22,53 @@ export const useTableBillboard = (storeId: ComputedRef<string>) => {
     selectedColumns.value = columns
   }
 
-    type Sort = {
-      column: string
-      direction: 'asc' | 'desc'
-    }
-    const sort = ref<Sort | undefined>(undefined)
-    const page = ref(1)
-    const pageCount = ref(10)
-    const sortColumn = computed(() => sort.value?.column)
-    const sortDirection = computed(() => sort.value?.direction)
+  type Sort = {
+    column: string
+    direction: 'asc' | 'desc'
+  }
+  const sort = ref<Sort | undefined>(undefined)
+  const page = ref(1)
+  const pageCount = ref(10)
+  const sortColumn = computed(() => sort.value?.column)
+  const sortDirection = computed(() => sort.value?.direction)
 
-    const {
-      data,
-      status,
-    } = useFetch(() => `/api/stores/${storeId.value}/billboards`, {
-      key: 'billboards',
-      default: () => ({
-        billboards: [],
-        meta: undefined,
-      }),
-      query: {
-        search: searchDebounced,
-        page: page,
-        limit: pageCount,
-        sort: sortColumn,
-        order: sortDirection,
-      },
-    })
+  const {
+    data,
+    status,
+  } = await useFetch(() => `/api/stores/${storeId.value}/billboards`, {
+    key: 'billboards',
+    default: () => ({
+      billboards: [],
+      meta: undefined,
+    }),
+    query: {
+      search: searchDebounced,
+      page: page,
+      limit: pageCount,
+      sort: sortColumn,
+      order: sortDirection,
+    },
+  })
 
-    const isFetchBillboardsLoading = computed(() => status.value === 'pending')
-    const billboards = computed(() => data.value.billboards)
-    const meta = computed(() => data.value.meta)
-    const pageTotal = computed(() => meta.value?.totalPages || 1)
-    const pageFrom = computed(() => (page.value - 1) * pageCount.value + 1)
-    const pageTo = computed(() => Math.min(page.value * pageCount.value, pageTotal.value))
+  const isFetchBillboardsLoading = computed(() => status.value === 'pending')
+  const billboards = computed(() => data.value.billboards)
+  const meta = computed(() => data.value.meta)
+  const pageTotal = computed(() => meta.value?.totalPages || 1)
 
-    return {
-      columns,
-      selectedRows,
-      selectedColumns,
-      columnsTable,
-      search,
-      isDisableResetButton,
-      handleResetFilters,
-      sort,
-      page,
-      pageCount,
-      isFetchBillboardsLoading,
-      billboards,
-      meta,
-      pageTotal,
-      pageFrom,
-      pageTo,
-    }
+  return {
+    columns,
+    selectedRows,
+    selectedColumns,
+    columnsTable,
+    search,
+    isDisableResetButton,
+    handleResetFilters,
+    sort,
+    page,
+    pageCount,
+    isFetchBillboardsLoading,
+    billboards,
+    meta,
+    pageTotal,
+  }
 }

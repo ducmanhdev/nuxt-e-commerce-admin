@@ -68,7 +68,7 @@ const handleUploadSuccess = (result: Result) => {
         block
         variant="outline"
         :label="uploadButtonLabel"
-        leading-icon="ion:md-cloud-upload"
+        leading-icon="heroicons:cloud-arrow-up"
         :loading="isLoading"
         @click="open"
       />

@@ -61,7 +61,7 @@ const chartLineData = {
         </h2>
         <div class="flex gap-2">
           <UButton
-            leading-icon="ion:pencil-outline"
+            leading-icon="heroicons:trash"
             label="Edit"
             @click="handleShow({
               id: store!.id,
@@ -69,7 +69,7 @@ const chartLineData = {
             })"
           />
           <UButton
-            leading-icon="ion:trash-outline"
+            leading-icon="heroicons:trash"
             label="Delete"
             color="red"
             :loading="isDeleteStoreLoading"

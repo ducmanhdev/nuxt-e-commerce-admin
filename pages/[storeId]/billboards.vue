@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import { DATE_TIME_FORMAT } from '~/constants'
+
 useHead({
   title: 'Billboards',
 })
 
+const dayjs = useDayjs()
 const route = useRoute()
 const storeId = computed(() => route.params.storeId as string)
 
@@ -20,9 +23,7 @@ const {
   isFetchBillboardsLoading,
   billboards,
   pageTotal,
-  pageFrom,
-  pageTo,
-} = useTableBillboard(storeId)
+} = await useTableBillboard(storeId)
 
 const { handleShow } = useModalBillboard()
 const { handleDeleteBillboard, isDeleteBillboardLoading } = useBillboard()
@@ -36,28 +37,35 @@ const { handleDeleteBillboard, isDeleteBillboardLoading } = useBillboard()
           Billboards
         </h2>
         <UButton
-          leading-icon="ion:add-outline"
+          leading-icon="heroicons:plus"
           label="Create"
           @click="handleShow({ storeId })"
         />
       </div>
 
       <div class="flex items-center justify-between gap-3 py-3">
-        <UInput v-model="search" icon="i-heroicons-magnifying-glass-20-solid" placeholder="Search..." />
+        <UInput v-model="search" leading-icon="i-heroicons-magnifying-glass-20-solid" placeholder="Search..." />
         <div class="flex gap-1.5 items-center">
+          <UButton
+            v-if="selectedRows.length > 0"
+            leading-icon="heroicons:trash"
+            color="red"
+            label="Delete items"
+            @click="() => {}"
+          />
           <USelectMenu
             v-model="selectedColumns"
             :options="columns"
             multiple
           >
             <UButton
-              icon="i-heroicons-view-columns"
+              leading-icon="heroicons:view-columns"
               color="gray"
               label="Columns"
             />
           </USelectMenu>
           <UButton
-            icon="i-heroicons-funnel"
+            leading-icon="i-heroicons-funnel"
             color="gray"
             :disabled="isDisableResetButton"
             label="Reset"
@@ -73,7 +81,7 @@ const { handleDeleteBillboard, isDeleteBillboardLoading } = useBillboard()
         :loading="isFetchBillboardsLoading"
         sort-mode="manual"
       >
-        <template #name-data="{ row }">
+        <template #label-data="{ row }">
           <span :class="[selectedRows.find(item => item.id === row.id) && 'text-primary-500 dark:text-primary-400']">
             {{ row.label }}
           </span>
@@ -87,11 +95,17 @@ const { handleDeleteBillboard, isDeleteBillboardLoading } = useBillboard()
             height="100"
           />
         </template>
+        <template #createdAt-data="{ row }">
+          {{ dayjs(row.createdAt).format(DATE_TIME_FORMAT) }}
+        </template>
+        <template #updatedAt-data="{ row }">
+          {{ dayjs(row.updatedAt).format(DATE_TIME_FORMAT) }}
+        </template>
         <template #actions-data="{ row }">
           <div class="text-right space-x-2">
             <UTooltip text="Edit">
               <UButton
-                leading-icon="ion:pencil-outline"
+                leading-icon="heroicons:pencil-square"
                 @click="handleShow({
                   storeId,
                   ...row,
@@ -101,7 +115,7 @@ const { handleDeleteBillboard, isDeleteBillboardLoading } = useBillboard()
             <UTooltip text="Delete">
               <UButton
                 color="red"
-                leading-icon="ion:trash-outline"
+                leading-icon="heroicons:trash"
                 :loading="isDeleteBillboardLoading"
                 @click="handleDeleteBillboard({
                   storeId,
@@ -113,17 +127,6 @@ const { handleDeleteBillboard, isDeleteBillboardLoading } = useBillboard()
         </template>
       </UTable>
       <div class="flex items-center justify-end gap-4 pt-3.5 mt-3.5 border-t border-gray-200 dark:border-gray-700">
-        <div>
-          <span class="text-sm leading-5">
-            Showing
-            <span class="font-medium">{{ pageFrom }}</span>
-            to
-            <span class="font-medium">{{ pageTo }}</span>
-            of
-            <span class="font-medium">{{ pageTotal }}</span>
-            results
-          </span>
-        </div>
         <div class="flex items-center gap-1.5">
           <span class="text-sm leading-5">Rows per page:</span>
           <USelect

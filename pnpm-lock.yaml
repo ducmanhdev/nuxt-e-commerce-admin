@@ -35,6 +35,12 @@ importers:
       chart.js:
         specifier: ^4.4.6
         version: 4.4.6
+      dayjs:
+        specifier: ^1.11.13
+        version: 1.11.13
+      dayjs-nuxt:
+        specifier: ^2.1.11
+        version: 2.1.11(magicast@0.3.5)(rollup@4.24.4)
       notivue:
         specifier: ^2.4.5
         version: 2.4.5(@nuxt/kit@3.14.159(magicast@0.3.5)(rollup@4.24.4))(@nuxt/schema@3.14.159(magicast@0.3.5)(rollup@4.24.4))(defu@6.1.4)
@@ -1993,6 +1999,12 @@ packages:
 
   csstype@3.1.3:
     resolution: {integrity: sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw==}
+
+  dayjs-nuxt@2.1.11:
+    resolution: {integrity: sha512-KDDNiET7KAKf6yzL3RaPWq5aV7ql9QTt5fIDYv+4eOegDmnEQGjwkKYADDystsKtPjt7QZerpVbhC96o3BIyqQ==}
+
+  dayjs@1.11.13:
+    resolution: {integrity: sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==}
 
   db0@0.2.1:
     resolution: {integrity: sha512-BWSFmLaCkfyqbSEZBQINMVNjCVfrogi7GQ2RSy1tmtfK9OXlsup6lUMwLsqSD7FbAjD04eWFdXowSHHUp6SE/Q==}
@@ -7060,6 +7072,18 @@ snapshots:
       css-tree: 2.2.1
 
   csstype@3.1.3: {}
+
+  dayjs-nuxt@2.1.11(magicast@0.3.5)(rollup@4.24.4):
+    dependencies:
+      '@nuxt/kit': 3.14.159(magicast@0.3.5)(rollup@4.24.4)
+      dayjs: 1.11.13
+    transitivePeerDependencies:
+      - magicast
+      - rollup
+      - supports-color
+      - webpack-sources
+
+  dayjs@1.11.13: {}
 
   db0@0.2.1: {}
 

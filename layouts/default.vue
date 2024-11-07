@@ -138,7 +138,7 @@ const links = computed(() => {
             v-model="currentStoreId"
             :options="storesOptions"
             :loading="isFetchingStores"
-            leading-icon="ion:storefront-sharp"
+            leading-icon="heroicons:building-storefront"
             searchable
             value-attribute="id"
             option-attribute="label"
@@ -147,7 +147,7 @@ const links = computed(() => {
           />
           <UTooltip text="Create new store">
             <UButton
-              icon="ion:add-outline"
+              leading-icon="heroicons:plus"
               aria-label="Create store"
               color="primary"
               variant="ghost"
@@ -160,7 +160,7 @@ const links = computed(() => {
         <div class="flex items-center gap-2">
           <UTooltip text="Toggle dark mode">
             <UButton
-              :icon="isDark ? 'ion:moon' : 'ion:sunny'"
+              :icon="isDark ? 'heroicons:moon-solid' : 'heroicons:sun-solid'"
               variant="ghost"
               aria-label="Theme"
               @click="handleToggleMode"
@@ -174,7 +174,7 @@ const links = computed(() => {
               size="xs"
               :src="user?.user_metadata?.avatar_url"
               :alt="user?.user_metadata?.name"
-              icon="ion:person-circle"
+              icon="heroicons:user-circle"
             />
           </UDropdown>
         </div>

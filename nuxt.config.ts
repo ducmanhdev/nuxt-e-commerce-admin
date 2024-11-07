@@ -19,6 +19,7 @@ export default defineNuxtConfig({
     '@nuxtjs/cloudinary',
     'notivue/nuxt',
     '@vueuse/nuxt',
+    'dayjs-nuxt',
   ],
   css: [
     'notivue/notification.css',
@@ -76,5 +77,8 @@ export default defineNuxtConfig({
     config: {
       standalone: false,
     },
+  },
+  dayjs: {
+    plugins: [],
   },
 })
