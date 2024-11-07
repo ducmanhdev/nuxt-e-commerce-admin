@@ -11,6 +11,7 @@ export default withNuxt(
       'no-restricted-globals': 'off',
       'no-console': 'off',
       'ts/consistent-type-definitions': 'off',
+      'object-shorthand': 'off',
     },
   },
 )
