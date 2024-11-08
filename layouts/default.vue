@@ -80,51 +80,51 @@ const links = computed(() => {
         },
       },
     },
-    {
-      label: 'Categories',
-      to: {
-        name: 'storeId-categories',
-        params: {
-          storeId: currentStoreId.value,
-        },
-      },
-    },
-    {
-      label: 'Sizes',
-      to: {
-        name: 'storeId-sizes',
-        params: {
-          storeId: currentStoreId.value,
-        },
-      },
-    },
-    {
-      label: 'Colors',
-      to: {
-        name: 'storeId-colors',
-        params: {
-          storeId: currentStoreId.value,
-        },
-      },
-    },
-    {
-      label: 'Products',
-      to: {
-        name: 'storeId-products',
-        params: {
-          storeId: currentStoreId.value,
-        },
-      },
-    },
-    {
-      label: 'Settings',
-      to: {
-        name: 'storeId-settings',
-        params: {
-          storeId: currentStoreId.value,
-        },
-      },
-    },
+    // {
+    //   label: 'Categories',
+    //   to: {
+    //     name: 'storeId-categories',
+    //     params: {
+    //       storeId: currentStoreId.value,
+    //     },
+    //   },
+    // },
+    // {
+    //   label: 'Sizes',
+    //   to: {
+    //     name: 'storeId-sizes',
+    //     params: {
+    //       storeId: currentStoreId.value,
+    //     },
+    //   },
+    // },
+    // {
+    //   label: 'Colors',
+    //   to: {
+    //     name: 'storeId-colors',
+    //     params: {
+    //       storeId: currentStoreId.value,
+    //     },
+    //   },
+    // },
+    // {
+    //   label: 'Products',
+    //   to: {
+    //     name: 'storeId-products',
+    //     params: {
+    //       storeId: currentStoreId.value,
+    //     },
+    //   },
+    // },
+    // {
+    //   label: 'Settings',
+    //   to: {
+    //     name: 'storeId-settings',
+    //     params: {
+    //       storeId: currentStoreId.value,
+    //     },
+    //   },
+    // },
   ]
 })
 </script>

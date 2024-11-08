@@ -2,24 +2,33 @@ import { refDebounced } from '@vueuse/core'
 import type { Billboard } from '~/types'
 
 export const useTableBillboard = async (storeId: ComputedRef<string>) => {
-  const columns = [
+  const selectedRows = ref<Billboard[]>([])
+  const handleSelectRow = (row: Billboard) => {
+    const index = selectedRows.value.findIndex(item => item.id === row.id)
+    if (index === -1) {
+      selectedRows.value = [...selectedRows.value, row]
+      return
+    }
+    selectedRows.value = selectedRows.value.filter(item => item.id !== row.id)
+  }
+
+  const ORIGIN_COLUMNS = [
     { key: 'label', label: 'Label', sortable: true },
     { key: 'imageUrl', label: 'Image' },
     { key: 'createdAt', label: 'Created at', sortable: true },
     { key: 'updatedAt', label: 'Updated at', sortable: true },
     { key: 'actions', label: 'Actions', class: 'text-end', disabled: true },
   ]
-  const selectedRows = ref<Billboard[]>([])
-  const selectedColumns = ref(columns)
-  const columnsTable = computed(() => columns.filter(column => selectedColumns.value.includes(column)))
+  const selectedColumns = ref(ORIGIN_COLUMNS)
+  const columns = computed(() => ORIGIN_COLUMNS.filter(COLUMNS => selectedColumns.value.includes(COLUMNS)))
 
   const search = ref('')
   const searchDebounced = refDebounced(search, 300)
 
-  const isDisableResetButton = computed(() => !(search.value || selectedColumns.value.length !== columns.length))
+  const isDisableResetButton = computed(() => !(search.value || selectedColumns.value.length !== ORIGIN_COLUMNS.length))
   const handleResetFilters = () => {
     search.value = ''
-    selectedColumns.value = columns
+    selectedColumns.value = ORIGIN_COLUMNS
   }
 
   type Sort = {
@@ -56,10 +65,10 @@ export const useTableBillboard = async (storeId: ComputedRef<string>) => {
   const pageTotal = computed(() => meta.value?.totalPages || 1)
 
   return {
-    columns,
     selectedRows,
+    handleSelectRow,
     selectedColumns,
-    columnsTable,
+    columns,
     search,
     isDisableResetButton,
     handleResetFilters,
