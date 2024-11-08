@@ -27,7 +27,6 @@ const querySchema = z.object({
 
 export const handleQuery = async (event: H3Event, options: QueryOptions = {}) => {
   const query = await getValidatedQuery(event, querySchema.parse)
-  console.log({ query })
   const {
     search,
     page = options.defaultPage || 1,
