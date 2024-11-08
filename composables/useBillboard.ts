@@ -8,7 +8,7 @@ export const useBillboard = () => {
     storeId: string
     payload: Schema
   }
-  const isCreateBillboardLoading = useState(() => false)
+  const isCreateBillboardLoading = ref(false)
   const handleCreateBillboard = async ({ storeId, payload }: CreateBillboardArgs) => {
     try {
       isCreateBillboardLoading.value = true
@@ -33,7 +33,7 @@ export const useBillboard = () => {
     billboardId: string
     payload: Schema
   }
-  const isUpdateBillboardLoading = useState(() => false)
+  const isUpdateBillboardLoading = ref(false)
   const handleUpdateBillboard = async ({ storeId, billboardId, payload }: UpdateBillboardArgs) => {
     try {
       isUpdateBillboardLoading.value = true
@@ -58,7 +58,7 @@ export const useBillboard = () => {
     billboardId: string
   }
   const { handleShow: handleShowConfirm } = useModalConfirm()
-  const isDeleteBillboardLoading = useState(() => false)
+  const isDeleteBillboardLoading = ref(false)
   const handleDeleteBillboard = ({ storeId, billboardId }: DeleteBillboardArgs) => handleShowConfirm({
     message: 'Are you absolutely to delete this billboard?',
     callbackFn: async () => {

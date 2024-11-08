@@ -19,9 +19,16 @@ export const useModalConfirm = () => {
     isOpen.value = false
   }
 
+  const isConfirmLoading = useState(() => false)
   const handleConfirm = async () => {
-    callbackFn.value?.()
-    handleHide()
+    try {
+      isConfirmLoading.value = true
+      await callbackFn.value?.()
+    }
+    finally {
+      isConfirmLoading.value = false
+      handleHide()
+    }
   }
 
   return {
@@ -30,5 +37,6 @@ export const useModalConfirm = () => {
     handleShow,
     handleHide,
     handleConfirm,
+    isConfirmLoading,
   }
 }
