@@ -61,7 +61,7 @@ const chartLineData = {
         </h2>
         <div class="flex gap-2">
           <UButton
-            leading-icon="heroicons:trash"
+            leading-icon="heroicons:pencil-square"
             label="Edit"
             @click="handleShow({
               id: store!.id,
