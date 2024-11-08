@@ -15,6 +15,8 @@ const {
   selectedColumns,
   columns,
   search,
+  handleClearSearch,
+  isShowClearSearchButton,
   isDisableResetButton,
   handleResetFilters,
   sort,
@@ -46,7 +48,23 @@ const { handleDeleteBillboard, isDeleteBillboardLoading } = useBillboard()
       <UCard>
         <template #header>
           <div class="flex items-center justify-between gap-4">
-            <UInput v-model="search" leading-icon="i-heroicons-magnifying-glass-20-solid" placeholder="Search..." />
+            <UInput
+              v-model="search"
+              leading-icon="heroicons:magnifying-glass-20-solid"
+              placeholder="Search..."
+              :ui="{ icon: { trailing: { pointer: '' } } }"
+            >
+              <template #trailing>
+                <UButton
+                  v-show="isShowClearSearchButton"
+                  color="gray"
+                  variant="link"
+                  icon="heroicons:x-mark-20-solid"
+                  :padded="false"
+                  @click="handleClearSearch"
+                />
+              </template>
+            </UInput>
             <div class="flex gap-1.5 items-center">
               <USelectMenu
                 v-model="selectedColumns"

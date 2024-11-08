@@ -24,6 +24,10 @@ export const useTableBillboard = async (storeId: ComputedRef<string>) => {
 
   const search = ref('')
   const searchDebounced = refDebounced(search, 300)
+  const isShowClearSearchButton = computed(() => search.value !== '')
+  const handleClearSearch = () => {
+    search.value = ''
+  }
 
   const isDisableResetButton = computed(() => !(search.value || selectedColumns.value.length !== ORIGIN_COLUMNS.length))
   const handleResetFilters = () => {
@@ -70,6 +74,8 @@ export const useTableBillboard = async (storeId: ComputedRef<string>) => {
     selectedColumns,
     columns,
     search,
+    isShowClearSearchButton,
+    handleClearSearch,
     isDisableResetButton,
     handleResetFilters,
     sort,
