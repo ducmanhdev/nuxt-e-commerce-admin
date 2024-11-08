@@ -18,8 +18,15 @@ const storesOptions = computed(() => {
     label: item.name,
   }))
 })
+
 const handleSelectStore = async (newStoreId: string) => {
-  await navigateTo(`/${newStoreId}`)
+  await navigateTo({
+    name: route.name,
+    params: {
+      ...route.params,
+      storeId: newStoreId,
+    },
+  })
 }
 
 const supabase = useSupabaseClient()
