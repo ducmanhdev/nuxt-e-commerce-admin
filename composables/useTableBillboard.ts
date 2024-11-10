@@ -13,7 +13,7 @@ export const useTableBillboard = async (storeId: ComputedRef<string>) => {
   }
 
   const ORIGIN_COLUMNS = [
-    { key: 'label', label: 'Label', sortable: true },
+    { key: 'name', label: 'Name', sortable: true },
     { key: 'imageUrl', label: 'Image' },
     { key: 'createdAt', label: 'Created at', sortable: true },
     { key: 'updatedAt', label: 'Updated at', sortable: true },

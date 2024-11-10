@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
     page,
     limit,
   } = await handleQuery(event, {
-    searchField: 'label',
+    searchField: 'name',
     defaultLimit: 10,
     defaultPage: 1,
   })

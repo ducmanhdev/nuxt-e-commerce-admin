@@ -25,8 +25,8 @@ const {
           class="space-y-4"
           @submit="handleSubmit"
         >
-          <UFormGroup label="Label" name="label">
-            <UInput v-model="state.label" />
+          <UFormGroup label="Name" name="name">
+            <UInput v-model="state.name" />
           </UFormGroup>
           <UFormGroup label="Image" name="imageUrl">
             <UploadImage

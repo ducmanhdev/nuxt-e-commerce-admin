@@ -13,7 +13,7 @@ export const useModalBillboard = () => {
   type SchemaOutput = z.output<typeof schema>
 
   const DEFAULT_STATE: SchemaInfer = {
-    label: '',
+    name: '',
     imageUrl: '',
   }
 
