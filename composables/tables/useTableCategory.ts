@@ -1,7 +1,7 @@
 import { refDebounced } from '@vueuse/core'
 import type { Category } from '~/types'
 
-export const useTableCategory = async (storeId: ComputedRef<string>) => {
+export const useTableCategory = async (storeId: Ref<string>) => {
   const selectedRows = ref<Category[]>([])
   const handleSelectRow = (row: Category) => {
     const index = selectedRows.value.findIndex(item => item.id === row.id)

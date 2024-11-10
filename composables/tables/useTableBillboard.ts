@@ -1,7 +1,7 @@
 import { refDebounced } from '@vueuse/core'
 import type { Billboard } from '~/types'
 
-export const useTableBillboard = async (storeId: ComputedRef<string>) => {
+export const useTableBillboard = async (storeId: Ref<string>) => {
   const selectedRows = ref<Billboard[]>([])
   const handleSelectRow = (row: Billboard) => {
     const index = selectedRows.value.findIndex(item => item.id === row.id)
