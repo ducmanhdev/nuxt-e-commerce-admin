@@ -4,19 +4,19 @@ import type schema from '~/schemas/category.schema'
 export const useCategory = () => {
   type Schema = z.infer<typeof schema>
 
-  type CreateCategoryArgs = {
+  type CreateArgs = {
     storeId: string
     payload: Schema
   }
-  const isCreateCategoryLoading = ref(false)
-  const handleCreateCategory = async ({ storeId, payload }: CreateCategoryArgs) => {
+  const isCreateLoading = ref(false)
+  const handleCreate = async ({ storeId, payload }: CreateArgs) => {
     try {
-      isCreateCategoryLoading.value = true
+      isCreateLoading.value = true
       await $fetch(`/api/stores/${storeId}/categories`, {
         method: 'POST',
         body: payload,
       })
-      push.success('Created category successfully')
+      push.success('Created successfully')
       await refreshNuxtData('categories')
     }
     catch (error: any) {
@@ -24,24 +24,24 @@ export const useCategory = () => {
       push.error(error.statusMessage || 'Something went wrong')
     }
     finally {
-      isCreateCategoryLoading.value = false
+      isCreateLoading.value = false
     }
   }
 
-  type UpdateCategoryArgs = {
+  type UpdateArgs = {
     storeId: string
     categoryId: string
     payload: Schema
   }
-  const isUpdateCategoryLoading = ref(false)
-  const handleUpdateCategory = async ({ storeId, categoryId, payload }: UpdateCategoryArgs) => {
+  const isUpdateLoading = ref(false)
+  const handleUpdate = async ({ storeId, categoryId, payload }: UpdateArgs) => {
     try {
-      isUpdateCategoryLoading.value = true
+      isUpdateLoading.value = true
       await $fetch(`/api/stores/${storeId}/categories/${categoryId}`, {
         method: 'PATCH',
         body: payload,
       })
-      push.success('Updated category successfully')
+      push.success('Updated successfully')
       await refreshNuxtData('categories')
     }
     catch (error: any) {
@@ -49,25 +49,25 @@ export const useCategory = () => {
       push.error(error.statusMessage || 'Something went wrong')
     }
     finally {
-      isUpdateCategoryLoading.value = false
+      isUpdateLoading.value = false
     }
   }
 
-  type DeleteCategoryArgs = {
+  type DeleteArgs = {
     storeId: string
     categoryId: string
   }
   const { handleShow: handleShowConfirm } = useModalConfirm()
-  const isDeleteCategoryLoading = ref(false)
-  const handleDeleteCategory = ({ storeId, categoryId }: DeleteCategoryArgs) => handleShowConfirm({
-    message: 'Are you absolutely to delete this category?',
+  const isDeleteLoading = ref(false)
+  const handleDelete = ({ storeId, categoryId }: DeleteArgs) => handleShowConfirm({
+    message: 'Are you absolutely to delete this item?',
     callbackFn: async () => {
       try {
-        isDeleteCategoryLoading.value = true
+        isDeleteLoading.value = true
         await $fetch(`/api/stores/${storeId}/categories/${categoryId}`, {
           method: 'DELETE',
         })
-        push.success('Deleted category successfully')
+        push.success('Deleted successfully')
         await refreshNuxtData('categories')
       }
       catch (error: any) {
@@ -75,17 +75,17 @@ export const useCategory = () => {
         push.error(error.statusMessage || 'Something went wrong')
       }
       finally {
-        isDeleteCategoryLoading.value = false
+        isDeleteLoading.value = false
       }
     },
   })
 
   return {
-    isCreateCategoryLoading,
-    handleCreateCategory,
-    isUpdateCategoryLoading,
-    handleUpdateCategory,
-    isDeleteCategoryLoading,
-    handleDeleteCategory,
+    isCreateLoading,
+    handleCreate,
+    isUpdateLoading,
+    handleUpdate,
+    isDeleteLoading,
+    handleDelete,
   }
 }

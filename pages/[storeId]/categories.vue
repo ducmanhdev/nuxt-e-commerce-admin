@@ -28,7 +28,7 @@ const {
 } = await useTableCategory(storeId)
 
 const { handleShow } = useModalCategory()
-const { handleDeleteCategory } = useCategory()
+const { handleDelete } = useCategory()
 </script>
 
 <template>
@@ -126,7 +126,7 @@ const { handleDeleteCategory } = useCategory()
                 <UButton
                   color="red"
                   leading-icon="heroicons:trash"
-                  @click.stop="handleDeleteCategory({
+                  @click.stop="handleDelete({
                     storeId,
                     categoryId: row.id,
                   })"

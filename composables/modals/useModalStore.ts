@@ -31,20 +31,20 @@ export const useModalStore = () => {
   }
 
   const {
-    handleCreateStore,
-    isCreateStoreLoading,
-    handleUpdateStore,
-    isUpdateStoreLoading,
+    handleCreate,
+    isCreateLoading,
+    handleUpdate,
+    isUpdateLoading,
   } = useStore()
 
-  const isSubmitLoading = computed(() => isCreateStoreLoading.value || isUpdateStoreLoading.value)
+  const isSubmitLoading = computed(() => isCreateLoading.value || isUpdateLoading.value)
   const handleSubmit = async (event: FormSubmitEvent<SchemaOutput>) => {
     storeId.value
-      ? await handleUpdateStore({
+      ? await handleUpdate({
         storeId: storeId.value,
         payload: event.data,
       })
-      : await handleCreateStore(event.data)
+      : await handleCreate(event.data)
 
     handleHide()
   }

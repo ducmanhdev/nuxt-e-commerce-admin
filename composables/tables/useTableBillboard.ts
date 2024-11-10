@@ -1,9 +1,9 @@
 import { refDebounced } from '@vueuse/core'
-import type { Category } from '~/types'
+import type { Billboard } from '~/types'
 
-export const useTableCategory = async (storeId: ComputedRef<string>) => {
-  const selectedRows = ref<Category[]>([])
-  const handleSelectRow = (row: Category) => {
+export const useTableBillboard = async (storeId: ComputedRef<string>) => {
+  const selectedRows = ref<Billboard[]>([])
+  const handleSelectRow = (row: Billboard) => {
     const index = selectedRows.value.findIndex(item => item.id === row.id)
     if (index === -1) {
       selectedRows.value = [...selectedRows.value, row]
@@ -14,6 +14,7 @@ export const useTableCategory = async (storeId: ComputedRef<string>) => {
 
   const ORIGIN_COLUMNS = [
     { key: 'name', label: 'Name', sortable: true },
+    { key: 'imageUrl', label: 'Image' },
     { key: 'createdAt', label: 'Created at', sortable: true },
     { key: 'updatedAt', label: 'Updated at', sortable: true },
     { key: 'actions', label: 'Actions', class: 'text-end', disabled: true },
@@ -47,10 +48,10 @@ export const useTableCategory = async (storeId: ComputedRef<string>) => {
   const {
     data,
     status,
-  } = await useFetch(() => `/api/stores/${storeId.value}/categories`, {
-    key: 'categories',
+  } = await useFetch(() => `/api/stores/${storeId.value}/billboards`, {
+    key: 'billboards',
     default: () => ({
-      categories: [],
+      data: [],
       meta: undefined,
     }),
     query: {
@@ -62,8 +63,8 @@ export const useTableCategory = async (storeId: ComputedRef<string>) => {
     },
   })
 
-  const isFetchCategoriesLoading = computed(() => status.value === 'pending')
-  const categories = computed(() => data.value.categories)
+  const isFetchBillboardsLoading = computed(() => status.value === 'pending')
+  const billboards = computed(() => data.value.data)
   const meta = computed(() => data.value.meta)
   const pageTotal = computed(() => meta.value?.totalPages || 1)
 
@@ -80,8 +81,8 @@ export const useTableCategory = async (storeId: ComputedRef<string>) => {
     sort,
     page,
     pageCount,
-    isFetchCategoriesLoading,
-    categories,
+    isFetchBillboardsLoading,
+    billboards,
     meta,
     pageTotal,
   }

@@ -4,19 +4,19 @@ import type schema from '~/schemas/billboard.schema'
 export const useBillboard = () => {
   type Schema = z.infer<typeof schema>
 
-  type CreateBillboardArgs = {
+  type CreateArgs = {
     storeId: string
     payload: Schema
   }
-  const isCreateBillboardLoading = ref(false)
-  const handleCreateBillboard = async ({ storeId, payload }: CreateBillboardArgs) => {
+  const isCreateLoading = ref(false)
+  const handleCreate = async ({ storeId, payload }: CreateArgs) => {
     try {
-      isCreateBillboardLoading.value = true
+      isCreateLoading.value = true
       await $fetch(`/api/stores/${storeId}/billboards`, {
         method: 'POST',
         body: payload,
       })
-      push.success('Created billboard successfully')
+      push.success('Created successfully')
       await refreshNuxtData('billboards')
     }
     catch (error: any) {
@@ -24,24 +24,24 @@ export const useBillboard = () => {
       push.error(error.statusMessage || 'Something went wrong')
     }
     finally {
-      isCreateBillboardLoading.value = false
+      isCreateLoading.value = false
     }
   }
 
-  type UpdateBillboardArgs = {
+  type UpdateArgs = {
     storeId: string
     billboardId: string
     payload: Schema
   }
-  const isUpdateBillboardLoading = ref(false)
-  const handleUpdateBillboard = async ({ storeId, billboardId, payload }: UpdateBillboardArgs) => {
+  const isUpdateLoading = ref(false)
+  const handleUpdate = async ({ storeId, billboardId, payload }: UpdateArgs) => {
     try {
-      isUpdateBillboardLoading.value = true
+      isUpdateLoading.value = true
       await $fetch(`/api/stores/${storeId}/billboards/${billboardId}`, {
         method: 'PATCH',
         body: payload,
       })
-      push.success('Updated billboard successfully')
+      push.success('Updated successfully')
       await refreshNuxtData('billboards')
     }
     catch (error: any) {
@@ -49,25 +49,25 @@ export const useBillboard = () => {
       push.error(error.statusMessage || 'Something went wrong')
     }
     finally {
-      isUpdateBillboardLoading.value = false
+      isUpdateLoading.value = false
     }
   }
 
-  type DeleteBillboardArgs = {
+  type DeleteArgs = {
     storeId: string
     billboardId: string
   }
   const { handleShow: handleShowConfirm } = useModalConfirm()
-  const isDeleteBillboardLoading = ref(false)
-  const handleDeleteBillboard = ({ storeId, billboardId }: DeleteBillboardArgs) => handleShowConfirm({
-    message: 'Are you absolutely to delete this billboard?',
+  const isDeleteLoading = ref(false)
+  const handleDelete = ({ storeId, billboardId }: DeleteArgs) => handleShowConfirm({
+    message: 'Are you absolutely to delete this item?',
     callbackFn: async () => {
       try {
-        isDeleteBillboardLoading.value = true
+        isDeleteLoading.value = true
         await $fetch(`/api/stores/${storeId}/billboards/${billboardId}`, {
           method: 'DELETE',
         })
-        push.success('Deleted billboard successfully')
+        push.success('Deleted successfully')
         await refreshNuxtData('billboards')
       }
       catch (error: any) {
@@ -75,17 +75,17 @@ export const useBillboard = () => {
         push.error(error.statusMessage || 'Something went wrong')
       }
       finally {
-        isDeleteBillboardLoading.value = false
+        isDeleteLoading.value = false
       }
     },
   })
 
   return {
-    isCreateBillboardLoading,
-    handleCreateBillboard,
-    isUpdateBillboardLoading,
-    handleUpdateBillboard,
-    isDeleteBillboardLoading,
-    handleDeleteBillboard,
+    isCreateLoading,
+    handleCreate,
+    isUpdateLoading,
+    handleUpdate,
+    isDeleteLoading,
+    handleDelete,
   }
 }

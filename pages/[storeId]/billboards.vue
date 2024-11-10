@@ -28,7 +28,7 @@ const {
 } = await useTableBillboard(storeId)
 
 const { handleShow } = useModalBillboard()
-const { handleDeleteBillboard } = useBillboard()
+const { handleDelete } = useBillboard()
 </script>
 
 <template>
@@ -126,7 +126,7 @@ const { handleDeleteBillboard } = useBillboard()
                 <UButton
                   color="red"
                   leading-icon="heroicons:trash"
-                  @click.stop="handleDeleteBillboard({
+                  @click.stop="handleDelete({
                     storeId,
                     billboardId: row.id,
                   })"

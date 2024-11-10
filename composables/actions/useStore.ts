@@ -4,11 +4,11 @@ import type schema from '~/schemas/store.schema'
 export const useStore = () => {
   type Schema = z.infer<typeof schema>
 
-  type CreateStoreArgs = Schema
-  const isCreateStoreLoading = useState(() => false)
-  const handleCreateStore = async (payload: CreateStoreArgs) => {
+  type CreateArgs = Schema
+  const isCreateLoading = useState(() => false)
+  const handleCreate = async (payload: CreateArgs) => {
     try {
-      isCreateStoreLoading.value = true
+      isCreateLoading.value = true
       const store = await $fetch('/api/stores', {
         method: 'POST',
         body: payload,
@@ -21,23 +21,23 @@ export const useStore = () => {
       push.error(error.statusMessage || 'Something went wrong')
     }
     finally {
-      isCreateStoreLoading.value = false
+      isCreateLoading.value = false
     }
   }
 
-  type UpdateStoreArgs = {
+  type UpdateArgs = {
     storeId: string
     payload: Schema
   }
-  const isUpdateStoreLoading = useState(() => false)
-  const handleUpdateStore = async ({ storeId, payload }: UpdateStoreArgs) => {
+  const isUpdateLoading = useState(() => false)
+  const handleUpdate = async ({ storeId, payload }: UpdateArgs) => {
     try {
-      isUpdateStoreLoading.value = true
+      isUpdateLoading.value = true
       await $fetch(`/api/stores/${storeId}`, {
         method: 'PATCH',
         body: payload,
       })
-      push.success('Updated store successfully')
+      push.success('Updated successfully')
       await refreshNuxtData('stores')
       await refreshNuxtData('store')
     }
@@ -46,21 +46,21 @@ export const useStore = () => {
       push.error(error.statusMessage || 'Something went wrong')
     }
     finally {
-      isUpdateStoreLoading.value = false
+      isUpdateLoading.value = false
     }
   }
 
   const { handleShow: handleShowConfirm } = useModalConfirm()
-  const isDeleteStoreLoading = useState(() => false)
-  const handleDeleteStore = (storeId: string) => handleShowConfirm({
-    message: 'Are you absolutely to delete this store?',
+  const isDeleteLoading = useState(() => false)
+  const handleDelete = (storeId: string) => handleShowConfirm({
+    message: 'Are you absolutely to delete this item?',
     callbackFn: async () => {
       try {
-        isDeleteStoreLoading.value = true
+        isDeleteLoading.value = true
         await $fetch(`/api/stores/${storeId}`, {
           method: 'DELETE',
         })
-        push.success('Deleted store successfully')
+        push.success('Deleted successfully')
         await navigateTo('/')
       }
       catch (error: any) {
@@ -68,17 +68,17 @@ export const useStore = () => {
         push.error(error.statusMessage || 'Something went wrong')
       }
       finally {
-        isDeleteStoreLoading.value = false
+        isDeleteLoading.value = false
       }
     },
   })
 
   return {
-    isCreateStoreLoading,
-    handleCreateStore,
-    isUpdateStoreLoading,
-    handleUpdateStore,
-    isDeleteStoreLoading,
-    handleDeleteStore,
+    isCreateLoading,
+    handleCreate,
+    isUpdateLoading,
+    handleUpdate,
+    isDeleteLoading,
+    handleDelete,
   }
 }

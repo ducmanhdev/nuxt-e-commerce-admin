@@ -7,6 +7,8 @@ interface QueryOptions {
   searchField?: string
 }
 
+const DEFAULT_PAGE = 1
+const DEFAULT_LIMIT = 10
 const querySchema = z.object({
   search: z.string().optional(),
   page: z
@@ -14,13 +16,13 @@ const querySchema = z.object({
     .transform(v => Number.parseFloat(v))
     .refine(v => !Number.isNaN(v), { message: 'Not a valid number' })
     .pipe(z.number().min(0))
-    .default('1'),
+    .default(DEFAULT_PAGE.toString()),
   limit: z
     .string()
     .transform(v => Number.parseFloat(v))
     .refine(v => !Number.isNaN(v), { message: 'Not a valid number' })
     .pipe(z.number().min(0))
-    .default('10'),
+    .default(DEFAULT_LIMIT.toString()),
   sort: z.string().optional(),
   order: z.enum(['asc', 'desc']).optional(),
 })
@@ -29,8 +31,8 @@ export const handleQuery = async (event: H3Event, options: QueryOptions = {}) =>
   const query = await getValidatedQuery(event, querySchema.parse)
   const {
     search,
-    page = options.defaultPage || 1,
-    limit = options.defaultLimit || 10,
+    page = options.defaultPage || DEFAULT_PAGE,
+    limit = options.defaultLimit || DEFAULT_LIMIT,
     sort,
     order,
   } = query

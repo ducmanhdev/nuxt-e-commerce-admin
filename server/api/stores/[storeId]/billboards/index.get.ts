@@ -18,13 +18,11 @@ export default defineEventHandler(async (event) => {
     limit,
   } = await handleQuery(event, {
     searchField: 'name',
-    defaultLimit: 10,
-    defaultPage: 1,
   })
 
   const finalWhere = { ...where, storeId }
 
-  const [billboards, total] = await prisma.$transaction([
+  const [data, total] = await prisma.$transaction([
     prisma.billboard.findMany({
       where: finalWhere,
       ...pagination,
@@ -34,7 +32,7 @@ export default defineEventHandler(async (event) => {
   ])
 
   return {
-    billboards,
+    data,
     meta: {
       total,
       currentPage: Number(page),

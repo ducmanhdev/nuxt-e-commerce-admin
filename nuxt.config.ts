@@ -2,6 +2,11 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   ssr: false,
+  imports: {
+    dirs: [
+      'composables/**',
+    ],
+  },
   devtools: {
     enabled: true,
   },

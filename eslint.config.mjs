@@ -10,8 +10,9 @@ export default withNuxt(
       'node/prefer-global/process': 'off',
       'no-restricted-globals': 'off',
       'no-console': 'off',
-      'ts/consistent-type-definitions': 'off',
       'object-shorthand': 'off',
+      'ts/consistent-type-definitions': 'off',
+      'ts/no-use-before-define': 'warn',
     },
   },
 )

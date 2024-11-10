@@ -21,7 +21,7 @@ if (!store.value) {
   })
 }
 
-const { isDeleteStoreLoading, handleDeleteStore } = useStore()
+const { isDeleteLoading, handleDelete } = useStore()
 const { handleShow } = useModalStore()
 
 const chartOptions = {
@@ -72,8 +72,8 @@ const chartLineData = {
             leading-icon="heroicons:trash"
             label="Delete"
             color="red"
-            :loading="isDeleteStoreLoading"
-            @click="handleDeleteStore(store!.id)"
+            :loading="isDeleteLoading"
+            @click="handleDelete(store!.id)"
           />
         </div>
       </div>
