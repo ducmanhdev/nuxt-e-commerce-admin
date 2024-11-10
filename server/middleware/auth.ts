@@ -4,7 +4,7 @@ export default defineEventHandler(async (event) => {
   try {
     event.context.user = await serverSupabaseUser(event)
   }
-  catch (error) {
+  catch {
     event.context.user = null
   }
 })
