@@ -30,6 +30,8 @@ export const useModalCategory = () => {
     categoryId.value = id ?? undefined
 
     Object.assign(state.value, { ...DEFAULT_STATE, ...args })
+
+    handleFetchBillboardOptions()
     isOpen.value = true
   }
 
@@ -65,22 +67,25 @@ export const useModalCategory = () => {
     handleHide()
   }
 
+  const billboardOptions = useState<{ name: string, value: string }[]>(() => [])
   const {
-    data: billboardOptions,
     status,
+    execute: handleFetchBillboardOptions,
   } = useLazyFetch(() => `/api/stores/${storeId.value}/billboards`, {
     key: 'billboardOptions',
     transform: (data) => {
-      return data.data.map(billboard => ({
+      const transformedData = data.data.map(billboard => ({
         name: billboard.name,
         value: billboard.id,
       }))
+      billboardOptions.value = transformedData
+      return transformedData
     },
     default: () => ([]),
     immediate: false,
+    watch: false,
   })
   const isFetchBillboardOptions = computed(() => status.value === 'pending')
-
   return {
     isOpen,
     handleShow,
