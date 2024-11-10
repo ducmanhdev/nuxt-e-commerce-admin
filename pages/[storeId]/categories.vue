@@ -2,7 +2,7 @@
 import { DATE_TIME_FORMAT, ROWS_PER_PAGE_OPTIONS } from '~/constants'
 
 useHead({
-  title: 'Billboards',
+  title: 'Categories',
 })
 
 const dayjs = useDayjs()
@@ -22,13 +22,13 @@ const {
   sort,
   page,
   pageCount,
-  isFetchBillboardsLoading,
-  billboards,
+  isFetchCategoriesLoading,
+  categories,
   pageTotal,
-} = await useTableBillboard(storeId)
+} = await useTableCategory(storeId)
 
-const { handleShow } = useModalBillboard()
-const { handleDeleteBillboard } = useBillboard()
+const { handleShow } = useModalCategory()
+const { handleDeleteCategory } = useCategory()
 </script>
 
 <template>
@@ -36,7 +36,7 @@ const { handleDeleteBillboard } = useBillboard()
     <UContainer>
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-xl font-bold">
-          Billboards ({{ billboards.length }})
+          Categories ({{ categories.length }})
         </h2>
         <UButton
           leading-icon="heroicons:plus"
@@ -90,9 +90,9 @@ const { handleDeleteBillboard } = useBillboard()
         <UTable
           v-model="selectedRows"
           v-model:sort="sort"
-          :rows="billboards"
+          :rows="categories"
           :columns="columns"
-          :loading="isFetchBillboardsLoading"
+          :loading="isFetchCategoriesLoading"
           sort-mode="manual"
           @select="handleSelectRow"
         >
@@ -126,9 +126,9 @@ const { handleDeleteBillboard } = useBillboard()
                 <UButton
                   color="red"
                   leading-icon="heroicons:trash"
-                  @click.stop="handleDeleteBillboard({
+                  @click.stop="handleDeleteCategory({
                     storeId,
-                    billboardId: row.id,
+                    categoryId: row.id,
                   })"
                 />
               </UTooltip>
@@ -151,7 +151,7 @@ const { handleDeleteBillboard } = useBillboard()
     </UContainer>
 
     <Teleport to="body">
-      <LazyModalBillboard />
+      <LazyModalCategory />
     </Teleport>
   </section>
 </template>

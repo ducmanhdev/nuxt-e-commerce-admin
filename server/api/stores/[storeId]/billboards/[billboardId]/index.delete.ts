@@ -36,7 +36,7 @@ export default defineEventHandler(async (event) => {
 
   return prisma.billboard.delete({
     where: {
-      id: billboardId,
+      id: billboard.id,
     },
   })
 })

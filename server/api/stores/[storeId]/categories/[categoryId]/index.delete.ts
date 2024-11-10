@@ -1,5 +1,4 @@
 import prisma from '~/lib/prisma'
-import schema from '~/schemas/store.schema'
 
 export default defineEventHandler(async (event) => {
   const user = event.context.user
@@ -10,7 +9,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const storeId = getRouterParam(event, 'storeId')
+  const { storeId, categoryId } = getRouterParams(event)
   if (!storeId) {
     throw createError({
       statusCode: 404,
@@ -18,26 +17,26 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const store = await prisma.store.findFirst({
+  const category = await prisma.category.findFirst({
     where: {
-      id: storeId,
-      userId: user.id,
+      id: categoryId,
+      storeId: storeId,
+      store: {
+        userId: user.id,
+      },
     },
   })
-  if (!store) {
+
+  if (!category) {
     throw createError({
       statusCode: 404,
-      statusMessage: 'Store not found',
+      statusMessage: 'Category not found or unauthorized access',
     })
   }
 
-  const { name } = await readValidatedBody(event, schema.parse)
-  return prisma.store.update({
+  return prisma.category.delete({
     where: {
-      id: storeId,
-    },
-    data: {
-      name,
+      id: category.id,
     },
   })
 })

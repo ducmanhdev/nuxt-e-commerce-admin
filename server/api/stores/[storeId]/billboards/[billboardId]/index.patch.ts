@@ -1,5 +1,5 @@
 import prisma from '~/lib/prisma'
-import billboardSchema from '~/schemas/billboard.schema'
+import schema from '~/schemas/billboard.schema'
 
 export default defineEventHandler(async (event) => {
   const user = event.context.user
@@ -35,10 +35,10 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const data = await readValidatedBody(event, billboardSchema.parse)
+  const data = await readValidatedBody(event, schema.parse)
   return prisma.billboard.update({
     where: {
-      id: billboardId,
+      id: billboard.id,
     },
     data,
   })

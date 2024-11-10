@@ -5,6 +5,7 @@ import schema from '~/schemas/store.schema'
 export const useModalStore = () => {
   const isOpen = useState(() => false)
   const storeId = useState<string | undefined>(() => undefined)
+
   const modalTitle = computed(() => storeId.value ? 'Update store' : 'Create store')
   const submitButtonLabel = computed(() => storeId.value ? 'Update' : 'Create')
 

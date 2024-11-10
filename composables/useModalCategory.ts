@@ -1,21 +1,21 @@
 import type { FormSubmitEvent } from '#ui/types'
 import type { z } from 'zod'
-import schema from '~/schemas/billboard.schema'
+import schema from '~/schemas/category.schema'
 
-export const useModalBillboard = () => {
+export const useModalCategory = () => {
   const isOpen = useState(() => false)
   const storeId = useState<string | undefined>(() => undefined)
-  const billboardId = useState<string | undefined>(() => undefined)
+  const categoryId = useState<string | undefined>(() => undefined)
 
-  const modalTitle = computed(() => billboardId.value ? 'Update billboard' : 'Create billboard')
-  const submitButtonLabel = computed(() => billboardId.value ? 'Update' : 'Create')
+  const modalTitle = computed(() => categoryId.value ? 'Update category' : 'Create category')
+  const submitButtonLabel = computed(() => categoryId.value ? 'Update' : 'Create')
 
   type SchemaInfer = z.infer<typeof schema>
   type SchemaOutput = z.output<typeof schema>
 
   const DEFAULT_STATE: SchemaInfer = {
     name: '',
-    imageUrl: '',
+    billboardId: '',
   }
 
   const state = useState(() => ({ ...DEFAULT_STATE }))
@@ -27,7 +27,7 @@ export const useModalBillboard = () => {
 
   const handleShow = ({ storeId: inputStoreId, id, ...args }: ShowArgs) => {
     storeId.value = inputStoreId ?? undefined
-    billboardId.value = id ?? undefined
+    categoryId.value = id ?? undefined
 
     Object.assign(state.value, { ...DEFAULT_STATE, ...args })
     isOpen.value = true
@@ -38,32 +38,44 @@ export const useModalBillboard = () => {
   }
 
   const {
-    isCreateBillboardLoading,
-    handleCreateBillboard,
-    isUpdateBillboardLoading,
-    handleUpdateBillboard,
-  } = useBillboard()
+    isCreateCategoryLoading,
+    handleCreateCategory,
+    isUpdateCategoryLoading,
+    handleUpdateCategory,
+  } = useCategory()
 
-  const isSubmitLoading = computed(() => isCreateBillboardLoading.value || isUpdateBillboardLoading.value)
+  const isSubmitLoading = computed(() => isCreateCategoryLoading.value || isUpdateCategoryLoading.value)
   const handleSubmit = async (event: FormSubmitEvent<SchemaOutput>) => {
     if (!storeId.value) {
       console.error('Store ID is required')
       return
     }
 
-    billboardId.value
-      ? await handleUpdateBillboard({
+    categoryId.value
+      ? await handleUpdateCategory({
         storeId: storeId.value,
-        billboardId: billboardId.value,
+        categoryId: categoryId.value,
         payload: event.data,
       })
-      : await handleCreateBillboard({
+      : await handleCreateCategory({
         storeId: storeId.value,
         payload: event.data,
       })
 
     handleHide()
   }
+
+  const { data: billboardOptions, status } = useLazyFetch(() => `/api/stores/${storeId.value}/billboards`, {
+    key: 'billboards',
+    transform: (data) => {
+      return data.billboards.map(billboard => ({
+        name: billboard.name,
+        value: billboard.id,
+      }))
+    },
+    default: () => ([]),
+  })
+  const isFetchBillboardOptions = computed(() => status.value === 'pending')
 
   return {
     isOpen,
@@ -76,5 +88,8 @@ export const useModalBillboard = () => {
 
     modalTitle,
     submitButtonLabel,
+
+    billboardOptions,
+    isFetchBillboardOptions,
   }
 }

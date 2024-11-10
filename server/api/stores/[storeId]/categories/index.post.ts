@@ -1,5 +1,5 @@
 import prisma from '~/lib/prisma'
-import schema from '~/schemas/billboard.schema'
+import schema from '~/schemas/category.schema'
 
 export default defineEventHandler(async (event) => {
   const storeId = getRouterParam(event, 'storeId')
@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
     })
   }
   const data = await readValidatedBody(event, schema.parse)
-  return prisma.billboard.create({
+  return prisma.category.create({
     data: {
       storeId,
       ...data,

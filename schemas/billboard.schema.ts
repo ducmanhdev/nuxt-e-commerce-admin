@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
 export default z.object({
-  name: z.string({ required_error: 'Please enter billboard name' }).min(1),
-  imageUrl: z.string({ required_error: 'Please enter billboard image' }).min(1),
+  name: z.string().min(1, 'Please enter billboard name'),
+  imageUrl: z.string().min(1, 'Please enter billboard image'),
 })

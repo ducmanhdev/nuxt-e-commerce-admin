@@ -1,5 +1,5 @@
 import prisma from '~/lib/prisma'
-import storeSchema from '~/schemas/store.schema'
+import schema from '~/schemas/store.schema'
 
 export default defineEventHandler(async (event) => {
   const user = event.context.user
@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const { name } = await readValidatedBody(event, storeSchema.parse)
+  const { name } = await readValidatedBody(event, schema.parse)
   return prisma.store.create({
     data: {
       name,
