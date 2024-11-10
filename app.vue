@@ -3,7 +3,6 @@
     <NuxtLoadingIndicator />
     <NuxtRouteAnnouncer />
 
-    <LazyModalStore />
     <LazyModalConfirm />
 
     <Notivue v-slot="item">

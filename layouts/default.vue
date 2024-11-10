@@ -190,5 +190,9 @@ const links = computed(() => {
     <div>
       <slot />
     </div>
+
+    <Teleport to="body">
+      <LazyModalStore />
+    </Teleport>
   </div>
 </template>
