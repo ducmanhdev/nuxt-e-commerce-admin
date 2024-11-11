@@ -1,7 +1,7 @@
 import { refDebounced } from '@vueuse/core'
 import type { Size } from '~/types'
 
-export const useTableCategory = async (storeId: Ref<string>) => {
+export const useTableSize = async (storeId: Ref<string>) => {
   const selectedRows = ref<Size[]>([])
   const handleSelectRow = (row: Size) => {
     const index = selectedRows.value.findIndex(item => item.id === row.id)
@@ -14,6 +14,7 @@ export const useTableCategory = async (storeId: Ref<string>) => {
 
   const ORIGIN_COLUMNS = [
     { key: 'name', label: 'Name', sortable: true },
+    { key: 'value', label: 'Value', sortable: true },
     { key: 'createdAt', label: 'Created at', sortable: true },
     { key: 'updatedAt', label: 'Updated at', sortable: true },
     { key: 'actions', label: 'Actions', class: 'text-end', disabled: true },
@@ -50,8 +51,8 @@ export const useTableCategory = async (storeId: Ref<string>) => {
   const {
     data,
     status,
-  } = await useFetch(() => `/api/stores/${storeId.value}/categories`, {
-    key: 'categories',
+  } = await useFetch(() => `/api/stores/${storeId.value}/sizes`, {
+    key: 'sizes',
     default: () => ({
       data: [],
       meta: undefined,

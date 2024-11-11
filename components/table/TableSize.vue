@@ -25,10 +25,10 @@ const {
   isFetchDataLoading,
   rows,
   pageTotal,
-} = await useTableCategory(storeId)
+} = await useTableSize(storeId)
 
-const { handleShow: handleShowModalEdit } = useModalCategory()
-const { handleDelete } = useCategory()
+const { handleShow: handleShowModalEdit } = useModalSize()
+const { handleDelete } = useSize()
 </script>
 
 <template>

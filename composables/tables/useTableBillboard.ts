@@ -66,8 +66,8 @@ export const useTableBillboard = async (storeId: Ref<string>) => {
     },
   })
 
-  const isFetchBillboardsLoading = computed(() => status.value === 'pending')
-  const billboards = computed(() => data.value.data)
+  const isFetchDataLoading = computed(() => status.value === 'pending')
+  const rows = computed(() => data.value.data)
   const meta = computed(() => data.value.meta)
   const pageTotal = computed(() => meta.value?.totalPages || 1)
 
@@ -85,8 +85,8 @@ export const useTableBillboard = async (storeId: Ref<string>) => {
     sort,
     page,
     pageCount,
-    isFetchBillboardsLoading,
-    billboards,
+    isFetchDataLoading,
+    rows,
     meta,
     pageTotal,
   }

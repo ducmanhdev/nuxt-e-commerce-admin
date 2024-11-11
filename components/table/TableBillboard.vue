@@ -22,8 +22,8 @@ const {
   sort,
   page,
   pageCount,
-  isFetchBillboardsLoading,
-  billboards,
+  isFetchDataLoading,
+  rows,
   pageTotal,
 } = await useTableBillboard(storeId)
 
@@ -77,9 +77,9 @@ const { handleDelete } = useBillboard()
     <UTable
       v-model="selectedRows"
       v-model:sort="sort"
-      :rows="billboards"
+      :rows="rows"
       :columns="columns"
-      :loading="isFetchBillboardsLoading"
+      :loading="isFetchDataLoading"
       sort-mode="manual"
       @select="handleSelectRow"
     >

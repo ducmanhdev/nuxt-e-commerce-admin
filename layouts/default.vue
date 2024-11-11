@@ -96,15 +96,15 @@ const links = computed(() => {
         },
       },
     },
-    // {
-    //   label: 'Sizes',
-    //   to: {
-    //     name: 'storeId-sizes',
-    //     params: {
-    //       storeId: currentStoreId.value,
-    //     },
-    //   },
-    // },
+    {
+      label: 'Sizes',
+      to: {
+        name: 'storeId-sizes',
+        params: {
+          storeId: currentStoreId.value,
+        },
+      },
+    },
     // {
     //   label: 'Colors',
     //   to: {
