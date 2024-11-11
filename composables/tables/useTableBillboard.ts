@@ -39,7 +39,10 @@ export const useTableBillboard = async (storeId: Ref<string>) => {
     column: string
     direction: 'asc' | 'desc'
   }
-  const sort = ref<Sort | undefined>(undefined)
+  const sort = ref<Sort | undefined>({
+    column: 'createdAt',
+    direction: 'desc',
+  })
   const page = ref(1)
   const pageCount = ref(10)
   const sortColumn = computed(() => sort.value?.column)
