@@ -105,15 +105,15 @@ const links = computed(() => {
         },
       },
     },
-    // {
-    //   label: 'Colors',
-    //   to: {
-    //     name: 'storeId-colors',
-    //     params: {
-    //       storeId: currentStoreId.value,
-    //     },
-    //   },
-    // },
+    {
+      label: 'Colors',
+      to: {
+        name: 'storeId-colors',
+        params: {
+          storeId: currentStoreId.value,
+        },
+      },
+    },
     // {
     //   label: 'Products',
     //   to: {
