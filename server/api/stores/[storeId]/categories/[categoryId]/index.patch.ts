@@ -3,14 +3,9 @@ import schema from '~/schemas/category.schema'
 
 export default defineEventHandler(async (event) => {
   const user = event.context.user
-  if (!user) {
-    throw createError({
-      statusCode: 401,
-      statusMessage: 'Unauthorized',
-    })
-  }
 
   const { storeId, categoryId } = getRouterParams(event)
+
   if (!storeId) {
     throw createError({
       statusCode: 404,
@@ -18,7 +13,14 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const category = await prisma.category.findFirst({
+  if (!categoryId) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'Category ID not found or invalid',
+    })
+  }
+
+  const category = await prisma.category.findFirstOrThrow({
     where: {
       id: categoryId,
       storeId: storeId,
@@ -27,13 +29,6 @@ export default defineEventHandler(async (event) => {
       },
     },
   })
-
-  if (!category) {
-    throw createError({
-      statusCode: 404,
-      statusMessage: 'Category not found or unauthorized access',
-    })
-  }
 
   const data = await readValidatedBody(event, schema.parse)
   return prisma.category.update({

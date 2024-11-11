@@ -3,14 +3,9 @@ import schema from '~/schemas/billboard.schema'
 
 export default defineEventHandler(async (event) => {
   const user = event.context.user
-  if (!user) {
-    throw createError({
-      statusCode: 401,
-      statusMessage: 'Unauthorized',
-    })
-  }
 
   const { storeId, billboardId } = getRouterParams(event)
+
   if (!storeId) {
     throw createError({
       statusCode: 404,
@@ -18,7 +13,14 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const billboard = await prisma.billboard.findFirst({
+  if (!billboardId) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'Billboard ID not found or invalid',
+    })
+  }
+
+  const billboard = await prisma.billboard.findFirstOrThrow({
     where: {
       id: billboardId,
       storeId: storeId,
@@ -27,13 +29,6 @@ export default defineEventHandler(async (event) => {
       },
     },
   })
-
-  if (!billboard) {
-    throw createError({
-      statusCode: 404,
-      statusMessage: 'Billboard not found or unauthorized access',
-    })
-  }
 
   const data = await readValidatedBody(event, schema.parse)
   return prisma.billboard.update({

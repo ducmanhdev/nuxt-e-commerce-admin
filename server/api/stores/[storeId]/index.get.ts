@@ -1,8 +1,9 @@
 import prisma from '~/lib/prisma'
 
 export default defineEventHandler(async (event) => {
-  const storeId = getRouterParam(event, 'storeId')
+  const user = event.context.user
 
+  const storeId = getRouterParam(event, 'storeId')
   if (!storeId) {
     throw createError({
       statusCode: 404,
@@ -10,18 +11,10 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const store = await prisma.store.findUnique({
+  return prisma.store.findFirstOrThrow({
     where: {
       id: storeId,
+      userId: user.id,
     },
   })
-
-  if (!store) {
-    throw createError({
-      statusCode: 404,
-      statusMessage: 'Store not found',
-    })
-  }
-
-  return store
 })
