@@ -106,7 +106,7 @@ const { handleDelete } = useSize()
               leading-icon="heroicons:trash"
               @click.stop="handleDelete({
                 storeId,
-                categoryId: row.id,
+                sizeId: row.id,
               })"
             />
           </UTooltip>

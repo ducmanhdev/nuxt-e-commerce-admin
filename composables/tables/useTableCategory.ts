@@ -73,7 +73,7 @@ export const useTableCategory = async (storeId: Ref<string>) => {
   return {
     selectedRows,
     handleSelectRow,
-    ORIGIN_COLUMNS: readonly(ORIGIN_COLUMNS),
+    ORIGIN_COLUMNS,
     selectedColumns,
     columns,
     search,
