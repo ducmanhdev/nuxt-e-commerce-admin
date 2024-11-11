@@ -67,7 +67,7 @@ export const useModalCategory = () => {
     handleHide()
   }
 
-  const billboardOptions = useState<{ name: string, value: string }[]>(() => [])
+  const billboardOptions = useState<{ label: string, value: string }[]>(() => [])
   const {
     status,
     execute: handleFetchBillboardOptions,
