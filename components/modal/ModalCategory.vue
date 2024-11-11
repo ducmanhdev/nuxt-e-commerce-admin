@@ -38,10 +38,11 @@ const {
               :loading="isFetchBillboardOptions"
               placeholder="Select a person"
               searchable
-              searchable-placeholder="Search by name"
-              option-attribute="name"
+              searchable-placeholder="Search..."
+              option-attribute="label"
+              value-attribute="value"
+              :search-attributes="['label']"
               by="value"
-              :search-attributes="['name']"
             />
           </UFormGroup>
           <div class="grid grid-cols-2 gap-2">

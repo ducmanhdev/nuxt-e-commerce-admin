@@ -75,7 +75,7 @@ export const useModalCategory = () => {
     key: 'billboardOptions',
     transform: (data) => {
       const transformedData = data.data.map(billboard => ({
-        name: billboard.name,
+        label: billboard.name,
         value: billboard.id,
       }))
       billboardOptions.value = transformedData
