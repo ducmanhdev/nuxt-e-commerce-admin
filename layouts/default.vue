@@ -44,17 +44,17 @@ const userDropdownItems = computed(() => {
     [
       {
         label: 'Profile',
-        icon: 'ion:person-circle',
+        icon: 'heroicons:user-circle',
       },
       {
         label: 'Settings',
-        icon: 'ion:ios-settings',
+        icon: 'heroicons:cog-6-tooth',
       },
     ],
     [
       {
         label: 'Sign Out',
-        icon: 'ion:log-out-outline',
+        icon: 'heroicons:arrow-right-start-on-rectangle',
         click: handleSignOut,
       },
     ],
