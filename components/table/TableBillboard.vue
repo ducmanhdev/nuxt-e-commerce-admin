@@ -11,6 +11,7 @@ const storeId = toRef(props, 'storeId')
 const {
   selectedRows,
   handleSelectRow,
+  ORIGIN_COLUMNS,
   selectedColumns,
   columns,
   search,
@@ -54,7 +55,7 @@ const { handleDelete } = useBillboard()
         <div class="flex gap-1.5 items-center">
           <USelectMenu
             v-model="selectedColumns"
-            :options="columns"
+            :options="ORIGIN_COLUMNS"
             multiple
           >
             <UButton
