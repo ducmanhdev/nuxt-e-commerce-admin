@@ -11,6 +11,11 @@ export default defineNuxtConfig({
     enabled: true,
   },
   runtimeConfig: {
+    cloudinary: {
+      cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+      apiKey: process.env.CLOUDINARY_API_KEY,
+      apiSecret: process.env.CLOUDINARY_API_SECRET,
+    },
     public: {
       baseUrl: process.env.BASE_URL || 'http://localhost:3000',
     },
@@ -64,8 +69,9 @@ export default defineNuxtConfig({
     },
   },
   cloudinary: {
+    cloudName: process.env.CLOUDINARY_CLOUD_NAME,
     apiKey: process.env.CLOUDINARY_API_KEY,
-    uploadPreset: 'image-present',
+    uploadPreset: process.env.CLOUDINARY_UPLOAD_PRESET,
   },
   notivue: {
     position: 'top-right',

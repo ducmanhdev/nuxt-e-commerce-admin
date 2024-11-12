@@ -30,8 +30,8 @@ const {
           </UFormGroup>
           <UFormGroup label="Image" name="imageUrl">
             <UploadImage
-              :initial-images="state.imageUrl ? [state.imageUrl] : []"
-              @change="imageUrls => state.imageUrl = imageUrls[0]"
+              :model-value="state.imageUrl ? [state.imageUrl] : []"
+              @update:model-value="imageUrls => state.imageUrl = imageUrls[0]"
             />
           </UFormGroup>
           <div class="grid grid-cols-2 gap-2">
