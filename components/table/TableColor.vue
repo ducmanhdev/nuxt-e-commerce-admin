@@ -27,7 +27,7 @@ const {
   pageTotal,
 } = await useTableColor(storeId)
 
-const { handleShow: handleShowModalEdit } = useModalSize()
+const { handleShow: handleShowModalEdit } = useModalColor()
 const { handleDelete } = useColor()
 </script>
 
