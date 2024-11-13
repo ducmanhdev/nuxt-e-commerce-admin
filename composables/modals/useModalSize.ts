@@ -47,16 +47,18 @@ export const useModalSize = () => {
       return
     }
 
-    sizeId.value
-      ? await handleUpdate({
-          storeId: storeId.value,
-          sizeId: sizeId.value,
-          payload: event.data,
-        })
-      : await handleCreate({
-          storeId: storeId.value,
-          payload: event.data,
-        })
+    if (sizeId.value) {
+      await handleUpdate({
+        storeId: storeId.value,
+        sizeId: sizeId.value,
+        payload: event.data,
+      })
+    } else {
+      await handleCreate({
+        storeId: storeId.value,
+        payload: event.data,
+      })
+    }
 
     handleHide()
   }

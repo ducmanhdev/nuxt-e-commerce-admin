@@ -34,12 +34,14 @@ export const useModalStore = () => {
 
   const isSubmitLoading = computed(() => isCreateLoading.value || isUpdateLoading.value)
   const handleSubmit = async (event: FormSubmitEvent<SchemaOutput>) => {
-    storeId.value
-      ? await handleUpdate({
-          storeId: storeId.value,
-          payload: event.data,
-        })
-      : await handleCreate(event.data)
+    if (storeId.value) {
+      await handleUpdate({
+        storeId: storeId.value,
+        payload: event.data,
+      })
+    } else {
+      await handleCreate(event.data)
+    }
 
     handleHide()
   }

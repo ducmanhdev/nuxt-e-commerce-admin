@@ -48,16 +48,18 @@ export const useModalCategory = () => {
       return
     }
 
-    categoryId.value
-      ? await handleUpdate({
-          storeId: storeId.value,
-          categoryId: categoryId.value,
-          payload: event.data,
-        })
-      : await handleCreate({
-          storeId: storeId.value,
-          payload: event.data,
-        })
+    if (categoryId.value) {
+      await handleUpdate({
+        storeId: storeId.value,
+        categoryId: categoryId.value,
+        payload: event.data,
+      })
+    } else {
+      await handleCreate({
+        storeId: storeId.value,
+        payload: event.data,
+      })
+    }
 
     handleHide()
   }

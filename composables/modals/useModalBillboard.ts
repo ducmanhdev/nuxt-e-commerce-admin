@@ -46,16 +46,18 @@ export const useModalBillboard = () => {
       return
     }
 
-    billboardId.value
-      ? await handleUpdate({
-          storeId: storeId.value,
-          billboardId: billboardId.value,
-          payload: event.data,
-        })
-      : await handleCreate({
-          storeId: storeId.value,
-          payload: event.data,
-        })
+    if (billboardId.value) {
+      await handleUpdate({
+        storeId: storeId.value,
+        billboardId: billboardId.value,
+        payload: event.data,
+      })
+    } else {
+      await handleCreate({
+        storeId: storeId.value,
+        payload: event.data,
+      })
+    }
 
     handleHide()
   }

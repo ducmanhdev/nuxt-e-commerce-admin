@@ -47,16 +47,18 @@ export const useModalColor = () => {
       return
     }
 
-    colorId.value
-      ? await handleUpdate({
-          storeId: storeId.value,
-          colorId: colorId.value,
-          payload: event.data,
-        })
-      : await handleCreate({
-          storeId: storeId.value,
-          payload: event.data,
-        })
+    if (colorId.value) {
+      await handleUpdate({
+        storeId: storeId.value,
+        colorId: colorId.value,
+        payload: event.data,
+      })
+    } else {
+      await handleCreate({
+        storeId: storeId.value,
+        payload: event.data,
+      })
+    }
 
     handleHide()
   }
