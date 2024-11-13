@@ -53,16 +53,8 @@ const { handleDelete } = useCategory()
           </template>
         </UInput>
         <div class="flex gap-1.5 items-center">
-          <USelectMenu
-            v-model="selectedColumns"
-            :options="ORIGIN_COLUMNS"
-            multiple
-          >
-            <UButton
-              leading-icon="heroicons:view-columns"
-              color="gray"
-              label="Columns"
-            />
+          <USelectMenu v-model="selectedColumns" :options="ORIGIN_COLUMNS" multiple>
+            <UButton leading-icon="heroicons:view-columns" color="gray" label="Columns" />
           </USelectMenu>
           <UButton
             leading-icon="i-heroicons-funnel"
@@ -94,20 +86,24 @@ const { handleDelete } = useCategory()
           <UTooltip text="Edit">
             <UButton
               leading-icon="heroicons:pencil-square"
-              @click.stop="handleShowModalEdit({
-                storeId,
-                ...row,
-              })"
+              @click.stop="
+                handleShowModalEdit({
+                  storeId,
+                  ...row,
+                })
+              "
             />
           </UTooltip>
           <UTooltip text="Delete">
             <UButton
               color="red"
               leading-icon="heroicons:trash"
-              @click.stop="handleDelete({
-                storeId,
-                categoryId: row.id,
-              })"
+              @click.stop="
+                handleDelete({
+                  storeId,
+                  categoryId: row.id,
+                })
+              "
             />
           </UTooltip>
         </div>
@@ -117,10 +113,7 @@ const { handleDelete } = useCategory()
       <div class="flex items-center justify-end gap-4">
         <div class="flex items-center gap-1.5">
           <span class="text-sm leading-5">Rows per page:</span>
-          <USelect
-            v-model.number="pageCount"
-            :options="ROWS_PER_PAGE_OPTIONS"
-          />
+          <USelect v-model.number="pageCount" :options="ROWS_PER_PAGE_OPTIONS" />
         </div>
         <UPagination v-model="page" :page-count="pageCount" :total="pageTotal" />
       </div>
@@ -128,6 +121,4 @@ const { handleDelete } = useCategory()
   </UCard>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

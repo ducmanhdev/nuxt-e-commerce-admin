@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const { isOpen, schema, state, handleHide, handleSubmit, isSubmitLoading, modalTitle, submitButtonLabel } = useModalStore()
+const { isOpen, schema, state, handleHide, handleSubmit, isSubmitLoading, modalTitle, submitButtonLabel } =
+  useModalStore()
 </script>
 
 <template>
@@ -9,13 +10,7 @@ const { isOpen, schema, state, handleHide, handleSubmit, isSubmitLoading, modalT
         {{ modalTitle }}
       </template>
       <div class="space-y-4">
-        <UForm
-          :schema="schema"
-          :state="state"
-          :validate-on="['submit']"
-          class="space-y-4"
-          @submit="handleSubmit"
-        >
+        <UForm :schema="schema" :state="state" :validate-on="['submit']" class="space-y-4" @submit="handleSubmit">
           <UFormGroup label="Name" name="name">
             <UInput v-model="state.name" />
           </UFormGroup>

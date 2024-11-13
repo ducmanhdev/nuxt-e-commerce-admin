@@ -7,8 +7,8 @@ export const useModalColor = () => {
   const storeId = useState<string | undefined>(() => undefined)
   const colorId = useState<string | undefined>(() => undefined)
 
-  const modalTitle = computed(() => colorId.value ? 'Update color' : 'Create color')
-  const submitButtonLabel = computed(() => colorId.value ? 'Update' : 'Create')
+  const modalTitle = computed(() => (colorId.value ? 'Update color' : 'Create color'))
+  const submitButtonLabel = computed(() => (colorId.value ? 'Update' : 'Create'))
 
   type SchemaInfer = z.infer<typeof schema>
   type SchemaOutput = z.output<typeof schema>
@@ -38,12 +38,7 @@ export const useModalColor = () => {
     isOpen.value = false
   }
 
-  const {
-    isCreateLoading,
-    handleCreate,
-    isUpdateLoading,
-    handleUpdate,
-  } = useColor()
+  const { isCreateLoading, handleCreate, isUpdateLoading, handleUpdate } = useColor()
 
   const isSubmitLoading = computed(() => isCreateLoading.value || isUpdateLoading.value)
   const handleSubmit = async (event: FormSubmitEvent<SchemaOutput>) => {
@@ -54,14 +49,14 @@ export const useModalColor = () => {
 
     colorId.value
       ? await handleUpdate({
-        storeId: storeId.value,
-        colorId: colorId.value,
-        payload: event.data,
-      })
+          storeId: storeId.value,
+          colorId: colorId.value,
+          payload: event.data,
+        })
       : await handleCreate({
-        storeId: storeId.value,
-        payload: event.data,
-      })
+          storeId: storeId.value,
+          payload: event.data,
+        })
 
     handleHide()
   }

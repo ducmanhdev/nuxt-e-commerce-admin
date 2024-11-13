@@ -13,14 +13,14 @@ const querySchema = z.object({
   search: z.string().optional(),
   page: z
     .string()
-    .transform(v => Number.parseFloat(v))
-    .refine(v => !Number.isNaN(v), { message: 'Not a valid number' })
+    .transform((v) => Number.parseFloat(v))
+    .refine((v) => !Number.isNaN(v), { message: 'Not a valid number' })
     .pipe(z.number().min(0))
     .default(DEFAULT_PAGE.toString()),
   limit: z
     .string()
-    .transform(v => Number.parseFloat(v))
-    .refine(v => !Number.isNaN(v), { message: 'Not a valid number' })
+    .transform((v) => Number.parseFloat(v))
+    .refine((v) => !Number.isNaN(v), { message: 'Not a valid number' })
     .pipe(z.number().min(0))
     .default(DEFAULT_LIMIT.toString()),
   sort: z.string().optional(),

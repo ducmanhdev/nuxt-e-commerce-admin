@@ -7,8 +7,8 @@ export const useModalCategory = () => {
   const storeId = useState<string | undefined>(() => undefined)
   const categoryId = useState<string | undefined>(() => undefined)
 
-  const modalTitle = computed(() => categoryId.value ? 'Update category' : 'Create category')
-  const submitButtonLabel = computed(() => categoryId.value ? 'Update' : 'Create')
+  const modalTitle = computed(() => (categoryId.value ? 'Update category' : 'Create category'))
+  const submitButtonLabel = computed(() => (categoryId.value ? 'Update' : 'Create'))
 
   type SchemaInfer = z.infer<typeof schema>
   type SchemaOutput = z.output<typeof schema>
@@ -39,12 +39,7 @@ export const useModalCategory = () => {
     isOpen.value = false
   }
 
-  const {
-    isCreateLoading,
-    handleCreate,
-    isUpdateLoading,
-    handleUpdate,
-  } = useCategory()
+  const { isCreateLoading, handleCreate, isUpdateLoading, handleUpdate } = useCategory()
 
   const isSubmitLoading = computed(() => isCreateLoading.value || isUpdateLoading.value)
   const handleSubmit = async (event: FormSubmitEvent<SchemaOutput>) => {
@@ -55,36 +50,36 @@ export const useModalCategory = () => {
 
     categoryId.value
       ? await handleUpdate({
-        storeId: storeId.value,
-        categoryId: categoryId.value,
-        payload: event.data,
-      })
+          storeId: storeId.value,
+          categoryId: categoryId.value,
+          payload: event.data,
+        })
       : await handleCreate({
-        storeId: storeId.value,
-        payload: event.data,
-      })
+          storeId: storeId.value,
+          payload: event.data,
+        })
 
     handleHide()
   }
 
-  const billboardOptions = useState<{ label: string, value: string }[]>(() => [])
-  const {
-    status,
-    execute: handleFetchBillboardOptions,
-  } = useLazyFetch(() => `/api/stores/${storeId.value}/billboards`, {
-    key: 'billboardOptions',
-    transform: (data) => {
-      const transformedData = data.data.map(billboard => ({
-        label: billboard.name,
-        value: billboard.id,
-      }))
-      billboardOptions.value = transformedData
-      return transformedData
+  const billboardOptions = useState<{ label: string; value: string }[]>(() => [])
+  const { status, execute: handleFetchBillboardOptions } = useLazyFetch(
+    () => `/api/stores/${storeId.value}/billboards`,
+    {
+      key: 'billboardOptions',
+      transform: (data) => {
+        const transformedData = data.data.map((billboard) => ({
+          label: billboard.name,
+          value: billboard.id,
+        }))
+        billboardOptions.value = transformedData
+        return transformedData
+      },
+      default: () => [],
+      immediate: false,
+      watch: false,
     },
-    default: () => ([]),
-    immediate: false,
-    watch: false,
-  })
+  )
   const isFetchBillboardOptions = computed(() => status.value === 'pending')
   return {
     isOpen,

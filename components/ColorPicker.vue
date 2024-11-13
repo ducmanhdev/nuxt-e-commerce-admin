@@ -7,24 +7,19 @@ const model = defineModel<string>()
 </script>
 
 <template>
-  <UInput
-    v-model="model"
-    class="color-picker"
-    type="color"
-    :disabled="disabled"
-  />
+  <UInput v-model="model" class="color-picker" type="color" :disabled="disabled" />
 </template>
 
 <style scoped>
 .color-picker :deep() {
-  input[type="color"] {
+  input[type='color'] {
     padding: 4px;
     min-height: 32px;
   }
-  input[type="color"]::-webkit-color-swatch-wrapper {
+  input[type='color']::-webkit-color-swatch-wrapper {
     padding: 0;
   }
-  input[type="color"]::-webkit-color-swatch {
+  input[type='color']::-webkit-color-swatch {
     border: none;
     border-radius: 4px;
   }

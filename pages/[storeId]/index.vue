@@ -1,8 +1,31 @@
 <script setup lang="ts">
-import { ArcElement, BarElement, CategoryScale, Chart as ChartJS, Colors, Legend, LinearScale, LineElement, PointElement, Title, Tooltip } from 'chart.js'
+import {
+  ArcElement,
+  BarElement,
+  CategoryScale,
+  Chart as ChartJS,
+  Colors,
+  Legend,
+  LinearScale,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip,
+} from 'chart.js'
 import { Bar, Line } from 'vue-chartjs'
 
-ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement, PointElement, LineElement, Colors)
+ChartJS.register(
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  ArcElement,
+  PointElement,
+  LineElement,
+  Colors,
+)
 
 useHead({
   title: 'Overview',
@@ -30,25 +53,30 @@ const chartOptions = {
 }
 const chartBarData = {
   labels: ['T-Shirt', 'Jeans', 'Sneakers', 'Handbag', 'Cap', 'T-Shirt', 'Jeans', 'Sneakers', 'Handbag', 'Cap'],
-  datasets: [{
-    label: 'Previous month',
-    data: [120, 85, 300, 150, 90, 120, 85, 300, 150, 90],
-    // backgroundColor: 'rgb(75, 192, 192)',
-  }, {
-    label: 'This month',
-    data: [120, 85, 300, 150, 90, 120, 85, 300, 150, 90],
-    // backgroundColor: 'rgba(75, 192, 192, 0.2)',
-  }],
+  datasets: [
+    {
+      label: 'Previous month',
+      data: [120, 85, 300, 150, 90, 120, 85, 300, 150, 90],
+      // backgroundColor: 'rgb(75, 192, 192)',
+    },
+    {
+      label: 'This month',
+      data: [120, 85, 300, 150, 90, 120, 85, 300, 150, 90],
+      // backgroundColor: 'rgba(75, 192, 192, 0.2)',
+    },
+  ],
 }
 const chartLineData = {
   labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-  datasets: [{
-    label: 'Monthly Revenue ($)',
-    data: [5000, 7000, 6000, 8000, 9000, 10000],
-    borderColor: 'rgb(75, 192, 192)',
-    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-    fill: true,
-  }],
+  datasets: [
+    {
+      label: 'Monthly Revenue ($)',
+      data: [5000, 7000, 6000, 8000, 9000, 10000],
+      borderColor: 'rgb(75, 192, 192)',
+      backgroundColor: 'rgba(75, 192, 192, 0.2)',
+      fill: true,
+    },
+  ],
 }
 </script>
 
@@ -56,17 +84,17 @@ const chartLineData = {
   <section class="py-4">
     <UContainer>
       <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-bold" @click="route.params.storeId = '1' ">
-          Overview
-        </h2>
+        <h2 class="text-xl font-bold" @click="route.params.storeId = '1'">Overview</h2>
         <div class="flex gap-2">
           <UButton
             leading-icon="heroicons:pencil-square"
             label="Edit"
-            @click="handleShow({
-              id: store!.id,
-              name: store!.name,
-            })"
+            @click="
+              handleShow({
+                id: store!.id,
+                name: store!.name,
+              })
+            "
           />
           <UButton
             leading-icon="heroicons:trash"
@@ -79,45 +107,31 @@ const chartLineData = {
       </div>
       <div class="grid grid-cols-4 gap-4">
         <UCard>
-          <template #header>
-            Title 1
-          </template>
+          <template #header> Title 1 </template>
           <Line :data="chartLineData" :options="chartOptions" />
         </UCard>
         <UCard>
-          <template #header>
-            Title 2
-          </template>
+          <template #header> Title 2 </template>
           <Line :data="chartLineData" :options="chartOptions" />
         </UCard>
         <UCard>
-          <template #header>
-            Title 3
-          </template>
+          <template #header> Title 3 </template>
           <Line :data="chartLineData" :options="chartOptions" />
         </UCard>
         <UCard>
-          <template #header>
-            Title 4
-          </template>
+          <template #header> Title 4 </template>
           <Line :data="chartLineData" :options="chartOptions" />
         </UCard>
         <UCard class="col-span-3 row-span-3">
-          <template #header>
-            Title 5
-          </template>
+          <template #header> Title 5 </template>
           <Bar :data="chartBarData" :options="chartOptions" />
         </UCard>
         <UCard>
-          <template #header>
-            Title 3
-          </template>
+          <template #header> Title 3 </template>
           <Line :data="chartLineData" :options="chartOptions" />
         </UCard>
         <UCard>
-          <template #header>
-            Title 4
-          </template>
+          <template #header> Title 4 </template>
           <Line :data="chartLineData" :options="chartOptions" />
         </UCard>
       </div>

@@ -10,13 +10,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const {
-    where,
-    pagination,
-    ordering,
-    page,
-    limit,
-  } = await handleQuery(event, {
+  const { where, pagination, ordering, page, limit } = await handleQuery(event, {
     searchField: 'name',
   })
 

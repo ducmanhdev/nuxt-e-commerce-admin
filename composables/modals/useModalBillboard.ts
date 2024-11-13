@@ -7,8 +7,8 @@ export const useModalBillboard = () => {
   const storeId = useState<string | undefined>(() => undefined)
   const billboardId = useState<string | undefined>(() => undefined)
 
-  const modalTitle = computed(() => billboardId.value ? 'Update billboard' : 'Create billboard')
-  const submitButtonLabel = computed(() => billboardId.value ? 'Update' : 'Create')
+  const modalTitle = computed(() => (billboardId.value ? 'Update billboard' : 'Create billboard'))
+  const submitButtonLabel = computed(() => (billboardId.value ? 'Update' : 'Create'))
 
   type SchemaInfer = z.infer<typeof schema>
   type SchemaOutput = z.output<typeof schema>
@@ -37,12 +37,7 @@ export const useModalBillboard = () => {
     isOpen.value = false
   }
 
-  const {
-    isCreateLoading,
-    handleCreate,
-    isUpdateLoading,
-    handleUpdate,
-  } = useBillboard()
+  const { isCreateLoading, handleCreate, isUpdateLoading, handleUpdate } = useBillboard()
 
   const isSubmitLoading = computed(() => isCreateLoading.value || isUpdateLoading.value)
   const handleSubmit = async (event: FormSubmitEvent<SchemaOutput>) => {
@@ -53,14 +48,14 @@ export const useModalBillboard = () => {
 
     billboardId.value
       ? await handleUpdate({
-        storeId: storeId.value,
-        billboardId: billboardId.value,
-        payload: event.data,
-      })
+          storeId: storeId.value,
+          billboardId: billboardId.value,
+          payload: event.data,
+        })
       : await handleCreate({
-        storeId: storeId.value,
-        payload: event.data,
-      })
+          storeId: storeId.value,
+          payload: event.data,
+        })
 
     handleHide()
   }

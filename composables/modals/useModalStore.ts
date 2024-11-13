@@ -6,8 +6,8 @@ export const useModalStore = () => {
   const isOpen = useState(() => false)
   const storeId = useState<string | undefined>(() => undefined)
 
-  const modalTitle = computed(() => storeId.value ? 'Update store' : 'Create store')
-  const submitButtonLabel = computed(() => storeId.value ? 'Update' : 'Create')
+  const modalTitle = computed(() => (storeId.value ? 'Update store' : 'Create store'))
+  const submitButtonLabel = computed(() => (storeId.value ? 'Update' : 'Create'))
 
   type SchemaInfer = z.infer<typeof schema>
   type SchemaOutput = z.output<typeof schema>
@@ -30,20 +30,15 @@ export const useModalStore = () => {
     isOpen.value = false
   }
 
-  const {
-    handleCreate,
-    isCreateLoading,
-    handleUpdate,
-    isUpdateLoading,
-  } = useStore()
+  const { handleCreate, isCreateLoading, handleUpdate, isUpdateLoading } = useStore()
 
   const isSubmitLoading = computed(() => isCreateLoading.value || isUpdateLoading.value)
   const handleSubmit = async (event: FormSubmitEvent<SchemaOutput>) => {
     storeId.value
       ? await handleUpdate({
-        storeId: storeId.value,
-        payload: event.data,
-      })
+          storeId: storeId.value,
+          payload: event.data,
+        })
       : await handleCreate(event.data)
 
     handleHide()

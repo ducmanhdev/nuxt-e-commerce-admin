@@ -1,14 +1,6 @@
 <script setup lang="ts">
-const {
-  isOpen,
-  schema,
-  state,
-  handleHide,
-  handleSubmit,
-  isSubmitLoading,
-  modalTitle,
-  submitButtonLabel,
-} = useModalSize()
+const { isOpen, schema, state, handleHide, handleSubmit, isSubmitLoading, modalTitle, submitButtonLabel } =
+  useModalSize()
 </script>
 
 <template>
@@ -18,13 +10,7 @@ const {
         {{ modalTitle }}
       </template>
       <div class="space-y-4">
-        <UForm
-          :schema="schema"
-          :state="state"
-          :validate-on="['submit']"
-          class="space-y-4"
-          @submit="handleSubmit"
-        >
+        <UForm :schema="schema" :state="state" :validate-on="['submit']" class="space-y-4" @submit="handleSubmit">
           <UFormGroup label="Name" name="name">
             <UInput v-model="state.name" />
           </UFormGroup>

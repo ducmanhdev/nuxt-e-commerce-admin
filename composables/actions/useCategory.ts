@@ -18,12 +18,10 @@ export const useCategory = () => {
       })
       push.success('Created successfully')
       await refreshNuxtData('categories')
-    }
-    catch (error: any) {
+    } catch (error: any) {
       console.log(error)
       push.error(error.statusMessage || 'Something went wrong')
-    }
-    finally {
+    } finally {
       isCreateLoading.value = false
     }
   }
@@ -43,12 +41,10 @@ export const useCategory = () => {
       })
       push.success('Updated successfully')
       await refreshNuxtData('categories')
-    }
-    catch (error: any) {
+    } catch (error: any) {
       console.log(error)
       push.error(error.statusMessage || 'Something went wrong')
-    }
-    finally {
+    } finally {
       isUpdateLoading.value = false
     }
   }
@@ -59,26 +55,25 @@ export const useCategory = () => {
   }
   const { handleShow: handleShowConfirm } = useModalConfirm()
   const isDeleteLoading = ref(false)
-  const handleDelete = ({ storeId, categoryId }: DeleteArgs) => handleShowConfirm({
-    message: 'Are you absolutely to delete this item?',
-    callbackFn: async () => {
-      try {
-        isDeleteLoading.value = true
-        await $fetch(`/api/stores/${storeId}/categories/${categoryId}`, {
-          method: 'DELETE',
-        })
-        push.success('Deleted successfully')
-        await refreshNuxtData('categories')
-      }
-      catch (error: any) {
-        console.log(error)
-        push.error(error.statusMessage || 'Something went wrong')
-      }
-      finally {
-        isDeleteLoading.value = false
-      }
-    },
-  })
+  const handleDelete = ({ storeId, categoryId }: DeleteArgs) =>
+    handleShowConfirm({
+      message: 'Are you absolutely to delete this item?',
+      callbackFn: async () => {
+        try {
+          isDeleteLoading.value = true
+          await $fetch(`/api/stores/${storeId}/categories/${categoryId}`, {
+            method: 'DELETE',
+          })
+          push.success('Deleted successfully')
+          await refreshNuxtData('categories')
+        } catch (error: any) {
+          console.log(error)
+          push.error(error.statusMessage || 'Something went wrong')
+        } finally {
+          isDeleteLoading.value = false
+        }
+      },
+    })
 
   return {
     isCreateLoading,

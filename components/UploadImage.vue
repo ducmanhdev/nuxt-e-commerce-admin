@@ -3,10 +3,7 @@ type Props = {
   multiple?: boolean
   uploadButtonLabel?: string
 }
-const {
-  multiple = false,
-  uploadButtonLabel = 'Upload images',
-} = defineProps<Props>()
+const { multiple = false, uploadButtonLabel = 'Upload images' } = defineProps<Props>()
 
 const imageUrls = defineModel<string[]>({ default: () => [] })
 
@@ -14,10 +11,7 @@ const onSuccess = (result: any) => {
   if (result.event !== 'success') {
     return
   }
-  imageUrls.value = [
-    ...(imageUrls.value || []),
-    result.info.secure_url,
-  ]
+  imageUrls.value = [...(imageUrls.value || []), result.info.secure_url]
 }
 const onError = () => {}
 const onResult = () => {}
@@ -25,7 +19,7 @@ const onResult = () => {}
 const deleteImagesQueue = ref<string[]>([])
 const handleTempDeleteImages = (urls: string[]) => {
   deleteImagesQueue.value.push(...urls)
-  imageUrls.value = (imageUrls.value || []).filter(url => !urls.includes(url))
+  imageUrls.value = (imageUrls.value || []).filter((url) => !urls.includes(url))
 }
 
 const extractPublicId = (url: string) => {
@@ -33,7 +27,7 @@ const extractPublicId = (url: string) => {
   return match ? match[1] : null
 }
 const handleDeleteImages = async (urls: string[]) => {
-  const publicIds = urls.map(url => extractPublicId(url))
+  const publicIds = urls.map((url) => extractPublicId(url))
   try {
     $fetch('/api/cloudinary/delete-images', {
       method: 'DELETE',
@@ -41,8 +35,7 @@ const handleDeleteImages = async (urls: string[]) => {
         publicIds,
       },
     })
-  }
-  catch (error: any) {
+  } catch (error: any) {
     console.log(error)
   }
 }
@@ -59,24 +52,17 @@ onBeforeUnmount(() => {
       :class="{
         'grid-cols-4': multiple,
         'grid-cols-1': !multiple,
-      }
-      "
+      }"
     >
       <div v-for="url in imageUrls" :key="url" class="relative">
         <UButton
           icon="heroicons:x-circle"
-          color="gray" variant="link"
+          color="gray"
+          variant="link"
           class="absolute top-0 right-0"
           @click="handleTempDeleteImages([url])"
         />
-        <CldImage
-          :src="url"
-          width="100%"
-          height="100%"
-          aspect-ratio="1"
-          crop="fill"
-          :alt="url"
-        />
+        <CldImage :src="url" width="100%" height="100%" aspect-ratio="1" crop="fill" :alt="url" />
       </div>
     </div>
     <CldUploadWidget
@@ -105,6 +91,4 @@ onBeforeUnmount(() => {
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

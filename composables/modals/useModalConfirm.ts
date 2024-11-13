@@ -24,8 +24,7 @@ export const useModalConfirm = () => {
     try {
       isConfirmLoading.value = true
       await callbackFn.value?.()
-    }
-    finally {
+    } finally {
       isConfirmLoading.value = false
       handleHide()
     }

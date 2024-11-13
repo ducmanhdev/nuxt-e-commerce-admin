@@ -1,14 +1,6 @@
 <script setup lang="ts">
-const {
-  isOpen,
-  schema,
-  state,
-  handleHide,
-  handleSubmit,
-  isSubmitLoading,
-  modalTitle,
-  submitButtonLabel,
-} = useModalBillboard()
+const { isOpen, schema, state, handleHide, handleSubmit, isSubmitLoading, modalTitle, submitButtonLabel } =
+  useModalBillboard()
 </script>
 
 <template>
@@ -18,20 +10,14 @@ const {
         {{ modalTitle }}
       </template>
       <div class="space-y-4">
-        <UForm
-          :schema="schema"
-          :state="state"
-          :validate-on="['submit']"
-          class="space-y-4"
-          @submit="handleSubmit"
-        >
+        <UForm :schema="schema" :state="state" :validate-on="['submit']" class="space-y-4" @submit="handleSubmit">
           <UFormGroup label="Name" name="name">
             <UInput v-model="state.name" />
           </UFormGroup>
           <UFormGroup label="Image" name="imageUrl">
             <UploadImage
               :model-value="state.imageUrl ? [state.imageUrl] : []"
-              @update:model-value="imageUrls => state.imageUrl = imageUrls[0]"
+              @update:model-value="(imageUrls) => (state.imageUrl = imageUrls[0])"
             />
           </UFormGroup>
           <div class="grid grid-cols-2 gap-2">

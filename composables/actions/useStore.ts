@@ -15,12 +15,10 @@ export const useStore = () => {
       })
       await refreshNuxtData('stores')
       await navigateTo(`/${store.id}`)
-    }
-    catch (error: any) {
+    } catch (error: any) {
       console.log(error)
       push.error(error.statusMessage || 'Something went wrong')
-    }
-    finally {
+    } finally {
       isCreateLoading.value = false
     }
   }
@@ -40,38 +38,35 @@ export const useStore = () => {
       push.success('Updated successfully')
       await refreshNuxtData('stores')
       await refreshNuxtData('store')
-    }
-    catch (error: any) {
+    } catch (error: any) {
       console.log(error)
       push.error(error.statusMessage || 'Something went wrong')
-    }
-    finally {
+    } finally {
       isUpdateLoading.value = false
     }
   }
 
   const { handleShow: handleShowConfirm } = useModalConfirm()
   const isDeleteLoading = useState(() => false)
-  const handleDelete = (storeId: string) => handleShowConfirm({
-    message: 'Are you absolutely to delete this item?',
-    callbackFn: async () => {
-      try {
-        isDeleteLoading.value = true
-        await $fetch(`/api/stores/${storeId}`, {
-          method: 'DELETE',
-        })
-        push.success('Deleted successfully')
-        await navigateTo('/')
-      }
-      catch (error: any) {
-        console.log(error)
-        push.error(error.statusMessage || 'Something went wrong')
-      }
-      finally {
-        isDeleteLoading.value = false
-      }
-    },
-  })
+  const handleDelete = (storeId: string) =>
+    handleShowConfirm({
+      message: 'Are you absolutely to delete this item?',
+      callbackFn: async () => {
+        try {
+          isDeleteLoading.value = true
+          await $fetch(`/api/stores/${storeId}`, {
+            method: 'DELETE',
+          })
+          push.success('Deleted successfully')
+          await navigateTo('/')
+        } catch (error: any) {
+          console.log(error)
+          push.error(error.statusMessage || 'Something went wrong')
+        } finally {
+          isDeleteLoading.value = false
+        }
+      },
+    })
 
   return {
     isCreateLoading,

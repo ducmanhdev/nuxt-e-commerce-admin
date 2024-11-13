@@ -8,8 +8,7 @@ export default defineEventHandler(async (event) => {
       throw new Error()
     }
     event.context.user = user
-  }
-  catch {
+  } catch {
     throw createError({
       statusCode: 401,
       statusMessage: 'Unauthorized',

@@ -12,12 +12,16 @@ definePageMeta({
 })
 
 const schema = z.object({
-  email: z.string({
-    required_error: 'Please enter your email address',
-  }).email('Invalid email'),
-  password: z.string({
-    required_error: 'Please enter your password',
-  }).min(8, 'Must be at least 8 characters'),
+  email: z
+    .string({
+      required_error: 'Please enter your email address',
+    })
+    .email('Invalid email'),
+  password: z
+    .string({
+      required_error: 'Please enter your password',
+    })
+    .min(8, 'Must be at least 8 characters'),
 })
 
 type Schema = z.output<typeof schema>
@@ -57,9 +61,7 @@ const signInWithGithub = async () => {
 <template>
   <div class="h-screen flex justify-center items-center">
     <UCard class="w-full max-w-[500px]">
-      <template #header>
-        Sign In
-      </template>
+      <template #header> Sign In </template>
       <div class="space-y-4">
         <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
           <UFormGroup label="Email" name="email">
@@ -70,13 +72,9 @@ const signInWithGithub = async () => {
           </UFormGroup>
           <div class="text-center">
             Already have an account?
-            <RouterLink to="/sign-in" class="text-primary text-underline">
-              Sign In
-            </RouterLink>
+            <RouterLink to="/sign-in" class="text-primary text-underline"> Sign In </RouterLink>
           </div>
-          <UButton type="submit" block>
-            Submit
-          </UButton>
+          <UButton type="submit" block> Submit </UButton>
         </UForm>
         <UDivider label="OR" />
         <UButton
@@ -86,17 +84,10 @@ const signInWithGithub = async () => {
           block
           @click="signInWithGithub"
         />
-        <UButton
-          color="black"
-          label="Sign in with Google"
-          icon="i-simple-icons-google"
-          block
-        />
+        <UButton color="black" label="Sign in with Google" icon="i-simple-icons-google" block />
       </div>
     </UCard>
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -8,8 +8,8 @@ export default defineEventHandler(async (event) => {
     api_secret: runtimeConfig.cloudinary.apiSecret,
   })
 
-  const { publicIds } = await readBody(event) as { publicIds: string[] }
-  const deletePromises = publicIds.map(id => cloudinary.uploader.destroy(id))
+  const { publicIds } = (await readBody(event)) as { publicIds: string[] }
+  const deletePromises = publicIds.map((id) => cloudinary.uploader.destroy(id))
   const results = await Promise.all(deletePromises)
   return { results }
 })

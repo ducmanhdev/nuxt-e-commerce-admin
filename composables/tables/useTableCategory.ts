@@ -4,12 +4,12 @@ import type { Size } from '~/types'
 export const useTableCategory = async (storeId: Ref<string>) => {
   const selectedRows = ref<Size[]>([])
   const handleSelectRow = (row: Size) => {
-    const index = selectedRows.value.findIndex(item => item.id === row.id)
+    const index = selectedRows.value.findIndex((item) => item.id === row.id)
     if (index === -1) {
       selectedRows.value = [...selectedRows.value, row]
       return
     }
-    selectedRows.value = selectedRows.value.filter(item => item.id !== row.id)
+    selectedRows.value = selectedRows.value.filter((item) => item.id !== row.id)
   }
 
   const ORIGIN_COLUMNS = [
@@ -19,7 +19,7 @@ export const useTableCategory = async (storeId: Ref<string>) => {
     { key: 'actions', label: 'Actions', class: 'text-end', disabled: true },
   ]
   const selectedColumns = ref(ORIGIN_COLUMNS)
-  const columns = computed(() => ORIGIN_COLUMNS.filter(COLUMNS => selectedColumns.value.includes(COLUMNS)))
+  const columns = computed(() => ORIGIN_COLUMNS.filter((COLUMNS) => selectedColumns.value.includes(COLUMNS)))
 
   const search = ref('')
   const searchDebounced = refDebounced(search, 300)
@@ -47,10 +47,7 @@ export const useTableCategory = async (storeId: Ref<string>) => {
   const sortColumn = computed(() => sort.value?.column)
   const sortDirection = computed(() => sort.value?.direction)
 
-  const {
-    data,
-    status,
-  } = await useFetch(() => `/api/stores/${storeId.value}/categories`, {
+  const { data, status } = await useFetch(() => `/api/stores/${storeId.value}/categories`, {
     key: 'categories',
     default: () => ({
       data: [],

@@ -2,18 +2,21 @@
 const route = useRoute()
 
 const currentStoreId = ref<string | undefined>(route.params.storeId as string)
-watch(() => route.params.storeId, (newStoreId) => {
-  if (newStoreId) {
-    currentStoreId.value = route.params.storeId as string
-  }
-})
+watch(
+  () => route.params.storeId,
+  (newStoreId) => {
+    if (newStoreId) {
+      currentStoreId.value = route.params.storeId as string
+    }
+  },
+)
 
 const { data: stores, status } = useLazyFetch('/api/stores', {
   key: 'stores',
 })
 const isFetchingStores = computed(() => status.value === 'pending')
 const storesOptions = computed(() => {
-  return (stores.value || []).map(item => ({
+  return (stores.value || []).map((item) => ({
     id: item.id,
     label: item.name,
   }))
@@ -173,10 +176,7 @@ const links = computed(() => {
               @click="handleToggleMode"
             />
           </UTooltip>
-          <UDropdown
-            :items="userDropdownItems"
-            :popper="{ placement: 'bottom-start' }"
-          >
+          <UDropdown :items="userDropdownItems" :popper="{ placement: 'bottom-start' }">
             <UAvatar
               size="xs"
               :src="user?.user_metadata?.avatar_url"

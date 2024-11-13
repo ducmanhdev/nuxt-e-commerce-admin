@@ -3,9 +3,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   ssr: false,
   imports: {
-    dirs: [
-      'composables/**',
-    ],
+    dirs: ['composables/**'],
   },
   devtools: {
     enabled: true,
@@ -31,11 +29,7 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     'dayjs-nuxt',
   ],
-  css: [
-    'notivue/notification.css',
-    'notivue/animations.css',
-    'notivue/notification-progress.css',
-  ],
+  css: ['notivue/notification.css', 'notivue/animations.css', 'notivue/notification-progress.css'],
   supabase: {
     redirect: true,
     redirectOptions: {
@@ -82,11 +76,6 @@ export default defineNuxtConfig({
       global: {
         duration: 3000,
       },
-    },
-  },
-  eslint: {
-    config: {
-      standalone: false,
     },
   },
   dayjs: {

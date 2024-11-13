@@ -13,14 +13,8 @@ const { handleShow } = useModalCategory()
   <section class="py-4">
     <UContainer>
       <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-bold">
-          Categories
-        </h2>
-        <UButton
-          leading-icon="heroicons:plus"
-          label="Create"
-          @click="handleShow({ storeId })"
-        />
+        <h2 class="text-xl font-bold">Categories</h2>
+        <UButton leading-icon="heroicons:plus" label="Create" @click="handleShow({ storeId })" />
       </div>
     </UContainer>
 
