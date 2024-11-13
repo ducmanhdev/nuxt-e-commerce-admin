@@ -1,9 +1,9 @@
 import { refDebounced } from '@vueuse/core'
-import type { Size } from '~/types'
+import type { Color } from '~/types'
 
 export const useTableColor = async (storeId: Ref<string>) => {
-  const selectedRows = ref<Size[]>([])
-  const handleSelectRow = (row: Size) => {
+  const selectedRows = ref<Color[]>([])
+  const handleSelectRow = (row: Color) => {
     const index = selectedRows.value.findIndex((item) => item.id === row.id)
     if (index === -1) {
       selectedRows.value = [...selectedRows.value, row]
