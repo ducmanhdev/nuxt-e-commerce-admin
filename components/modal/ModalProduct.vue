@@ -1,43 +1,9 @@
 <script setup lang="ts">
-const { isOpen, schema, state, handleHide, handleSubmit, isSubmitLoading, modalTitle, submitButtonLabel, storeId } =
+const { isOpen, schema, state, handleHide, handleSubmit, isSubmitLoading, modalTitle, submitButtonLabel } =
   useModalProduct()
 
-const { data, status } = await useAsyncData(
-  'modalProductOptions',
-  async () => {
-    const [categories, sizes, colors] = await Promise.all([
-      $fetch(`/api/stores/${storeId.value}/categories`),
-      $fetch(`/api/stores/${storeId.value}/sizes`),
-      $fetch(`/api/stores/${storeId.value}/colors`),
-    ])
-    const [categoryOptions, sizeOptions, colorOptions] = [categories, sizes, colors].map(
-      ({ data = [] }: { data: { id: string; name: string }[] }) => {
-        return data.map((item) => ({
-          label: item.name,
-          value: item.id,
-        }))
-      },
-    )
-
-    return {
-      categoryOptions,
-      sizeOptions,
-      colorOptions,
-    }
-  },
-  {
-    lazy: true,
-    server: false,
-    immediate: false,
-    watch: [storeId],
-    default: () => ({
-      categoryOptions: [],
-      sizeOptions: [],
-      colorOptions: [],
-    }),
-  },
-)
-const isFetchingData = computed(() => status.value === 'pending')
+const options = {};
+const isFetchingOptions = false;
 </script>
 
 <template>
@@ -56,9 +22,9 @@ const isFetchingData = computed(() => status.value === 'pending')
           </UFormGroup>
           <UFormGroup label="Category" name="categoryId">
             <USelectMenu
-              v-model="state.categoryId"
+              v-model="options.categoryId"
               :options="data?.categoryOptions"
-              :loading="isFetchingData"
+              :loading="isFetchingOptions"
               placeholder="Select category"
               searchable
               searchable-placeholder="Search..."
@@ -69,8 +35,8 @@ const isFetchingData = computed(() => status.value === 'pending')
           <UFormGroup label="Size" name="sizeId">
             <USelectMenu
               v-model="state.sizeId"
-              :options="data?.sizeOptions"
-              :loading="isFetchingData"
+              :options="options?.sizeOptions"
+              :loading="isFetchingOptions"
               placeholder="Select size"
               searchable
               searchable-placeholder="Search..."
@@ -81,8 +47,8 @@ const isFetchingData = computed(() => status.value === 'pending')
           <UFormGroup label="Color" name="colorId">
             <USelectMenu
               v-model="state.colorId"
-              :options="data?.colorOptions"
-              :loading="isFetchingData"
+              :options="options?.colorOptions"
+              :loading="isFetchingOptions"
               placeholder="Select color"
               searchable
               searchable-placeholder="Search..."

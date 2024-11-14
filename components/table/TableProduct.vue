@@ -1,8 +1,18 @@
 <script setup lang="ts">
 import { DATE_TIME_FORMAT, ROWS_PER_PAGE_OPTIONS } from '~/constants'
 
+type Reference = {
+  label: string
+  value: string
+}
+type References = {
+  categoryReference: Reference[]
+  sizeReference: Reference[]
+  colorReference: Reference[]
+}
 type Props = {
   storeId: string
+  references: References
 }
 const props = defineProps<Props>()
 const dayjs = useDayjs()
@@ -27,7 +37,7 @@ const {
   pageTotal,
 } = await useTableProduct(storeId)
 
-const { handleShow: handleShowModalEdit } = useModalSize()
+const { handleShow: handleShowModalEdit } = useModalProduct()
 const { handleDelete } = useProduct()
 </script>
 
@@ -75,6 +85,18 @@ const { handleDelete } = useProduct()
       sort-mode="manual"
       @select="handleSelectRow"
     >
+      <template #price-data="{ row }">
+        {{ formatMoney(row.price) }}
+      </template>
+      <template #categoryId-data="{ row }">
+        {{ references.categoryReference.find((reference) => reference.value === row.categoryId)?.label }}
+      </template>
+      <template #sizeId-data="{ row }">
+        {{ references.sizeReference.find((reference) => reference.value === row.sizeId)?.label }}
+      </template>
+      <template #colorId-data="{ row }">
+        {{ references.colorReference.find((reference) => reference.value === row.colorId)?.label }}
+      </template>
       <template #createdAt-data="{ row }">
         {{ dayjs(row.createdAt).format(DATE_TIME_FORMAT) }}
       </template>
