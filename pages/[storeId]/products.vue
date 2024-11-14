@@ -1,27 +1,27 @@
 <script setup lang="ts">
 useHead({
-  title: 'Billboards',
+  title: 'Products',
 })
 
 const route = useRoute()
 const storeId = computed(() => route.params.storeId as string)
 
-const { handleShow } = useModalBillboard()
+const { handleShow } = useModalProduct()
 </script>
 
 <template>
   <section class="py-4">
     <UContainer>
       <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-bold">Billboards</h2>
+        <h2 class="text-xl font-bold">Products</h2>
         <UButton leading-icon="heroicons:plus" label="Create" @click="handleShow({ storeId })" />
       </div>
     </UContainer>
 
-    <TableBillboard :store-id="storeId" />
+    <TableProduct :store-id="storeId" />
 
     <Teleport to="body">
-      <ModalBillboard />
+      <ModalProduct />
     </Teleport>
   </section>
 </template>

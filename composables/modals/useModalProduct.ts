@@ -1,21 +1,25 @@
 import type { FormSubmitEvent } from '#ui/types'
 import type { z } from 'zod'
-import schema from '~/schemas/category.schema'
+import schema from '~/schemas/product.schema'
 
-export const useModalCategory = () => {
+export const useModalProduct = () => {
   const isOpen = useState(() => false)
   const storeId = useState<string | undefined>(() => undefined)
-  const categoryId = useState<string | undefined>(() => undefined)
+  const productId = useState<string | undefined>(() => undefined)
 
-  const modalTitle = computed(() => (categoryId.value ? 'Update category' : 'Create category'))
-  const submitButtonLabel = computed(() => (categoryId.value ? 'Update' : 'Create'))
+  const modalTitle = computed(() => (productId.value ? 'Update product' : 'Create product'))
+  const submitButtonLabel = computed(() => (productId.value ? 'Update' : 'Create'))
 
   type SchemaInfer = z.infer<typeof schema>
   type SchemaOutput = z.output<typeof schema>
 
   const DEFAULT_STATE: SchemaInfer = {
     name: '',
-    billboardId: '',
+    sizeId: '',
+    categoryId: '',
+    colorId: '',
+    price: 0,
+    isArchived: false,
   }
 
   const state = useState(() => ({ ...DEFAULT_STATE }))
@@ -27,7 +31,7 @@ export const useModalCategory = () => {
 
   const handleShow = ({ storeId: inputStoreId, id, ...args }: ShowArgs) => {
     storeId.value = inputStoreId ?? undefined
-    categoryId.value = id ?? undefined
+    productId.value = id ?? undefined
 
     Object.assign(state.value, { ...DEFAULT_STATE, ...args })
 
@@ -38,7 +42,7 @@ export const useModalCategory = () => {
     isOpen.value = false
   }
 
-  const { isCreateLoading, handleCreate, isUpdateLoading, handleUpdate } = useCategory()
+  const { isCreateLoading, handleCreate, isUpdateLoading, handleUpdate } = useProduct()
 
   const isSubmitLoading = computed(() => isCreateLoading.value || isUpdateLoading.value)
   const handleSubmit = async (event: FormSubmitEvent<SchemaOutput>) => {
@@ -47,10 +51,10 @@ export const useModalCategory = () => {
       return
     }
 
-    if (categoryId.value) {
+    if (productId.value) {
       await handleUpdate({
         storeId: storeId.value,
-        categoryId: categoryId.value,
+        productId: productId.value,
         payload: event.data,
       })
     } else {

@@ -1,17 +1,21 @@
 <script setup lang="ts">
-const {
-  isOpen,
-  schema,
-  state,
-  handleHide,
-  handleSubmit,
-  isSubmitLoading,
-  modalTitle,
-  submitButtonLabel,
+const { isOpen, schema, state, handleHide, handleSubmit, isSubmitLoading, modalTitle, submitButtonLabel, storeId } =
+  useModalCategory()
 
-  billboardOptions,
-  isFetchBillboardOptions,
-} = useModalCategory()
+const { data, status } = useFetch(() => `/api/stores/${storeId.value}/billboards`, {
+  key: 'billboardOptions',
+  transform: ({ data }) => {
+    return data.map((billboard) => ({
+      label: billboard.name,
+      value: billboard.id,
+    }))
+  },
+  default: () => [],
+  immediate: false,
+  server: false,
+  lazy: true,
+})
+const isFetchingData = computed(() => status.value === 'pending')
 </script>
 
 <template>
@@ -28,15 +32,13 @@ const {
           <UFormGroup label="Billboard" name="billboardId">
             <USelectMenu
               v-model="state.billboardId"
-              :options="billboardOptions"
-              :loading="isFetchBillboardOptions"
+              :options="data"
+              :loading="isFetchingData"
               placeholder="Select a person"
               searchable
               searchable-placeholder="Search..."
-              option-attribute="label"
-              value-attribute="value"
               :search-attributes="['label']"
-              by="value"
+              value-attribute="value"
             />
           </UFormGroup>
           <div class="grid grid-cols-2 gap-2">

@@ -21,7 +21,7 @@ const { handleShow } = useModalColor()
     <TableColor :store-id="storeId" />
 
     <Teleport to="body">
-      <LazyModalColor />
+      <ModalColor />
     </Teleport>
   </section>
 </template>

@@ -21,7 +21,7 @@ const { handleShow } = useModalSize()
     <TableSize :store-id="storeId" />
 
     <Teleport to="body">
-      <LazyModalSize />
+      <ModalSize />
     </Teleport>
   </section>
 </template>

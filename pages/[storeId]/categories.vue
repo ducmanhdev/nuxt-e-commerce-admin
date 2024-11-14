@@ -21,7 +21,7 @@ const { handleShow } = useModalCategory()
     <TableCategory :store-id="storeId" />
 
     <Teleport to="body">
-      <LazyModalCategory />
+      <ModalCategory />
     </Teleport>
   </section>
 </template>

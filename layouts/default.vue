@@ -117,15 +117,15 @@ const links = computed(() => {
         },
       },
     },
-    // {
-    //   label: 'Products',
-    //   to: {
-    //     name: 'storeId-products',
-    //     params: {
-    //       storeId: currentStoreId.value,
-    //     },
-    //   },
-    // },
+    {
+      label: 'Products',
+      to: {
+        name: 'storeId-products',
+        params: {
+          storeId: currentStoreId.value,
+        },
+      },
+    },
     // {
     //   label: 'Settings',
     //   to: {
@@ -192,7 +192,7 @@ const links = computed(() => {
     </div>
 
     <Teleport to="body">
-      <LazyModalStore />
+      <ModalStore />
     </Teleport>
   </div>
 </template>
