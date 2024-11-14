@@ -7,6 +7,15 @@ const route = useRoute()
 const storeId = computed(() => route.params.storeId as string)
 
 const { handleShow } = useModalCategory()
+
+const { data } = await useFetch(() => `/api/stores/${storeId.value}/reference/billboards`, {
+  key: 'billboardReference',
+  server: false,
+  lazy: true,
+})
+watchEffect(() => {
+  console.log(data.value?.data)
+})
 </script>
 
 <template>
