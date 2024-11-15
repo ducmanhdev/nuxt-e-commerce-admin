@@ -52,17 +52,7 @@ export default defineNuxtConfig({
       Montserrat: true,
     },
   },
-  tailwindcss: {
-    config: {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Montserrat', 'sans-serif'],
-          },
-        },
-      },
-    },
-  },
+  tailwindcss: {},
   cloudinary: {
     cloudName: process.env.CLOUDINARY_CLOUD_NAME,
     apiKey: process.env.CLOUDINARY_API_KEY,
