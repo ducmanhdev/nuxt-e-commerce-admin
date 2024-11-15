@@ -22,13 +22,13 @@ export default defineNuxtConfig({
     '@nuxtjs/supabase',
     '@nuxt/ui',
     '@prisma/nuxt',
-    '@nuxtjs/google-fonts',
     '@nuxt/eslint',
     '@nuxtjs/cloudinary',
     'notivue/nuxt',
     '@vueuse/nuxt',
     'dayjs-nuxt',
     '@pinia/nuxt',
+    '@nuxt/fonts',
   ],
   css: ['notivue/notification.css', 'notivue/animations.css', 'notivue/notification-progress.css'],
   supabase: {
@@ -47,10 +47,8 @@ export default defineNuxtConfig({
   colorMode: {
     preference: 'system',
   },
-  googleFonts: {
-    families: {
-      Montserrat: true,
-    },
+  fonts: {
+    provider: 'google',
   },
   tailwindcss: {},
   cloudinary: {
