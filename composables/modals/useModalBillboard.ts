@@ -37,7 +37,7 @@ export const useModalBillboard = () => {
     isOpen.value = false
   }
 
-  const { isCreateLoading, handleCreate, isUpdateLoading, handleUpdate } = useBillboard()
+  const { isCreateLoading, handleCreate, isUpdateLoading, handleUpdate } = useActionBillboard()
 
   const isSubmitLoading = computed(() => isCreateLoading.value || isUpdateLoading.value)
   const handleSubmit = async (event: FormSubmitEvent<SchemaOutput>) => {

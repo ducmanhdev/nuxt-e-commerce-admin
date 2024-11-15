@@ -8,13 +8,11 @@ const storeId = computed(() => route.params.storeId as string)
 
 const { handleShow } = useModalCategory()
 
-const { data } = await useFetch(() => `/api/stores/${storeId.value}/reference/billboards`, {
-  key: 'billboardReference',
-  server: false,
-  lazy: true,
-})
+const { handleFetchData } = useReferenceBillboard()
 watchEffect(() => {
-  console.log(data.value?.data)
+  if (storeId.value) {
+    handleFetchData(storeId.value)
+  }
 })
 </script>
 
@@ -25,9 +23,9 @@ watchEffect(() => {
         <h2 class="text-xl font-bold">Categories</h2>
         <UButton leading-icon="heroicons:plus" label="Create" @click="handleShow({ storeId })" />
       </div>
-    </UContainer>
 
-    <TableCategory :store-id="storeId" />
+      <TableCategory :store-id="storeId" />
+    </UContainer>
 
     <Teleport to="body">
       <ModalCategory />

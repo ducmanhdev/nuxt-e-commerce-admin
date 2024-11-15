@@ -44,7 +44,7 @@ if (!store.value) {
   })
 }
 
-const { isDeleteLoading, handleDelete } = useStore()
+const { isDeleteLoading, handleDelete } = useActionStore()
 const { handleShow } = useModalStore()
 
 const chartOptions = {

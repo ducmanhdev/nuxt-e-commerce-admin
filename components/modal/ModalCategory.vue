@@ -1,21 +1,7 @@
 <script setup lang="ts">
-const { isOpen, schema, state, handleHide, handleSubmit, isSubmitLoading, modalTitle, submitButtonLabel, storeId } =
+const { isOpen, schema, state, handleHide, handleSubmit, isSubmitLoading, modalTitle, submitButtonLabel } =
   useModalCategory()
-
-const { data, status } = useFetch(() => `/api/stores/${storeId.value}/billboards`, {
-  key: 'billboardOptions',
-  transform: ({ data }) => {
-    return data.map((billboard) => ({
-      label: billboard.name,
-      value: billboard.id,
-    }))
-  },
-  default: () => [],
-  immediate: false,
-  server: false,
-  lazy: true,
-})
-const isFetchingData = computed(() => status.value === 'pending')
+const { isFetching: isFetchingBillboards, data: billboards } = useReferenceBillboard()
 </script>
 
 <template>
@@ -32,13 +18,14 @@ const isFetchingData = computed(() => status.value === 'pending')
           <UFormGroup label="Billboard" name="billboardId">
             <USelectMenu
               v-model="state.billboardId"
-              :options="data"
-              :loading="isFetchingData"
-              placeholder="Select a person"
+              :options="billboards"
+              :loading="isFetchingBillboards"
+              placeholder="Select a billboard"
               searchable
               searchable-placeholder="Search..."
-              :search-attributes="['label']"
-              value-attribute="value"
+              :search-attributes="['name']"
+              option-attribute="name"
+              value-attribute="id"
             />
           </UFormGroup>
           <div class="grid grid-cols-2 gap-2">

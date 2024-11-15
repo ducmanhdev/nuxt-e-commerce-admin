@@ -16,9 +16,9 @@ const { handleShow } = useModalSize()
         <h2 class="text-xl font-bold">Sizes</h2>
         <UButton leading-icon="heroicons:plus" label="Create" @click="handleShow({ storeId })" />
       </div>
-    </UContainer>
 
-    <TableSize :store-id="storeId" />
+      <TableSize :store-id="storeId" />
+    </UContainer>
 
     <Teleport to="body">
       <ModalSize />

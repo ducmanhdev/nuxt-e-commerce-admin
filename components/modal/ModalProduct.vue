@@ -1,9 +1,6 @@
 <script setup lang="ts">
 const { isOpen, schema, state, handleHide, handleSubmit, isSubmitLoading, modalTitle, submitButtonLabel } =
   useModalProduct()
-
-const options = {};
-const isFetchingOptions = false;
 </script>
 
 <template>
@@ -22,9 +19,8 @@ const isFetchingOptions = false;
           </UFormGroup>
           <UFormGroup label="Category" name="categoryId">
             <USelectMenu
-              v-model="options.categoryId"
-              :options="data?.categoryOptions"
-              :loading="isFetchingOptions"
+              v-model="state.categoryId"
+              :options="[]"
               placeholder="Select category"
               searchable
               searchable-placeholder="Search..."
@@ -35,8 +31,7 @@ const isFetchingOptions = false;
           <UFormGroup label="Size" name="sizeId">
             <USelectMenu
               v-model="state.sizeId"
-              :options="options?.sizeOptions"
-              :loading="isFetchingOptions"
+              :options="[]"
               placeholder="Select size"
               searchable
               searchable-placeholder="Search..."
@@ -47,8 +42,7 @@ const isFetchingOptions = false;
           <UFormGroup label="Color" name="colorId">
             <USelectMenu
               v-model="state.colorId"
-              :options="options?.colorOptions"
-              :loading="isFetchingOptions"
+              :options="[]"
               placeholder="Select color"
               searchable
               searchable-placeholder="Search..."

@@ -3,5 +3,5 @@
 @tailwind utilities;
 
 body {
-    @apply font-montserrat;
+    @apply font-montserrat bg-white text-gray-900 dark:bg-gray-900 dark:text-white/95;
 }

@@ -141,7 +141,9 @@ const links = computed(() => {
 
 <template>
   <div>
-    <header class="py-4 shadow border-b border-transparent dark:border-gray-800">
+    <header
+      class="py-4 shadow border-b border-transparent dark:border-gray-800 bg-white text-gray-900 dark:bg-gray-900 dark:text-white/95 sticky top-0"
+    >
       <UContainer class="flex items-center justify-between">
         <div class="flex items-center gap-2">
           <USelectMenu

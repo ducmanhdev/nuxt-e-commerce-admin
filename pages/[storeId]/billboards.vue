@@ -16,9 +16,9 @@ const { handleShow } = useModalBillboard()
         <h2 class="text-xl font-bold">Billboards</h2>
         <UButton leading-icon="heroicons:plus" label="Create" @click="handleShow({ storeId })" />
       </div>
-    </UContainer>
 
-    <TableBillboard :store-id="storeId" />
+      <TableBillboard :store-id="storeId" />
+    </UContainer>
 
     <Teleport to="body">
       <ModalBillboard />

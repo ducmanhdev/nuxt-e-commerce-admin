@@ -16,9 +16,9 @@ const { handleShow } = useModalColor()
         <h2 class="text-xl font-bold">Colors</h2>
         <UButton leading-icon="heroicons:plus" label="Create" @click="handleShow({ storeId })" />
       </div>
-    </UContainer>
 
-    <TableColor :store-id="storeId" />
+      <TableColor :store-id="storeId" />
+    </UContainer>
 
     <Teleport to="body">
       <ModalColor />

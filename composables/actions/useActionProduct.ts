@@ -1,7 +1,7 @@
 import type { z } from 'zod'
-import type schema from '~/schemas/color.schema'
+import type schema from '~/schemas/product.schema'
 
-export const useColor = () => {
+export const useActionProduct = () => {
   type Schema = z.infer<typeof schema>
 
   type CreateArgs = {
@@ -12,12 +12,12 @@ export const useColor = () => {
   const handleCreate = async ({ storeId, payload }: CreateArgs) => {
     try {
       isCreateLoading.value = true
-      await $fetch(`/api/stores/${storeId}/colors`, {
+      await $fetch(`/api/stores/${storeId}/products`, {
         method: 'POST',
         body: payload,
       })
       push.success('Created successfully')
-      await refreshNuxtData('colors')
+      await refreshNuxtData('products')
     } catch (error: any) {
       console.log(error)
       push.error(error.statusMessage || 'Something went wrong')
@@ -28,19 +28,19 @@ export const useColor = () => {
 
   type UpdateArgs = {
     storeId: string
-    colorId: string
+    productId: string
     payload: Schema
   }
   const isUpdateLoading = ref(false)
-  const handleUpdate = async ({ storeId, colorId, payload }: UpdateArgs) => {
+  const handleUpdate = async ({ storeId, productId, payload }: UpdateArgs) => {
     try {
       isUpdateLoading.value = true
-      await $fetch(`/api/stores/${storeId}/colors/${colorId}`, {
+      await $fetch(`/api/stores/${storeId}/products/${productId}`, {
         method: 'PATCH',
         body: payload,
       })
       push.success('Updated successfully')
-      await refreshNuxtData('colors')
+      await refreshNuxtData('products')
     } catch (error: any) {
       console.log(error)
       push.error(error.statusMessage || 'Something went wrong')
@@ -51,21 +51,21 @@ export const useColor = () => {
 
   type DeleteArgs = {
     storeId: string
-    colorId: string
+    productId: string
   }
   const { handleShow: handleShowConfirm } = useModalConfirm()
   const isDeleteLoading = ref(false)
-  const handleDelete = ({ storeId, colorId }: DeleteArgs) =>
+  const handleDelete = ({ storeId, productId }: DeleteArgs) =>
     handleShowConfirm({
       message: 'Are you absolutely to delete this item?',
       callbackFn: async () => {
         try {
           isDeleteLoading.value = true
-          await $fetch(`/api/stores/${storeId}/colors/${colorId}`, {
+          await $fetch(`/api/stores/${storeId}/products/${productId}`, {
             method: 'DELETE',
           })
           push.success('Deleted successfully')
-          await refreshNuxtData('colors')
+          await refreshNuxtData('products')
         } catch (error: any) {
           console.log(error)
           push.error(error.statusMessage || 'Something went wrong')

@@ -42,7 +42,7 @@ export const useModalProduct = () => {
     isOpen.value = false
   }
 
-  const { isCreateLoading, handleCreate, isUpdateLoading, handleUpdate } = useProduct()
+  const { isCreateLoading, handleCreate, isUpdateLoading, handleUpdate } = useActionProduct()
 
   const isSubmitLoading = computed(() => isCreateLoading.value || isUpdateLoading.value)
   const handleSubmit = async (event: FormSubmitEvent<SchemaOutput>) => {
