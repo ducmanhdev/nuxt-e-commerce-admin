@@ -11,10 +11,14 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  return prisma.store.findFirstOrThrow({
+  const store = await prisma.store.findFirstOrThrow({
     where: {
       id: storeId,
       userId: user.id,
     },
   })
+
+  return {
+    data: store,
+  }
 })

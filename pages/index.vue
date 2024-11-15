@@ -2,27 +2,54 @@
 useHead({
   title: 'Home',
 })
-
-const { data: stores } = await useFetch('/api/stores', {
+const { data, status } = await useFetch('/api/stores', {
   key: 'stores',
 })
 
-if (stores.value?.length) {
-  await navigateTo(`/${stores.value[0].id}`)
+type Option = {
+  id: string
+  label: string
+  to: string
 }
-
+const stores = computed<Option[]>(() => {
+  return (data.value?.data || []).map((store) => ({
+    label: store.name,
+    id: store.id,
+    to: `${store.id}`,
+  }))
+})
+const isFetchingStores = computed(() => status.value === 'pending')
+const handleSelect = (option: Option) => navigateTo(option.to)
 const { handleShow: handleModalStore } = useModalStore()
 </script>
 
 <template>
   <div class="py-4 h-full">
     <UContainer>
-      <UCard>
-        <div class="text-center space-y-4">
-          <UIcon name="heroicons:information-circle" size="50px" />
-          <p class="text-2xl font-bold">No stores found</p>
-          <UButton label="Create store" leading-icon="heroicons:pencil-square" @click="handleModalStore" />
-        </div>
+      <UCard
+        class="w-[900px] max-w-full mx-auto"
+        :ui="{
+          body: {
+            padding: '!p-0',
+          },
+        }"
+      >
+        <template #header> Select store</template>
+        <UCommandPalette
+          nullable
+          :loading="isFetchingStores"
+          :autoselect="false"
+          :groups="[{ key: 'stores', commands: stores }]"
+          @update:model-value="handleSelect"
+        >
+          <template #empty-state>
+            <div class="text-center space-y-4 p-6">
+              <UIcon name="heroicons:magnifying-glass-20-solid" size="28px" />
+              <p>We couldn't find any items.</p>
+              <UButton label="Create store" leading-icon="heroicons:plus" @click="handleModalStore" />
+            </div>
+          </template>
+        </UCommandPalette>
       </UCard>
     </UContainer>
   </div>

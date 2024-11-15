@@ -30,11 +30,17 @@ export default defineEventHandler(async (event) => {
     },
   })
 
-  const data = await readValidatedBody(event, schema.parse)
-  return prisma.category.update({
+  const body = await readValidatedBody(event, schema.parse)
+  const updatedCategory = await prisma.category.update({
     where: {
       id: category.id,
     },
-    data,
+    data: {
+      ...body,
+    },
   })
+
+  return {
+    data: updatedCategory,
+  }
 })

@@ -19,11 +19,15 @@ export default defineEventHandler(async (event) => {
     },
   })
 
-  const data = await readValidatedBody(event, schema.parse)
-  return prisma.color.create({
+  const body = await readValidatedBody(event, schema.parse)
+  const createdColor = prisma.color.create({
     data: {
       storeId: store.id,
-      ...data,
+      ...body,
     },
   })
+
+  return {
+    data: createdColor,
+  }
 })

@@ -30,11 +30,17 @@ export default defineEventHandler(async (event) => {
     },
   })
 
-  const data = await readValidatedBody(event, schema.parse)
-  return prisma.size.update({
+  const body = await readValidatedBody(event, schema.parse)
+  const updatedSize = await prisma.size.update({
     where: {
       id: size.id,
     },
-    data,
+    data: {
+      ...body,
+    },
   })
+
+  return {
+    data: updatedSize,
+  }
 })

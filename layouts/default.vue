@@ -1,19 +1,11 @@
 <script setup lang="ts">
 const route = useRoute()
+const storeId = computed(() => route.params.storeId as string)
 
-const currentStoreId = ref<string | undefined>(route.params.storeId as string)
-watch(
-  () => route.params.storeId,
-  (newStoreId) => {
-    if (newStoreId) {
-      currentStoreId.value = route.params.storeId as string
-    }
-  },
-)
-
-const { data: stores, status } = useLazyFetch('/api/stores', {
+const { data, status } = await useLazyFetch('/api/stores', {
   key: 'stores',
 })
+const stores = computed(() => data.value?.data || [])
 const isFetchingStores = computed(() => status.value === 'pending')
 const storesOptions = computed(() => {
   return (stores.value || []).map((item) => ({
@@ -29,6 +21,7 @@ const handleSelectStore = async (newStoreId: string) => {
       ...route.params,
       storeId: newStoreId,
     },
+    replace: true,
   })
 }
 
@@ -68,16 +61,13 @@ const { isDark, handleToggleMode } = useThemeMode()
 const { handleShow: handleModalStore } = useModalStore()
 
 const links = computed(() => {
-  if (!currentStoreId.value) {
-    return []
-  }
   return [
     {
       label: 'Overview',
       to: {
         name: 'storeId',
         params: {
-          storeId: currentStoreId.value,
+          storeId: storeId.value,
         },
       },
     },
@@ -86,7 +76,7 @@ const links = computed(() => {
       to: {
         name: 'storeId-billboards',
         params: {
-          storeId: currentStoreId.value,
+          storeId: storeId.value,
         },
       },
     },
@@ -95,7 +85,7 @@ const links = computed(() => {
       to: {
         name: 'storeId-categories',
         params: {
-          storeId: currentStoreId.value,
+          storeId: storeId.value,
         },
       },
     },
@@ -104,7 +94,7 @@ const links = computed(() => {
       to: {
         name: 'storeId-sizes',
         params: {
-          storeId: currentStoreId.value,
+          storeId: storeId.value,
         },
       },
     },
@@ -113,7 +103,7 @@ const links = computed(() => {
       to: {
         name: 'storeId-colors',
         params: {
-          storeId: currentStoreId.value,
+          storeId: storeId.value,
         },
       },
     },
@@ -122,7 +112,7 @@ const links = computed(() => {
       to: {
         name: 'storeId-products',
         params: {
-          storeId: currentStoreId.value,
+          storeId: storeId.value,
         },
       },
     },
@@ -142,12 +132,12 @@ const links = computed(() => {
 <template>
   <div>
     <header
-      class="py-4 shadow border-b border-transparent dark:border-gray-800 bg-white text-gray-900 dark:bg-gray-900 dark:text-white/95 sticky top-0"
+      class="py-4 shadow border-b border-transparent dark:border-gray-800 bg-white text-gray-900 dark:bg-gray-900 dark:text-white/95 sticky top-0 z-50"
     >
       <UContainer class="flex items-center justify-between">
-        <div class="flex items-center gap-2">
+        <div v-if="storeId" class="flex items-center gap-2">
           <USelectMenu
-            v-model="currentStoreId"
+            v-model="storeId"
             :options="storesOptions"
             :loading="isFetchingStores"
             leading-icon="heroicons:building-storefront"
@@ -169,7 +159,7 @@ const links = computed(() => {
           </UTooltip>
           <UHorizontalNavigation :links="links" />
         </div>
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 ml-auto">
           <UTooltip text="Toggle dark mode">
             <UButton
               :icon="isDark ? 'heroicons:moon-solid' : 'heroicons:sun-solid'"

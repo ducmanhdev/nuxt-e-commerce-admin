@@ -19,11 +19,15 @@ export default defineEventHandler(async (event) => {
     },
   })
 
-  const data = await readValidatedBody(event, schema.parse)
-  return prisma.billboard.create({
+  const body = await readValidatedBody(event, schema.parse)
+  const createdBillboard = await prisma.billboard.create({
     data: {
       storeId: store.id,
-      ...data,
+      ...body,
     },
   })
+
+  return {
+    data: createdBillboard,
+  }
 })

@@ -3,7 +3,7 @@ import prisma from '~/lib/prisma'
 export default defineEventHandler(async (event) => {
   const user = event.context.user
 
-  return prisma.store.findMany({
+  const stores = await prisma.store.findMany({
     where: {
       userId: user.id,
     },
@@ -11,4 +11,8 @@ export default defineEventHandler(async (event) => {
       createdAt: 'desc',
     },
   })
+
+  return {
+    data: stores,
+  }
 })

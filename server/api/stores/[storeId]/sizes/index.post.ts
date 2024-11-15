@@ -19,11 +19,15 @@ export default defineEventHandler(async (event) => {
     },
   })
 
-  const data = await readValidatedBody(event, schema.parse)
-  return prisma.size.create({
+  const body = await readValidatedBody(event, schema.parse)
+  const createdSize = await prisma.size.create({
     data: {
       storeId: store.id,
-      ...data,
+      ...body,
     },
   })
+
+  return {
+    data: createdSize,
+  }
 })

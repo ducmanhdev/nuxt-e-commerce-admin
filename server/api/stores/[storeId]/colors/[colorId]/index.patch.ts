@@ -30,11 +30,17 @@ export default defineEventHandler(async (event) => {
     },
   })
 
-  const data = await readValidatedBody(event, schema.parse)
-  return prisma.color.update({
+  const body = await readValidatedBody(event, schema.parse)
+  const updatedColor = await prisma.color.update({
     where: {
       id: color.id,
     },
-    data,
+    data: {
+      ...body,
+    },
   })
+
+  return {
+    data: updatedColor,
+  }
 })
