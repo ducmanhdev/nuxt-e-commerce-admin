@@ -29,6 +29,20 @@ export default defineEventHandler(async (event) => {
     },
   })
 
+  const categoriesCount = await prisma.category.count({
+    where: {
+      billboardId: billboard.id,
+    },
+  })
+
+  if (categoriesCount > 0) {
+    throw createError({
+      statusCode: 404,
+      statusMessage:
+        'This billboard has associated categories. Please delete all related categories before deleting the billboard.',
+    })
+  }
+
   await prisma.billboard.delete({
     where: {
       id: billboard.id,

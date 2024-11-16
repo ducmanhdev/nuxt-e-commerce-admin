@@ -29,6 +29,20 @@ export default defineEventHandler(async (event) => {
     },
   })
 
+  const productsCount = await prisma.product.count({
+    where: {
+      colorId: color.id,
+    },
+  })
+
+  if (productsCount > 0) {
+    throw createError({
+      statusCode: 404,
+      statusMessage:
+        'This color has associated products. Please delete all related products before deleting the color.',
+    })
+  }
+
   await prisma.color.delete({
     where: {
       id: color.id,
