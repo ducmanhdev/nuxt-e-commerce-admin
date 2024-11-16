@@ -2,24 +2,27 @@
 useHead({
   title: 'Home',
 })
+
 const { data, status } = await useFetch('/api/stores', {
   key: 'stores',
+  lazy: true,
+  server: false,
 })
 
 type Option = {
   id: string
   label: string
-  to: string
 }
 const stores = computed<Option[]>(() => {
   return (data.value?.data || []).map((store) => ({
     label: store.name,
     id: store.id,
-    to: `${store.id}`,
   }))
 })
 const isFetchingStores = computed(() => status.value === 'pending')
-const handleSelect = (option: Option) => navigateTo(option.to)
+const handleSelect = async (option: Option) => {
+  await navigateTo(option.id)
+}
 const { handleShow: handleModalStore } = useModalStore()
 </script>
 
@@ -40,11 +43,14 @@ const { handleShow: handleModalStore } = useModalStore()
           :loading="isFetchingStores"
           :autoselect="false"
           :groups="[{ key: 'stores', commands: stores }]"
+          :fuse="{
+            fuseOptions: { keys: ['label'] },
+          }"
           @update:model-value="handleSelect"
         >
           <template #empty-state>
             <div class="text-center space-y-4 p-6">
-              <UIcon name="heroicons:magnifying-glass-20-solid" size="28px" />
+              <UIcon name="heroicons:magnifying-glass-20-solid" size="28" />
               <p>We couldn't find any items.</p>
               <UButton label="Create store" leading-icon="heroicons:plus" @click="handleModalStore" />
             </div>

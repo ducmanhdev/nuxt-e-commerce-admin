@@ -2,13 +2,16 @@
 const route = useRoute()
 const storeId = computed(() => route.params.storeId as string)
 
-const { data, status } = await useLazyFetch('/api/stores', {
+const { data, status } = await useFetch('/api/stores', {
   key: 'stores',
+  lazy: true,
+  server: false,
 })
+
 const stores = computed(() => data.value?.data || [])
 const isFetchingStores = computed(() => status.value === 'pending')
 const storesOptions = computed(() => {
-  return (stores.value || []).map((item) => ({
+  return stores.value.map((item) => ({
     id: item.id,
     label: item.name,
   }))
@@ -64,67 +67,32 @@ const links = computed(() => {
   return [
     {
       label: 'Overview',
-      to: {
-        name: 'storeId',
-        params: {
-          storeId: storeId.value,
-        },
-      },
+      to: `/${storeId.value}`,
     },
     {
       label: 'Billboards',
-      to: {
-        name: 'storeId-billboards',
-        params: {
-          storeId: storeId.value,
-        },
-      },
+      to: `/${storeId.value}/billboards`,
     },
     {
       label: 'Categories',
-      to: {
-        name: 'storeId-categories',
-        params: {
-          storeId: storeId.value,
-        },
-      },
+      to: `/${storeId.value}/categories`,
     },
     {
       label: 'Sizes',
-      to: {
-        name: 'storeId-sizes',
-        params: {
-          storeId: storeId.value,
-        },
-      },
+      to: `/${storeId.value}/sizes`,
     },
     {
       label: 'Colors',
-      to: {
-        name: 'storeId-colors',
-        params: {
-          storeId: storeId.value,
-        },
-      },
+      to: `/${storeId.value}/colors`,
     },
     {
       label: 'Products',
-      to: {
-        name: 'storeId-products',
-        params: {
-          storeId: storeId.value,
-        },
-      },
+      to: `/${storeId.value}/products`,
     },
-    // {
-    //   label: 'Settings',
-    //   to: {
-    //     name: 'storeId-settings',
-    //     params: {
-    //       storeId: currentStoreId.value,
-    //     },
-    //   },
-    // },
+    {
+      label: 'Settings',
+      to: `/${storeId.value}/settings`,
+    },
   ]
 })
 </script>
@@ -134,7 +102,10 @@ const links = computed(() => {
     <header
       class="py-4 shadow border-b border-transparent dark:border-gray-800 bg-white text-gray-900 dark:bg-gray-900 dark:text-white/95 sticky top-0 z-50"
     >
-      <UContainer class="flex items-center justify-between">
+      <UContainer class="flex items-center">
+        <UTooltip text="Return home">
+          <UButton icon="heroicons:home-20-solid" to="/" class="mr-4" />
+        </UTooltip>
         <div v-if="storeId" class="flex items-center gap-2">
           <USelectMenu
             v-model="storeId"
@@ -144,7 +115,9 @@ const links = computed(() => {
             searchable
             value-attribute="id"
             option-attribute="label"
-            :ui="{ wrapper: 'w-[160px] shrink-0' }"
+            :ui="{
+              wrapper: 'w-[160px] shrink-0',
+            }"
             @change="handleSelectStore"
           />
           <UTooltip text="Create new store">
@@ -157,7 +130,7 @@ const links = computed(() => {
               @click="handleModalStore"
             />
           </UTooltip>
-          <UHorizontalNavigation :links="links" />
+          <UHorizontalNavigation :links="links" :ui="{ base: 'py-1.5' }" />
         </div>
         <div class="flex items-center gap-2 ml-auto">
           <UTooltip text="Toggle dark mode">

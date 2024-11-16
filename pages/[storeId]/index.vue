@@ -32,10 +32,10 @@ useHead({
 })
 
 const route = useRoute()
-const { data: store } = await useFetch(() => `/api/stores/${route.params.storeId}`, {
+const { data } = await useFetch(() => `/api/stores/${route.params.storeId}`, {
   key: 'store',
 })
-
+const store = computed(() => data.value?.data)
 if (!store.value) {
   throw createError({
     statusCode: 404,
@@ -84,7 +84,7 @@ const chartLineData = {
   <section class="py-4">
     <UContainer>
       <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-bold" @click="route.params.storeId = '1'">Overview</h2>
+        <h2 class="text-xl font-bold">Overview</h2>
         <div class="flex gap-2">
           <UButton
             leading-icon="heroicons:pencil-square"
@@ -107,31 +107,31 @@ const chartLineData = {
       </div>
       <div class="grid grid-cols-4 gap-4">
         <UCard>
-          <template #header> Title 1 </template>
+          <template #header> Title 1</template>
           <Line :data="chartLineData" :options="chartOptions" />
         </UCard>
         <UCard>
-          <template #header> Title 2 </template>
+          <template #header> Title 2</template>
           <Line :data="chartLineData" :options="chartOptions" />
         </UCard>
         <UCard>
-          <template #header> Title 3 </template>
+          <template #header> Title 3</template>
           <Line :data="chartLineData" :options="chartOptions" />
         </UCard>
         <UCard>
-          <template #header> Title 4 </template>
+          <template #header> Title 4</template>
           <Line :data="chartLineData" :options="chartOptions" />
         </UCard>
         <UCard class="col-span-3 row-span-3">
-          <template #header> Title 5 </template>
+          <template #header> Title 5</template>
           <Bar :data="chartBarData" :options="chartOptions" />
         </UCard>
         <UCard>
-          <template #header> Title 3 </template>
+          <template #header> Title 3</template>
           <Line :data="chartLineData" :options="chartOptions" />
         </UCard>
         <UCard>
-          <template #header> Title 4 </template>
+          <template #header> Title 4</template>
           <Line :data="chartLineData" :options="chartOptions" />
         </UCard>
       </div>

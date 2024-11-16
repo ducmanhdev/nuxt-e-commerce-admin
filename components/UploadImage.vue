@@ -1,12 +1,24 @@
 <script setup lang="ts">
 type Props = {
   multiple?: boolean
-  uploadButtonLabel?: string
+  allowedFormats?: string[]
+  maxFileSize?: number
 }
-const { multiple = false, uploadButtonLabel = 'Upload images' } = defineProps<Props>()
+
+const { multiple = false, allowedFormats = ['png', 'jpeg', 'jpg'], maxFileSize = 5500000 } = defineProps<Props>()
+
+const bytesToMB = (bytes: number) => {
+  if (bytes < 0) {
+    throw new Error('Input must be a non-negative number.')
+  }
+  const MB = bytes / (1024 * 1024)
+  return MB.toFixed(2)
+}
+const uploadDescription = computed(
+  () => allowedFormats.join(', ').toUpperCase() + ' up to ' + bytesToMB(maxFileSize) + 'MB',
+)
 
 const imageUrls = defineModel<string[]>({ default: () => [] })
-
 const onSuccess = (result: any) => {
   if (result.event !== 'success') {
     return
@@ -69,24 +81,27 @@ onBeforeUnmount(() => {
       v-slot="{ open, isLoading }"
       signature-endpoint="/api/cloudinary/sign"
       :options="{
-        multiple,
+        multiple: multiple,
         sources: ['local', 'url'],
-        clientAllowedFormats: ['png', 'jpeg', 'jpg'],
+        clientAllowedFormats: allowedFormats,
         autoMinimize: true,
+        maxFileSize: maxFileSize,
       }"
       @success="onSuccess"
       @error="onError"
       @result="onResult"
     >
       <UButton
-        type="button"
-        block
+        class="flex flex-col items-center justify-center space-y-2 h-64"
         variant="outline"
-        :label="uploadButtonLabel"
-        leading-icon="heroicons:cloud-arrow-up"
-        :loading="isLoading"
+        block
+        :disabled="isLoading"
         @click="open"
-      />
+      >
+        <UIcon :name="isLoading ? 'heroicons:loading' : 'heroicons:arrow-up-tray'" size="28" />
+        <span class="text-gray-500">Click to upload {{ multiple ? 'images' : 'an image' }} here</span>
+        <span class="text-xs text-gray-400">{{ uploadDescription }}</span>
+      </UButton>
     </CldUploadWidget>
   </div>
 </template>
