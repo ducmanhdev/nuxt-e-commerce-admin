@@ -14,7 +14,6 @@ export const useActionStore = () => {
         body: payload,
       })
       await refreshNuxtData('stores')
-      await navigateTo(`/${store.id}`)
     } catch (error: any) {
       console.log(error)
       push.error(error.statusMessage || 'Something went wrong')
@@ -37,7 +36,7 @@ export const useActionStore = () => {
       })
       push.success('Updated successfully')
       await refreshNuxtData('stores')
-      await refreshNuxtData('store')
+      await refreshNuxtData(`store-${storeId}`)
     } catch (error: any) {
       console.log(error)
       push.error(error.statusMessage || 'Something went wrong')
@@ -58,6 +57,7 @@ export const useActionStore = () => {
             method: 'DELETE',
           })
           push.success('Deleted successfully')
+          await refreshNuxtData('stores')
           await navigateTo('/')
         } catch (error: any) {
           console.log(error)

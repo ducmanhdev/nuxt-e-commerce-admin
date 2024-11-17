@@ -4,8 +4,9 @@ const storeId = computed(() => route.params.storeId as string)
 
 const { data, status } = await useFetch('/api/stores', {
   key: 'stores',
-  lazy: true,
-  server: false,
+  getCachedData: (key, nuxt) => {
+    return nuxt.payload.data[key]
+  },
 })
 
 const stores = computed(() => data.value?.data || [])

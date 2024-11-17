@@ -7,6 +7,9 @@ const { data, status } = await useFetch('/api/stores', {
   key: 'stores',
   lazy: true,
   server: false,
+  getCachedData: (key, nuxt) => {
+    return nuxt.payload.data[key]
+  },
 })
 
 type Option = {
@@ -37,7 +40,14 @@ const { handleShow: handleModalStore } = useModalStore()
           },
         }"
       >
-        <template #header> Select store</template>
+        <template #header>
+          <div class="flex items-center justify-between gap-4">
+            <p>Select store</p>
+            <UTooltip text="Create new store">
+              <UButton leading-icon="heroicons:plus" @click="handleModalStore" />
+            </UTooltip>
+          </div>
+        </template>
         <UCommandPalette
           nullable
           :loading="isFetchingStores"

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { Store } from '~/types'
 import {
   ArcElement,
   BarElement,
@@ -32,17 +33,21 @@ useHead({
 })
 
 const route = useRoute()
-const { data } = await useFetch(() => `/api/stores/${route.params.storeId}`, {
-  key: 'store',
+const storeId = computed(() => route.params.storeId as string)
+
+const { data } = await useFetch(() => `/api/stores/${storeId.value}`, {
+  key: `store-${storeId.value}`,
 })
 const store = computed(() => data.value?.data)
-if (!store.value) {
-  throw createError({
-    statusCode: 404,
-    statusMessage: 'Store not found',
-    fatal: true,
-  })
-}
+watchEffect(() => {
+  if (!store.value) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'Store not found',
+      fatal: true,
+    })
+  }
+})
 
 const { isDeleteLoading, handleDelete } = useActionStore()
 const { handleShow } = useModalStore()
