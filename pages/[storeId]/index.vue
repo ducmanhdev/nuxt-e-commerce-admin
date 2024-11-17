@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { Store } from '~/types'
 import {
   ArcElement,
   BarElement,
