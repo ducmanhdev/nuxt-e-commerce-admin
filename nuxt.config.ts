@@ -54,7 +54,6 @@ export default defineNuxtConfig({
   cloudinary: {
     cloudName: process.env.CLOUDINARY_CLOUD_NAME,
     apiKey: process.env.CLOUDINARY_API_KEY,
-    uploadPreset: process.env.CLOUDINARY_UPLOAD_PRESET,
   },
   notivue: {
     position: 'top-right',
