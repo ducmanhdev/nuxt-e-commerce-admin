@@ -82,7 +82,7 @@ model Product {
   size       Size        @relation(fields: [sizeId], references: [id])
   colorId    String
   color      Color       @relation(fields: [colorId], references: [id])
-  isArchived Boolean?    @default(false)
+  isArchived Boolean    @default(false)
   images     Image[]
   orderItems OrderItem[]
   createdAt  DateTime    @default(now())
