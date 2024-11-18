@@ -6,6 +6,11 @@ export default <Partial<Config>>{
       fontFamily: {
         montserrat: ['Montserrat', 'sans-serif'],
       },
+      aspectRatio: {
+        auto: 'auto',
+        square: '1 / 1',
+        video: '16 / 9'
+      }
     },
   },
 }
