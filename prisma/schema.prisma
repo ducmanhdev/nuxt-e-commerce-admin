@@ -82,7 +82,7 @@ model Product {
   size       Size        @relation(fields: [sizeId], references: [id])
   colorId    String
   color      Color       @relation(fields: [colorId], references: [id])
-  isArchived Boolean     @default(false)
+  isArchived Boolean?    @default(false)
   images     Image[]
   orderItems OrderItem[]
   createdAt  DateTime    @default(now())
@@ -97,16 +97,37 @@ model Image {
   updatedAt DateTime @updatedAt
 }
 
+enum PaymentType {
+  CREDIT_CARD
+  CASH
+}
+
+enum OrderStatus {
+  PENDING // Order is created but not yet processed
+  CONFIRMED // Order is confirmed and payment is successful
+  CANCELED // Order is canceled by the user or admin
+  FAILED // Payment failed or order couldn't be processed
+  SHIPPED // Order is shipped (optional, for delivery tracking)
+  COMPLETED // Order is delivered or successfully completed
+}
+
 model Order {
-  id         String      @id @default(uuid())
-  storeId    String
-  store      Store       @relation(fields: [storeId], references: [id])
-  orderItems OrderItem[]
-  isPaid     Boolean     @default(false)
-  phone      String
-  address    String
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
+  id          String      @id @default(uuid())
+  storeId     String
+  store       Store       @relation(fields: [storeId], references: [id])
+  // customerId  String? // Optional, if you support guest orders
+  // customer    Customer?   @relation(fields: [customerId], references: [id])
+  orderItems  OrderItem[]
+  totalPrice  Decimal
+  isPaid      Boolean     @default(false)
+  paymentType PaymentType
+  status      OrderStatus @default(PENDING)
+  phone       String
+  address     String
+  voucher     Voucher?    @relation(fields: [voucherId], references: [id])
+  voucherId   String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 }
 
 model OrderItem {
@@ -115,6 +136,30 @@ model OrderItem {
   order     Order    @relation(fields: [orderId], references: [id])
   productId String
   product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int
+  price     Decimal
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED
+}
+
+model Voucher {
+  id            String       @id @default(uuid())
+  code          String       @unique
+  discountType  DiscountType
+  discountValue Decimal
+  minOrderValue Decimal?
+  maxDiscount   Decimal?
+  isActive      Boolean      @default(true)
+  usageLimit    Int?
+  usedCount     Int          @default(0)
+  startDate     DateTime
+  endDate       DateTime
+  orders        Order[]
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
 }
