@@ -3,7 +3,7 @@ import type { FormSubmitEvent } from '#ui/types'
 import { z } from 'zod'
 
 useHead({
-  title: 'Sign In',
+  title: 'Sign Up',
 })
 
 definePageMeta({
@@ -11,31 +11,42 @@ definePageMeta({
   middleware: ['redirect-if-authenticated'],
 })
 
-const schema = z.object({
-  email: z
-    .string({
-      required_error: 'Please enter your email address',
-    })
-    .email('Invalid email'),
-  password: z
-    .string({
-      required_error: 'Please enter your password',
-    })
-    .min(8, 'Must be at least 8 characters'),
-})
+const schema = z
+  .object({
+    email: z
+      .string({
+        required_error: 'Please enter your email address',
+      })
+      .email('Invalid email'),
+    password: z
+      .string({
+        required_error: 'Please enter your password',
+      })
+      .min(8, 'Must be at least 8 characters'),
+    confirmPassword: z
+      .string({
+        required_error: 'Please enter your confirm password',
+      })
+      .min(8, 'Must be at least 8 characters'),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    path: ['confirmPassword'],
+    message: 'Password and confirm password must match',
+  })
 
 type Schema = z.output<typeof schema>
 
 const state = reactive({
   email: undefined,
   password: undefined,
+  confirmPassword: undefined,
 })
 
 const supabase = useSupabaseClient()
 const runtimeConfig = useRuntimeConfig()
 
 const onSubmit = async (event: FormSubmitEvent<Schema>) => {
-  const { error } = await supabase.auth.signInWithPassword({
+  const { error } = await supabase.auth.signUp({
     email: event.data.email,
     password: event.data.password,
   })
@@ -43,7 +54,8 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
     console.log(error)
     push.error('Something went wrong, please try again!')
   }
-  await navigateTo('/')
+  push.success('Sign up successfully, please confirm your email')
+  await navigateTo('/sign-in')
 }
 
 const signInWithGithub = async () => {
@@ -64,7 +76,7 @@ const signInWithGithub = async () => {
 <template>
   <div class="h-screen flex justify-center items-center">
     <UCard class="w-full max-w-[500px]">
-      <template #header>Sign In</template>
+      <template #header>Sign Up</template>
       <div class="space-y-4">
         <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
           <UFormGroup label="Email" name="email">
@@ -73,9 +85,12 @@ const signInWithGithub = async () => {
           <UFormGroup label="Password" name="password">
             <UInput v-model="state.password" type="password" />
           </UFormGroup>
+          <UFormGroup label="Confirm password" name="confirmPassword">
+            <UInput v-model="state.confirmPassword" type="password" />
+          </UFormGroup>
           <div class="text-center">
-            Don't have an account?
-            <RouterLink to="/sign-up" class="text-primary text-underline">Sign Up</RouterLink>
+            Already have an account?
+            <RouterLink to="/sign-in" class="text-primary text-underline">Sign In</RouterLink>
           </div>
           <UButton type="submit" block>Submit</UButton>
         </UForm>

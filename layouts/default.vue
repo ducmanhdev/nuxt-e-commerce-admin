@@ -144,10 +144,9 @@ const links = computed(() => {
           </UTooltip>
           <UDropdown :items="userDropdownItems" :popper="{ placement: 'bottom-start' }">
             <UAvatar
-              size="xs"
               :src="user?.user_metadata?.avatar_url"
               :alt="user?.user_metadata?.name"
-              icon="heroicons:user-circle"
+              icon="heroicons:user"
             />
           </UDropdown>
         </div>

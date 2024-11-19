@@ -1,11 +1,11 @@
 import { serverSupabaseUser } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
+  if (!event.path.startsWith('/api')) return
   try {
     const user = await serverSupabaseUser(event)
     if (!user) {
-      // eslint-disable-next-line unicorn/error-message
-      throw new Error()
+      throw new Error('')
     }
     event.context.user = user
   } catch {
