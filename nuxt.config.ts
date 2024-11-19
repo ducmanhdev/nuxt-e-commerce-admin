@@ -9,11 +9,6 @@ export default defineNuxtConfig({
     enabled: true,
   },
   runtimeConfig: {
-    cloudinary: {
-      cloudName: process.env.CLOUDINARY_CLOUD_NAME,
-      apiKey: process.env.CLOUDINARY_API_KEY,
-      apiSecret: process.env.CLOUDINARY_API_SECRET,
-    },
     public: {
       baseUrl: process.env.BASE_URL || 'http://localhost:3000',
     },
@@ -23,7 +18,6 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@prisma/nuxt',
     '@nuxt/eslint',
-    '@nuxtjs/cloudinary',
     'notivue/nuxt',
     '@vueuse/nuxt',
     'dayjs-nuxt',
@@ -51,10 +45,6 @@ export default defineNuxtConfig({
     provider: 'google',
   },
   tailwindcss: {},
-  cloudinary: {
-    cloudName: process.env.CLOUDINARY_CLOUD_NAME,
-    apiKey: process.env.CLOUDINARY_API_KEY,
-  },
   notivue: {
     position: 'top-right',
     limit: 4,

@@ -124,9 +124,6 @@ const { handleDelete } = useActionBillboard()
       sort-mode="manual"
       @select="handleSelectRow"
     >
-      <template #imageUrl-data="{ row }">
-        <CldImage v-if="row.imageUrl" :src="row.imageUrl" :alt="row.imageUrl" width="100" height="100" />
-      </template>
       <template #createdAt-data="{ row }">
         {{ dayjs(row.createdAt).format(DATE_TIME_FORMAT) }}
       </template>

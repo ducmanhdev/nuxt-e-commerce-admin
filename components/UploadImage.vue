@@ -1,11 +1,12 @@
 <script setup lang="ts">
 type Props = {
   multiple?: boolean
-  allowedFormats?: string[]
   maxFileSize?: number
 }
 
-const { multiple = false, allowedFormats = ['png', 'jpeg', 'jpg'], maxFileSize = 5500000 } = defineProps<Props>()
+const { multiple = true, maxFileSize = 5500000 } = defineProps<Props>()
+
+const ACCEPT = ['image/png', 'image/jpeg', 'image/jpg']
 
 const bytesToMB = (bytes: number) => {
   if (bytes < 0) {
@@ -15,94 +16,89 @@ const bytesToMB = (bytes: number) => {
   return MB.toFixed(2)
 }
 const uploadDescription = computed(
-  () => allowedFormats.join(', ').toUpperCase() + ' up to ' + bytesToMB(maxFileSize) + 'MB',
+  () =>
+    ACCEPT.map((mine) => '.' + mine.split('/')[1])
+      .join(', ')
+      .toUpperCase() +
+    ' up to ' +
+    bytesToMB(maxFileSize) +
+    'MB',
 )
 
-const imageUrls = defineModel<string[]>({ default: () => [] })
-const onSuccess = (result: any) => {
-  if (result.event !== 'success') {
-    return
-  }
-  imageUrls.value = [...(imageUrls.value || []), result.info.secure_url]
+const inputRef = useTemplateRef('input')
+const files = ref<File[]>([])
+const handleInputChange = () => {
+  Array.from(inputRef.value?.files || []).forEach((file) => {
+    console.log(file.type)
+    if (!file.type.startsWith('image/')) {
+      console.error(`${file.name} is not a valid image file.`)
+      return
+    }
+    if (!ACCEPT.includes(file.type)) {
+      console.error(`${file.name} is not acceptable`)
+      return
+    }
+    if (file.size > maxFileSize) {
+      console.error(`${file.name} exceeds ${maxFileSize} bytes`)
+      return
+    }
+    files.value.push(file)
+  })
 }
-const onError = () => {}
-const onResult = () => {}
 
-const deleteImagesQueue = ref<string[]>([])
-const handleTempDeleteImages = (urls: string[]) => {
-  deleteImagesQueue.value.push(...urls)
-  imageUrls.value = (imageUrls.value || []).filter((url) => !urls.includes(url))
-}
-
-const extractPublicId = (url: string) => {
-  const match = url.match(/\/upload\/(?:v\d+\/)?([^/.]+)(?:\.\w+)?$/)
-  return match ? match[1] : null
-}
-const handleDeleteImages = async (urls: string[]) => {
-  const publicIds = urls.map((url) => extractPublicId(url))
-  try {
-    $fetch('/api/cloudinary/delete-images', {
-      method: 'DELETE',
-      body: {
-        publicIds,
-      },
-    })
-  } catch (error: any) {
-    console.log(error)
-  }
-}
-onBeforeUnmount(() => {
-  // handleDeleteImages(deleteImagesQueue.value)
+const previewImages = ref<string[]>([])
+watchEffect((onCleanup) => {
+  previewImages.value = files.value.map((file) => URL.createObjectURL(file))
+  onCleanup(() => {
+    previewImages.value.forEach((image) => URL.revokeObjectURL(image))
+  })
 })
+
+const handleDeleteImage = (index: number) => {
+  files.value.splice(index, 1)
+}
 </script>
 
 <template>
-  <div>
-    <div
-      v-if="imageUrls?.length"
-      class="grid gap-2 mb-2"
-      :class="{
-        'grid-cols-4': multiple,
-        'grid-cols-1': !multiple,
-      }"
-    >
-      <div v-for="url in imageUrls" :key="url" class="relative">
+  <div
+    class="p-2 grid gap-2 border border-dashed rounded hover:border-primary transition cursor-pointer"
+    :class="{
+      'min-h-64': previewImages.length === 0,
+      'grid-cols-3': multiple,
+    }"
+    @click="inputRef?.click()"
+  >
+    <div class="space-y-2 col-span-full flex flex-col justify-center items-center" v-if="previewImages.length === 0">
+      <UIcon name="heroicons:arrow-up-tray" size="28" />
+      <p class="text-gray-500">Click to upload {{ multiple ? 'images' : 'an image' }} here</p>
+      <p class="text-xs text-gray-400">{{ uploadDescription }}</p>
+    </div>
+    <template v-else>
+      <div v-for="(image, index) in previewImages" class="relative aspect-square rounded overflow-hidden">
+        <img :src="image" alt="" class="absolute top-0 left-0 w-full h-full object-cover" />
         <UButton
           icon="heroicons:x-circle"
-          color="gray"
-          variant="link"
-          class="absolute top-0 right-0"
-          @click="handleTempDeleteImages([url])"
+          square
+          color="red"
+          class="absolute top-0 right-0 z-2"
+          @click.stop="handleDeleteImage(index)"
         />
-        <CldImage :src="url" width="100%" height="100%" aspect-ratio="1" crop="fill" :alt="url" />
       </div>
-    </div>
-    <CldUploadWidget
-      v-slot="{ open, isLoading }"
-      signature-endpoint="/api/cloudinary/sign"
-      :options="{
-        multiple: multiple,
-        sources: ['local', 'url'],
-        clientAllowedFormats: allowedFormats,
-        autoMinimize: true,
-        maxFileSize: maxFileSize,
-      }"
-      @success="onSuccess"
-      @error="onError"
-      @result="onResult"
-    >
-      <UButton
-        class="flex flex-col items-center justify-center space-y-2 h-64"
-        variant="outline"
-        block
-        :disabled="isLoading"
-        @click="open"
+      <div
+        class="relative aspect-square grid place-content-center bg-black/10 dark:bg-white/10 rounded overflow-hidden"
       >
-        <UIcon :name="isLoading ? 'heroicons:loading' : 'heroicons:arrow-up-tray'" size="28" />
-        <span class="text-gray-500">Click to upload {{ multiple ? 'images' : 'an image' }} here</span>
-        <span class="text-xs text-gray-400">{{ uploadDescription }}</span>
-      </UButton>
-    </CldUploadWidget>
+        <UIcon name="heroicons:plus" size="28" />
+      </div>
+    </template>
+
+    <input
+      type="file"
+      :multiple="multiple"
+      :accept="ACCEPT.join(', ')"
+      hidden
+      ref="input"
+      @change="handleInputChange"
+    />
   </div>
 </template>
 
