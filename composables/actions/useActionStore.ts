@@ -45,12 +45,12 @@ export const useActionStore = () => {
     }
   }
 
-  const { handleShow: handleShowConfirm } = useModalConfirm()
+  const { showModal } = useModalConfirm()
   const isDeleteLoading = useState(() => false)
   const handleDelete = (storeId: string) =>
-    handleShowConfirm({
+    showModal({
       message: 'Are you absolutely to delete this item?',
-      callbackFn: async () => {
+      onConfirm: async () => {
         try {
           isDeleteLoading.value = true
           await $fetch(`/api/stores/${storeId}`, {

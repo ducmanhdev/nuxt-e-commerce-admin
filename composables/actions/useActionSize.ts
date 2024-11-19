@@ -53,12 +53,12 @@ export const useActionSize = () => {
     storeId: string
     sizeId: string
   }
-  const { handleShow: handleShowConfirm } = useModalConfirm()
+  const { showModal } = useModalConfirm()
   const isDeleteLoading = ref(false)
   const handleDelete = ({ storeId, sizeId }: DeleteArgs) =>
-    handleShowConfirm({
+    showModal({
       message: 'Are you absolutely to delete this item?',
-      callbackFn: async () => {
+      onConfirm: async () => {
         try {
           isDeleteLoading.value = true
           await $fetch(`/api/stores/${storeId}/sizes/${sizeId}`, {
