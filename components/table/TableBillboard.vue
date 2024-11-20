@@ -124,6 +124,9 @@ const { handleDelete } = useActionBillboard()
       sort-mode="manual"
       @select="handleSelectRow"
     >
+      <template #imageUrl-data="{ row }">
+        <NuxtImg :src="row.imageUrl" width="100" class="aspect-square object-cover" />
+      </template>
       <template #createdAt-data="{ row }">
         {{ dayjs(row.createdAt).format(DATE_TIME_FORMAT) }}
       </template>

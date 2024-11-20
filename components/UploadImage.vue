@@ -1,61 +1,85 @@
 <script setup lang="ts">
 type Props = {
+  existing?: string[]
   multiple?: boolean
   maxFileSize?: number
 }
 
-const { multiple = true, maxFileSize = 5500000 } = defineProps<Props>()
+const { existing = [], multiple = false, maxFileSize = 2 } = defineProps<Props>()
 
-const ACCEPT = ['image/png', 'image/jpeg', 'image/jpg']
+type Emit = {
+  (e: 'update:existing', images: string[]): void
+  (e: 'update:deleted', images: string[]): void
+  (e: 'update:new', images: File[]): void
+}
+const emit = defineEmits<Emit>()
 
-const bytesToMB = (bytes: number) => {
-  if (bytes < 0) {
+const existingImages = ref<string[]>([...existing])
+const deletedExistingImages = ref<string[]>([])
+const newImages = ref<File[]>([])
+
+const isContainsImages = computed(() => previewImages.value.length || existingImages.value.length)
+
+const convertMBToBytes = (megabytes: number) => {
+  if (megabytes < 0) {
     throw new Error('Input must be a non-negative number.')
   }
-  const MB = bytes / (1024 * 1024)
-  return MB.toFixed(2)
+  return megabytes * 1024 * 1024
 }
+
+const ACCEPT = ['image/png', 'image/jpeg', 'image/jpg']
 const uploadDescription = computed(
   () =>
-    ACCEPT.map((mine) => '.' + mine.split('/')[1])
+    `${ACCEPT.map((mime) => '.' + mime.split('/')[1])
       .join(', ')
-      .toUpperCase() +
-    ' up to ' +
-    bytesToMB(maxFileSize) +
-    'MB',
+      .toUpperCase()} up to ${maxFileSize} MB`,
 )
 
 const inputRef = useTemplateRef('input')
-const files = ref<File[]>([])
-const handleInputChange = () => {
+const handleUploadImage = () => {
   Array.from(inputRef.value?.files || []).forEach((file) => {
-    console.log(file.type)
     if (!file.type.startsWith('image/')) {
       console.error(`${file.name} is not a valid image file.`)
       return
     }
     if (!ACCEPT.includes(file.type)) {
-      console.error(`${file.name} is not acceptable`)
+      console.error(`${file.name} is not acceptable.`)
       return
     }
-    if (file.size > maxFileSize) {
-      console.error(`${file.name} exceeds ${maxFileSize} bytes`)
+    if (file.size > convertMBToBytes(maxFileSize)) {
+      console.error(`${file.name} exceeds ${maxFileSize} MB.`)
       return
     }
-    files.value.push(file)
+    if (multiple) {
+      newImages.value.push(file)
+    } else {
+      if (existingImages.value.length) {
+        handleDeleteExistImage(existingImages.value[0])
+      }
+      newImages.value = [file]
+    }
+    emit('update:new', newImages.value)
   })
 }
 
 const previewImages = ref<string[]>([])
 watchEffect((onCleanup) => {
-  previewImages.value = files.value.map((file) => URL.createObjectURL(file))
+  previewImages.value = newImages.value.map((file) => URL.createObjectURL(file))
   onCleanup(() => {
     previewImages.value.forEach((image) => URL.revokeObjectURL(image))
   })
 })
 
-const handleDeleteImage = (index: number) => {
-  files.value.splice(index, 1)
+const handleDeleteNewImage = (index: number) => {
+  newImages.value.splice(index, 1)
+  emit('update:new', newImages.value)
+}
+
+const handleDeleteExistImage = (imageSrc: string) => {
+  deletedExistingImages.value.push(imageSrc)
+  existingImages.value = existingImages.value.filter((image) => image !== imageSrc)
+  emit('update:deleted', deletedExistingImages.value)
+  emit('update:existing', existingImages.value)
 }
 </script>
 
@@ -63,28 +87,43 @@ const handleDeleteImage = (index: number) => {
   <div
     class="p-2 grid gap-2 border border-dashed rounded hover:border-primary transition cursor-pointer"
     :class="{
-      'min-h-64': previewImages.length === 0,
+      'min-h-64': !isContainsImages,
       'grid-cols-3': multiple,
     }"
     @click="inputRef?.click()"
   >
-    <div class="space-y-2 col-span-full flex flex-col justify-center items-center" v-if="previewImages.length === 0">
+    <div class="space-y-2 col-span-full flex flex-col justify-center items-center" v-if="!isContainsImages">
       <UIcon name="heroicons:arrow-up-tray" size="28" />
       <p class="text-gray-500">Click to upload {{ multiple ? 'images' : 'an image' }} here</p>
       <p class="text-xs text-gray-400">{{ uploadDescription }}</p>
     </div>
     <template v-else>
-      <div v-for="(image, index) in previewImages" class="relative aspect-square rounded overflow-hidden">
+      <div v-for="image in existingImages" :key="image" class="relative aspect-square rounded overflow-hidden">
         <img :src="image" alt="" class="absolute top-0 left-0 w-full h-full object-cover" />
         <UButton
           icon="heroicons:x-circle"
           square
           color="red"
+          variant="ghost"
           class="absolute top-0 right-0 z-2"
-          @click.stop="handleDeleteImage(index)"
+          size="sm"
+          @click.stop="handleDeleteExistImage(image)"
+        />
+      </div>
+      <div v-for="(image, index) in previewImages" :key="image" class="relative aspect-square rounded overflow-hidden">
+        <img :src="image" alt="" class="absolute top-0 left-0 w-full h-full object-cover" />
+        <UButton
+          icon="heroicons:x-circle"
+          square
+          color="red"
+          variant="ghost"
+          class="absolute top-0 right-0 z-2"
+          :padded="false"
+          @click.stop="handleDeleteNewImage(index)"
         />
       </div>
       <div
+        v-if="multiple"
         class="relative aspect-square grid place-content-center bg-black/10 dark:bg-white/10 rounded overflow-hidden"
       >
         <UIcon name="heroicons:plus" size="28" />
@@ -97,7 +136,7 @@ const handleDeleteImage = (index: number) => {
       :accept="ACCEPT.join(', ')"
       hidden
       ref="input"
-      @change="handleInputChange"
+      @change="handleUploadImage"
     />
   </div>
 </template>

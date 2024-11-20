@@ -23,6 +23,7 @@ export default defineNuxtConfig({
     'dayjs-nuxt',
     '@pinia/nuxt',
     '@nuxt/fonts',
+    '@nuxt/image',
   ],
   css: ['notivue/notification.css', 'notivue/animations.css', 'notivue/notification-progress.css'],
   supabase: {

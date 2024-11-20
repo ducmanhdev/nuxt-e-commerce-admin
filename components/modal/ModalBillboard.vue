@@ -1,6 +1,17 @@
 <script setup lang="ts">
-const { isOpen, schema, state, handleHide, handleSubmit, isSubmitLoading, modalTitle, submitButtonLabel } =
-  useModalBillboard()
+const {
+  isOpen,
+  schema,
+  state,
+  handleHide,
+  handleSubmit,
+  isSubmitLoading,
+  modalTitle,
+  submitButtonLabel,
+  existingImages,
+  newImageFiles,
+  deletedImages,
+} = useModalBillboard()
 </script>
 
 <template>
@@ -16,8 +27,10 @@ const { isOpen, schema, state, handleHide, handleSubmit, isSubmitLoading, modalT
           </UFormGroup>
           <UFormGroup label="Image" name="imageUrl">
             <UploadImage
-              :model-value="state.imageUrl ? [state.imageUrl] : []"
-              @update:model-value="(imageUrls) => (state.imageUrl = imageUrls[0])"
+              :existing="existingImages"
+              @update:existing="(images) => (existingImages = images)"
+              @update:deleted="(images) => (deletedImages = images)"
+              @update:new="(files) => (newImageFiles = files)"
             />
           </UFormGroup>
           <div class="grid grid-cols-2 gap-2">
