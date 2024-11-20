@@ -76,22 +76,24 @@ export const useModalBillboard = () => {
     if (deletedImages.value.length) {
       const storageUrl = 'https://xzlgkmbsvmmtyegkqucl.supabase.co/storage/v1/object/public/billboards/'
       const deleteImagePaths = deletedImages.value.map((image) => image.replace(storageUrl, ''))
-      supabase.storage.from(BUCKET_NAME).remove(deleteImagePaths)
+      const { error } = await supabase.storage.from(BUCKET_NAME).remove(deleteImagePaths)
+      if (error) {
+        console.error('Error deleting images:', error.message)
+      }
     }
 
     if (newImageFiles.value.length) {
-      const uploadPromises = newImageFiles.value.map((file) =>
-        supabase.storage
-          .from(BUCKET_NAME)
-          .upload(`${user.value?.id}/${file.name}`, file)
-          .then(({ data, error }) => {
-            if (error) return ''
-            const {
-              data: { publicUrl },
-            } = supabase.storage.from(BUCKET_NAME).getPublicUrl(data.path)
-            return publicUrl
-          }),
-      )
+      const uploadPromises = newImageFiles.value.map(async (file) => {
+        const { data, error } = await supabase.storage.from(BUCKET_NAME).upload(`${user.value?.id}/${file.name}`, file)
+
+        if (error) {
+          console.error(`Error uploading ${file.name}:`, error.message)
+          return ''
+        }
+
+        return supabase.storage.from(BUCKET_NAME).getPublicUrl(data.path).data.publicUrl
+      })
+
       const imagePublicUrls = await Promise.all(uploadPromises)
       event.data.imageUrl = imagePublicUrls[0]
     }
