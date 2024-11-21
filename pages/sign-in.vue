@@ -24,17 +24,18 @@ const schema = z.object({
     .min(8, 'Must be at least 8 characters'),
 })
 
-type Schema = z.output<typeof schema>
+type InferSchema = z.infer<typeof schema>
+type OutputSchema = z.output<typeof schema>
 
-const state = reactive({
-  email: undefined,
-  password: undefined,
+const state = ref<InferSchema>({
+  email: '',
+  password: '',
 })
 
 const supabase = useSupabaseClient()
 const runtimeConfig = useRuntimeConfig()
 
-const onSubmit = async (event: FormSubmitEvent<Schema>) => {
+const onSubmit = async (event: FormSubmitEvent<OutputSchema>) => {
   const { error } = await supabase.auth.signInWithPassword({
     email: event.data.email,
     password: event.data.password,
@@ -67,27 +68,27 @@ const signInWithGithub = async () => {
       <template #header>Sign In</template>
       <div class="space-y-4">
         <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-          <UFormGroup label="Email" name="email">
+          <UFormField label="Email" name="email">
             <UInput v-model="state.email" />
-          </UFormGroup>
-          <UFormGroup label="Password" name="password">
+          </UFormField>
+          <UFormField label="Password" name="password">
             <UInput v-model="state.password" type="password" />
-          </UFormGroup>
+          </UFormField>
           <div class="text-center">
             Don't have an account?
             <RouterLink to="/sign-up" class="text-primary text-underline">Sign Up</RouterLink>
           </div>
           <UButton type="submit" block>Submit</UButton>
         </UForm>
-        <UDivider label="OR" />
+        <USeparator label="OR" />
         <UButton
-          color="black"
+          color="neutral"
           label="Sign in with GitHub"
           leading-icon="i-simple-icons-github"
           block
           @click="signInWithGithub"
         />
-        <UButton color="black" label="Sign in with Google" icon="i-simple-icons-google" block disabled />
+        <UButton color="neutral" label="Sign in with Google" icon="i-simple-icons-google" block disabled />
       </div>
     </UCard>
   </div>

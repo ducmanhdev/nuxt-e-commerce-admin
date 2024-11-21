@@ -6,5 +6,10 @@ export default defineAppConfig({
       constrained: 'max-w-8xl',
       base: 'mx-auto',
     },
+    input: {
+      slots: {
+        root: 'w-full',
+      },
+    },
   },
 })

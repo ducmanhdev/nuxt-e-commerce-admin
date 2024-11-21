@@ -108,7 +108,7 @@ const handleDeleteExistImage = (imageSrc: string) => {
         <UButton
           icon="heroicons:x-circle"
           square
-          color="red"
+          color="error"
           variant="ghost"
           class="absolute top-0 right-0 z-2"
           size="sm"
@@ -120,7 +120,7 @@ const handleDeleteExistImage = (imageSrc: string) => {
         <UButton
           icon="heroicons:x-circle"
           square
-          color="red"
+          color="error"
           variant="ghost"
           class="absolute top-0 right-0 z-2"
           :padded="false"

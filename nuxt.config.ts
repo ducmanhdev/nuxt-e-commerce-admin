@@ -23,10 +23,14 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     'dayjs-nuxt',
     '@pinia/nuxt',
-    '@nuxt/fonts',
     '@nuxt/image',
   ],
-  css: ['notivue/notification.css', 'notivue/animations.css', 'notivue/notification-progress.css'],
+  css: [
+    '~/assets/css/main.css',
+    'notivue/notification.css',
+    'notivue/animations.css',
+    'notivue/notification-progress.css',
+  ],
   supabase: {
     redirect: true,
     redirectOptions: {
@@ -46,7 +50,6 @@ export default defineNuxtConfig({
   fonts: {
     provider: 'google',
   },
-  tailwindcss: {},
   notivue: {
     position: 'top-right',
     limit: 4,

@@ -64,7 +64,7 @@ const userDropdownItems = computed(() => {
 const { isDark, handleToggleMode } = useThemeMode()
 const { handleShow: handleModalStore } = useModalStore()
 
-const links = computed(() => {
+const navigationItems = computed(() => {
   return [
     {
       label: 'Overview',
@@ -109,17 +109,15 @@ const links = computed(() => {
         </UTooltip>
         <div v-if="storeId" class="flex items-center gap-2">
           <USelectMenu
-            v-model="storeId"
-            :options="storesOptions"
+            :items="storesOptions"
             :loading="isFetchingStores"
             leading-icon="heroicons:building-storefront"
-            searchable
-            value-attribute="id"
-            option-attribute="label"
-            :ui="{
-              wrapper: 'w-[160px] shrink-0',
-            }"
-            @change="handleSelectStore"
+            highlight
+            value-key="id"
+            label-key="label"
+            :model-value="storeId"
+            class="w-50"
+            @update:model-value="handleSelectStore"
           />
           <UTooltip text="Create new store">
             <UButton
@@ -127,11 +125,10 @@ const links = computed(() => {
               aria-label="Create store"
               color="primary"
               variant="ghost"
-              class="shrink-0"
-              @click="handleModalStore"
+              @click="handleModalStore()"
             />
           </UTooltip>
-          <UHorizontalNavigation :links="links" :ui="{ base: 'py-1.5' }" />
+          <UNavigationMenu :items="navigationItems" />
         </div>
         <div class="flex items-center gap-2 ml-auto">
           <UTooltip text="Toggle dark mode">
@@ -139,16 +136,12 @@ const links = computed(() => {
               :icon="isDark ? 'heroicons:moon-solid' : 'heroicons:sun-solid'"
               variant="ghost"
               aria-label="Theme"
-              @click="handleToggleMode"
+              @click="handleToggleMode()"
             />
           </UTooltip>
-          <UDropdown :items="userDropdownItems" :popper="{ placement: 'bottom-start' }">
-            <UAvatar
-              :src="user?.user_metadata?.avatar_url"
-              :alt="user?.user_metadata?.name"
-              icon="heroicons:user"
-            />
-          </UDropdown>
+          <UDropdownMenu :items="userDropdownItems" :popper="{ placement: 'bottom-start' }">
+            <UAvatar :src="user?.user_metadata?.avatar_url" :alt="user?.user_metadata?.name" icon="heroicons:user" />
+          </UDropdownMenu>
         </div>
       </UContainer>
     </header>

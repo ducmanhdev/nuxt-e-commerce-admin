@@ -13,8 +13,11 @@
       </NotivueSwipe>
     </Notivue>
 
-    <NuxtLayout>
-      <NuxtPage />
-    </NuxtLayout>
+    <UApp>
+      <NuxtLayout>
+        <NuxtPage />
+      </NuxtLayout>
+    </UApp>
   </div>
 </template>
+<script setup lang="ts"></script>

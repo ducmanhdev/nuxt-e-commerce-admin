@@ -103,7 +103,7 @@ const chartLineData = {
           <UButton
             leading-icon="heroicons:trash"
             label="Delete"
-            color="red"
+            color="error"
             :loading="isDeleteLoading"
             @click="handleDelete(store!.id)"
           />

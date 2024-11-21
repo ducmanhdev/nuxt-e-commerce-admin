@@ -5,35 +5,30 @@ const { isFetching: isFetchingBillboards, data: billboards } = useReferenceBillb
 </script>
 
 <template>
-  <UModal v-model="isOpen" :prevent-close="isSubmitLoading">
-    <UCard>
-      <template #header>
-        {{ modalTitle }}
-      </template>
-      <div class="space-y-4">
-        <UForm :schema="schema" :state="state" :validate-on="['submit']" class="space-y-4" @submit="handleSubmit">
-          <UFormGroup label="Name" name="name">
-            <UInput v-model="state.name" />
-          </UFormGroup>
-          <UFormGroup label="Billboard" name="billboardId">
-            <USelectMenu
-              v-model="state.billboardId"
-              :options="billboards"
-              :loading="isFetchingBillboards"
-              placeholder="Select a billboard"
-              searchable
-              searchable-placeholder="Search..."
-              :search-attributes="['name']"
-              option-attribute="name"
-              value-attribute="id"
-            />
-          </UFormGroup>
-          <div class="grid grid-cols-2 gap-2">
-            <UButton type="button" block :loading="isSubmitLoading" label="Cancel" variant="soft" @click="handleHide" />
-            <UButton type="submit" block :loading="isSubmitLoading" :label="submitButtonLabel" />
-          </div>
-        </UForm>
-      </div>
-    </UCard>
+  <UModal v-model:open="isOpen" :title="modalTitle" :prevent-close="isSubmitLoading">
+    <template #body>
+      <UForm :schema="schema" :state="state" class="space-y-4" @submit="handleSubmit">
+        <UFormField label="Name" name="name" required>
+          <UInput v-model="state.name" />
+        </UFormField>
+        <UFormField label="Billboard" name="billboardId" required>
+          <USelectMenu
+            v-model="state.billboardId"
+            :options="billboards"
+            :loading="isFetchingBillboards"
+            placeholder="Select a billboard"
+            searchable
+            searchable-placeholder="Search..."
+            :search-attributes="['name']"
+            option-attribute="name"
+            value-attribute="id"
+          />
+        </UFormField>
+        <div class="grid grid-cols-2 gap-2">
+          <UButton type="button" block :loading="isSubmitLoading" label="Cancel" variant="soft" @click="handleHide" />
+          <UButton type="submit" block :loading="isSubmitLoading" :label="submitButtonLabel" />
+        </div>
+      </UForm>
+    </template>
   </UModal>
 </template>

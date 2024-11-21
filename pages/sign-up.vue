@@ -34,18 +34,19 @@ const schema = z
     message: 'Password and confirm password must match',
   })
 
-type Schema = z.output<typeof schema>
+type InferSchema = z.infer<typeof schema>
+type OutputSchema = z.output<typeof schema>
 
-const state = reactive({
-  email: undefined,
-  password: undefined,
-  confirmPassword: undefined,
+const state = ref<InferSchema>({
+  email: '',
+  password: '',
+  confirmPassword: '',
 })
 
 const supabase = useSupabaseClient()
 const runtimeConfig = useRuntimeConfig()
 
-const onSubmit = async (event: FormSubmitEvent<Schema>) => {
+const onSubmit = async (event: FormSubmitEvent<OutputSchema>) => {
   const { error } = await supabase.auth.signUp({
     email: event.data.email,
     password: event.data.password,
@@ -79,30 +80,30 @@ const signInWithGithub = async () => {
       <template #header>Sign Up</template>
       <div class="space-y-4">
         <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-          <UFormGroup label="Email" name="email">
+          <UFormField label="Email" name="email">
             <UInput v-model="state.email" />
-          </UFormGroup>
-          <UFormGroup label="Password" name="password">
+          </UFormField>
+          <UFormField label="Password" name="password">
             <UInput v-model="state.password" type="password" />
-          </UFormGroup>
-          <UFormGroup label="Confirm password" name="confirmPassword">
+          </UFormField>
+          <UFormField label="Confirm password" name="confirmPassword">
             <UInput v-model="state.confirmPassword" type="password" />
-          </UFormGroup>
+          </UFormField>
           <div class="text-center">
             Already have an account?
             <RouterLink to="/sign-in" class="text-primary text-underline">Sign In</RouterLink>
           </div>
           <UButton type="submit" block>Submit</UButton>
         </UForm>
-        <UDivider label="OR" />
+        <USeparator label="OR" />
         <UButton
-          color="black"
+          color="neutral"
           label="Sign in with GitHub"
           leading-icon="i-simple-icons-github"
           block
           @click="signInWithGithub"
         />
-        <UButton color="black" label="Sign in with Google" icon="i-simple-icons-google" block disabled />
+        <UButton color="neutral" label="Sign in with Google" icon="i-simple-icons-google" block disabled />
       </div>
     </UCard>
   </div>

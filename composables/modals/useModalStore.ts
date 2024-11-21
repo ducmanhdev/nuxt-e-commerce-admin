@@ -20,9 +20,9 @@ export const useModalStore = () => {
     id: string
     name: string
   }
-  const handleShow = ({ id, name }: ShowArgs) => {
-    storeId.value = id ?? undefined
-    state.value.name = name ?? DEFAULT_STATE.name
+  const handleShow = (args?: ShowArgs) => {
+    storeId.value = args?.id ?? undefined
+    state.value.name = args?.name ?? DEFAULT_STATE.name
     isOpen.value = true
   }
 

@@ -1,7 +1,14 @@
 <script setup lang="ts">
 import { DATE_TIME_FORMAT, ROWS_PER_PAGE_OPTIONS } from '~/constants'
+import { upperFirst } from 'scule'
 import type { Product } from '~/types'
 import { refDebounced } from '@vueuse/core'
+import type { TableColumn, TableData } from '@nuxt/ui'
+import type { Row, Column, SortingState, VisibilityState } from '@tanstack/vue-table'
+
+const UCheckbox = resolveComponent('UCheckbox')
+const UButton = resolveComponent('UButton')
+const UDropdownMenu = resolveComponent('UDropdownMenu')
 
 type Props = {
   storeId: string
@@ -10,54 +17,177 @@ const props = defineProps<Props>()
 const dayjs = useDayjs()
 const storeId = toRef(props, 'storeId')
 
-const selectedRows = ref<Product[]>([])
-const handleSelectRow = (row: Product) => {
-  const index = selectedRows.value.findIndex((item) => item.id === row.id)
-  if (index === -1) {
-    selectedRows.value = [...selectedRows.value, row]
-    return
-  }
-  selectedRows.value = selectedRows.value.filter((item) => item.id !== row.id)
+const table = useTemplateRef('table')
+const rowSelection = ref({})
+const getActionItems = (row: Row<Product>) => {
+  return [
+    [
+      {
+        label: 'Edit',
+        icon: 'heroicons:pencil-square',
+        onSelect: () =>
+          handleShowModalEdit({
+            storeId: storeId.value,
+            ...row,
+          }),
+      },
+    ],
+    [
+      {
+        label: 'Delete',
+        icon: 'heroicons:trash',
+        color: 'error',
+        onSelect: () =>
+          handleDelete({
+            storeId: storeId.value,
+            productId: row.id,
+          }),
+      },
+    ],
+  ]
 }
-
-const ORIGIN_COLUMNS = [
-  { key: 'name', label: 'Name', sortable: true },
-  { key: 'price', label: 'Price', sortable: true },
-  { key: 'categoryId', label: 'Category', sortable: true },
-  { key: 'sizeId', label: 'Size', sortable: true },
-  { key: 'colorId', label: 'Color', sortable: true },
-  { key: 'createdAt', label: 'Created at', sortable: true },
-  { key: 'updatedAt', label: 'Updated at', sortable: true },
-  { key: 'actions', label: 'Actions', class: 'text-end', disabled: true },
+const getHeader = (column: Column<Product>, label: string) => {
+  const isSorted = column.getIsSorted()
+  return h(
+    UDropdownMenu,
+    {
+      content: {
+        align: 'start',
+      },
+      items: [
+        {
+          label: 'Asc',
+          type: 'checkbox',
+          icon: 'i-lucide-arrow-up-narrow-wide',
+          checked: isSorted === 'asc',
+          onSelect: () => {
+            if (isSorted === 'asc') {
+              column.clearSorting()
+            } else {
+              column.toggleSorting(false)
+            }
+          },
+        },
+        {
+          label: 'Desc',
+          icon: 'i-lucide-arrow-down-wide-narrow',
+          type: 'checkbox',
+          checked: isSorted === 'desc',
+          onSelect: () => {
+            if (isSorted === 'desc') {
+              column.clearSorting()
+            } else {
+              column.toggleSorting(true)
+            }
+          },
+        },
+      ],
+    },
+    () =>
+      h(UButton, {
+        color: 'neutral',
+        variant: 'ghost',
+        label,
+        icon: isSorted
+          ? isSorted === 'asc'
+            ? 'i-lucide-arrow-up-narrow-wide'
+            : 'i-lucide-arrow-down-wide-narrow'
+          : 'i-lucide-arrow-up-down',
+        class: '-mx-2.5 data-[state=open]:bg-[var(--ui-bg-elevated)]',
+      }),
+  )
+}
+const columns: TableColumn<Product>[] = [
+  {
+    id: 'select',
+    enableHiding: false,
+    header: ({ table }) =>
+      h(UCheckbox, {
+        modelValue: table.getIsAllPageRowsSelected(),
+        indeterminate: table.getIsSomePageRowsSelected(),
+        'onUpdate:modelValue': (value: boolean) => table.toggleAllPageRowsSelected(!!value),
+        ariaLabel: 'Select all',
+      }),
+    cell: ({ row }) =>
+      h(UCheckbox, {
+        modelValue: row.getIsSelected(),
+        'onUpdate:modelValue': (value: boolean) => row.toggleSelected(!!value),
+        ariaLabel: 'Select row',
+      }),
+  },
+  { accessorKey: 'name', header: ({ column }) => getHeader(column, 'Name') },
+  { accessorKey: 'price', header: ({ column }) => getHeader(column, 'Price') },
+  {
+    accessorKey: 'categoryId',
+    header: ({ column }) => getHeader(column, 'Category'),
+  },
+  {
+    accessorKey: 'sizeId',
+    header: ({ column }) => getHeader(column, 'Size'),
+  },
+  {
+    accessorKey: 'colorId',
+    header: ({ column }) => getHeader(column, 'Color'),
+  },
+  {
+    accessorKey: 'createdAt',
+    header: ({ column }) => getHeader(column, 'Created at'),
+    cell: ({ row }) => dayjs(row.getValue('createdAt')).format(DATE_TIME_FORMAT),
+  },
+  {
+    accessorKey: 'updatedAt',
+    header: ({ column }) => getHeader(column, 'Updated at'),
+    cell: ({ row }) => dayjs(row.getValue('updatedAt')).format(DATE_TIME_FORMAT),
+  },
+  {
+    accessorKey: 'actions',
+    enableHiding: false,
+    header: () => h('div', { class: 'text-right' }, 'Actions'),
+    cell: ({ row }) => {
+      return h(
+        'div',
+        { class: 'text-right' },
+        h(
+          UDropdownMenu,
+          {
+            content: {
+              align: 'end',
+            },
+            items: getActionItems(row),
+          },
+          () =>
+            h(UButton, {
+              icon: 'ion:ellipsis-vertical',
+              color: 'neutral',
+              variant: 'ghost',
+              class: 'ml-auto',
+            }),
+        ),
+      )
+    },
+  },
 ]
-const selectedColumns = ref(ORIGIN_COLUMNS)
-const columns = computed(() => ORIGIN_COLUMNS.filter((COLUMNS) => selectedColumns.value.includes(COLUMNS)))
+const columnVisibility = ref<VisibilityState>({})
 
 const search = ref('')
 const searchDebounced = refDebounced(search)
-const isShowClearSearchButton = computed(() => search.value !== '')
-const handleClearSearch = () => {
-  search.value = ''
-}
 
-const isDisableResetButton = computed(() => !(search.value || selectedColumns.value.length !== ORIGIN_COLUMNS.length))
+const isDisableResetButton = computed(() => !(search.value || Object.keys(columnVisibility.value).length > 0))
 const handleResetFilters = () => {
   search.value = ''
-  selectedColumns.value = ORIGIN_COLUMNS
+  columnVisibility.value = {}
 }
 
-type Sort = {
-  column: string
-  direction: 'asc' | 'desc'
-}
-const sort = ref<Sort | undefined>({
-  column: 'createdAt',
-  direction: 'desc',
-})
+const sorting = ref<SortingState>([
+  {
+    id: 'createdAt',
+    desc: false,
+  },
+])
 const page = ref(1)
 const pageCount = ref(10)
-const sortColumn = computed(() => sort.value?.column)
-const sortDirection = computed(() => sort.value?.direction)
+const sortColumn = computed(() => sorting.value?.[0].id)
+const sortDirection = computed(() => (sorting.value?.[0].desc ? 'desc' : 'asc'))
 
 const { data, status } = await useFetch(() => `/api/stores/${storeId.value}/products`, {
   key: 'products',
@@ -73,9 +203,9 @@ const { data, status } = await useFetch(() => `/api/stores/${storeId.value}/prod
     order: sortDirection,
   },
 })
-
 const isFetching = computed(() => status.value === 'pending')
-const rows = computed(() => data.value.data)
+
+const rows = computed(() => data.value?.data as Product[])
 const meta = computed(() => data.value.meta)
 const pageTotal = computed(() => meta.value?.totalPages || 1)
 
@@ -91,26 +221,43 @@ const { handleDelete } = useActionProduct()
           v-model="search"
           leading-icon="heroicons:magnifying-glass-20-solid"
           placeholder="Search..."
-          :ui="{ icon: { trailing: { pointer: '' } } }"
+          class="max-w-sm"
         >
-          <template #trailing>
+          <template v-if="search?.length" #trailing>
             <UButton
-              v-show="isShowClearSearchButton"
-              color="gray"
+              color="neutral"
               variant="link"
               icon="heroicons:x-mark-20-solid"
-              :padded="false"
-              @click="handleClearSearch"
+              aria-label="Clear input"
+              @click="search = ''"
             />
           </template>
         </UInput>
         <div class="flex gap-1.5 items-center">
-          <USelectMenu v-model="selectedColumns" :options="ORIGIN_COLUMNS" multiple>
-            <UButton leading-icon="heroicons:view-columns" color="gray" label="Columns" />
-          </USelectMenu>
+          <UDropdownMenu
+            :items="
+              table?.tableApi
+                ?.getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => ({
+                  label: upperFirst(column.id),
+                  type: 'checkbox' as const,
+                  checked: column.getIsVisible(),
+                  onUpdateChecked(checked: boolean) {
+                    table?.tableApi?.getColumn(column.id)?.toggleVisibility(!!checked)
+                  },
+                  onSelect(e?: Event) {
+                    e?.preventDefault()
+                  },
+                }))
+            "
+            :content="{ align: 'end' }"
+          >
+            <UButton label="Columns" color="neutral" variant="outline" trailing-icon="ion:chevron-down" />
+          </UDropdownMenu>
           <UButton
             leading-icon="i-heroicons-funnel"
-            color="gray"
+            color="neutral"
             :disabled="isDisableResetButton"
             label="Reset"
             @click="handleResetFilters"
@@ -119,56 +266,19 @@ const { handleDelete } = useActionProduct()
       </div>
     </template>
     <UTable
-      v-model="selectedRows"
-      v-model:sort="sort"
-      :rows="rows"
+      ref="table"
+      v-model:column-visibility="columnVisibility"
+      v-model:row-selection="rowSelection"
+      v-model:sorting="sorting"
+      :data="rows"
       :columns="columns"
       :loading="isFetching"
-      sort-mode="manual"
-      @select="handleSelectRow"
-    >
-      <template #price-data="{ row }">
-        {{ formatMoney(row.price) }}
-      </template>
-      <template #createdAt-data="{ row }">
-        {{ dayjs(row.createdAt).format(DATE_TIME_FORMAT) }}
-      </template>
-      <template #updatedAt-data="{ row }">
-        {{ dayjs(row.updatedAt).format(DATE_TIME_FORMAT) }}
-      </template>
-      <template #actions-data="{ row }">
-        <div class="text-right space-x-2">
-          <UTooltip text="Edit">
-            <UButton
-              leading-icon="heroicons:pencil-square"
-              @click.stop="
-                handleShowModalEdit({
-                  storeId,
-                  ...row,
-                })
-              "
-            />
-          </UTooltip>
-          <UTooltip text="Delete">
-            <UButton
-              color="red"
-              leading-icon="heroicons:trash"
-              @click.stop="
-                handleDelete({
-                  storeId,
-                  productId: row.id,
-                })
-              "
-            />
-          </UTooltip>
-        </div>
-      </template>
-    </UTable>
+    />
     <template #footer>
       <div class="flex items-center justify-end gap-4">
         <div class="flex items-center gap-1.5">
           <span class="text-sm leading-5">Rows per page:</span>
-          <USelect v-model.number="pageCount" :options="ROWS_PER_PAGE_OPTIONS" />
+          <USelect v-model.number="pageCount" :items="ROWS_PER_PAGE_OPTIONS" class="w-20" />
         </div>
         <UPagination v-model="page" :page-count="pageCount" :total="pageTotal" />
       </div>
