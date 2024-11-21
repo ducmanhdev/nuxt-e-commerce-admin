@@ -101,7 +101,7 @@ const navigationItems = computed(() => {
 <template>
   <div>
     <header
-      class="py-4 shadow border-b border-transparent dark:border-gray-800 text-[var(--ui-text)] bg-[var(--ui-bg)] sticky top-0 z-50"
+      class="py-4 shadow border-b border-transparent dark:border-[var(--ui-border)] text-[var(--ui-text)] bg-[var(--ui-bg)] sticky top-0 z-50"
     >
       <UContainer class="flex items-center">
         <UTooltip text="Return home">
