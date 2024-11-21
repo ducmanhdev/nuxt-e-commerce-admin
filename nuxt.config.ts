@@ -26,10 +26,10 @@ export default defineNuxtConfig({
     '@nuxt/image',
   ],
   css: [
-    '~/assets/css/main.css',
     'notivue/notification.css',
     'notivue/animations.css',
     'notivue/notification-progress.css',
+    '~/assets/css/main.css',
   ],
   supabase: {
     redirect: true,
