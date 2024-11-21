@@ -51,18 +51,18 @@ export const useActionProduct = () => {
 
   type DeleteArgs = {
     storeId: string
-    productId: string
+    id: string
   }
 
   const { showModal } = useModalConfirm()
   const isDeleteLoading = ref(false)
-  const handleDelete = ({ storeId, productId }: DeleteArgs) =>
+  const handleDelete = ({ storeId, id }: DeleteArgs) =>
     showModal({
       message: 'Are you absolutely to delete this item?',
       onConfirm: async () => {
         try {
           isDeleteLoading.value = true
-          await $fetch(`/api/stores/${storeId}/products/${productId}`, {
+          await $fetch(`/api/stores/${storeId}/products/${id}`, {
             method: 'DELETE',
           })
           push.success('Deleted successfully')

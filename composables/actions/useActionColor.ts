@@ -51,17 +51,17 @@ export const useActionColor = () => {
 
   type DeleteArgs = {
     storeId: string
-    colorId: string
+    id: string
   }
   const { showModal } = useModalConfirm()
   const isDeleteLoading = ref(false)
-  const handleDelete = ({ storeId, colorId }: DeleteArgs) =>
+  const handleDelete = ({ storeId, id }: DeleteArgs) =>
     showModal({
       message: 'Are you absolutely to delete this item?',
       onConfirm: async () => {
         try {
           isDeleteLoading.value = true
-          await $fetch(`/api/stores/${storeId}/colors/${colorId}`, {
+          await $fetch(`/api/stores/${storeId}/colors/${id}`, {
             method: 'DELETE',
           })
           push.success('Deleted successfully')

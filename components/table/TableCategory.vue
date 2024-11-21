@@ -25,11 +25,7 @@ const getActionItems = (row: Row<Category>) => {
       {
         label: 'Edit',
         icon: 'heroicons:pencil-square',
-        onSelect: () =>
-          handleShowModalEdit({
-            storeId: storeId.value,
-            ...row,
-          }),
+        onSelect: () => handleShowModalEdit({ ...row.original }),
       },
     ],
     [
@@ -37,11 +33,7 @@ const getActionItems = (row: Row<Category>) => {
         label: 'Delete',
         icon: 'heroicons:trash',
         color: 'error',
-        onSelect: () =>
-          handleDelete({
-            storeId: storeId.value,
-            categoryId: row.id,
-          }),
+        onSelect: () => handleDelete({ ...row.original }),
       },
     ],
   ]

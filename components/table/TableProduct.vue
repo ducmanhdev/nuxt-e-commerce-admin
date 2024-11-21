@@ -25,11 +25,13 @@ const getActionItems = (row: Row<Product>) => {
       {
         label: 'Edit',
         icon: 'heroicons:pencil-square',
-        onSelect: () =>
+        onSelect: () => {
+          const { price, ...rest } = row.original
           handleShowModalEdit({
-            storeId: storeId.value,
-            ...row,
-          }),
+            ...rest,
+            price: price as unknown as number,
+          })
+        },
       },
     ],
     [
@@ -37,11 +39,7 @@ const getActionItems = (row: Row<Product>) => {
         label: 'Delete',
         icon: 'heroicons:trash',
         color: 'error',
-        onSelect: () =>
-          handleDelete({
-            storeId: storeId.value,
-            productId: row.id,
-          }),
+        onSelect: () => handleDelete({ ...row.original }),
       },
     ],
   ]
