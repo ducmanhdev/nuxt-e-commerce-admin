@@ -11,6 +11,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       baseUrl: process.env.BASE_URL || 'http://localhost:3000',
+      supabaseStorageUrl: process.env.SUPABASE_STORAGE_URL,
     },
   },
   modules: [

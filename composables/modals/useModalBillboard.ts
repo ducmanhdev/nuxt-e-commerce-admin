@@ -10,37 +10,30 @@ export const useModalBillboard = () => {
   const modalTitle = computed(() => (billboardId.value ? 'Update billboard' : 'Create billboard'))
   const submitButtonLabel = computed(() => (billboardId.value ? 'Update' : 'Create'))
 
-  const fileSchema = z.object({
-    imageUrl: z.string().optional(),
-  })
-  const validationSchema = schema.merge(fileSchema)
+  const validationSchema = schema
+    .merge(
+      z.object({
+        imageUrl: z.string().optional(),
+        newImageFiles: z.instanceof(File).array().optional(),
+        deletedImages: z.string().array().optional(),
+      }),
+    )
+    .refine((data) => data.imageUrl || data.newImageFiles?.length, {
+      message: 'Image must not be empty',
+      path: ['imageUrl'],
+    })
 
-  type SchemaInfer = z.infer<typeof schema>
-  type SchemaOutput = z.output<typeof schema>
+  type SchemaInfer = z.infer<typeof validationSchema>
+  type SchemaOutput = z.output<typeof validationSchema>
 
   const DEFAULT_STATE: SchemaInfer = {
     name: '',
     imageUrl: '',
+    newImageFiles: [],
+    deletedImages: [],
   }
 
-  const state = useState(() => ({ ...DEFAULT_STATE }))
-
-  const existingImages = computed<string[]>({
-    get() {
-      return state.value.imageUrl ? [state.value.imageUrl] : []
-    },
-    set(value) {
-      state.value.imageUrl = value[0]
-    },
-  })
-  const deletedImages = ref<string[]>([])
-  const newImageFiles = ref<File[]>([])
-
-  watchEffect(() => {
-    console.log('existingImages', existingImages.value)
-    console.log('deletedImages', deletedImages.value)
-    console.log('newImageFiles', newImageFiles.value)
-  })
+  const state = useState<SchemaInfer>(() => ({ ...DEFAULT_STATE }))
 
   type ShowArgs = Partial<SchemaInfer> & {
     storeId: string
@@ -48,9 +41,8 @@ export const useModalBillboard = () => {
   }
 
   const handleShow = ({ storeId: inputStoreId, id, ...args }: ShowArgs) => {
-    storeId.value = inputStoreId ?? undefined
-    billboardId.value = id ?? undefined
-
+    storeId.value = inputStoreId
+    billboardId.value = id
     Object.assign(state.value, { ...DEFAULT_STATE, ...args })
     isOpen.value = true
   }
@@ -60,59 +52,53 @@ export const useModalBillboard = () => {
   }
 
   const { isCreateLoading, handleCreate, isUpdateLoading, handleUpdate } = useActionBillboard()
+  const { handleDeleteImages, handleUploadImages } = useSupabaseStorage('billboards')
 
-  const supabase = useSupabaseClient()
-  const user = useSupabaseUser()
-  const isWorkingWithSupabase = ref(false)
-  const isSubmitLoading = computed(() => isWorkingWithSupabase.value || isCreateLoading.value || isUpdateLoading.value)
+  const isProcessImageLoading = ref(false)
+  const processImages = async (data: SchemaOutput) => {
+    try {
+      isProcessImageLoading.value = true
+      if (data.deletedImages?.length) {
+        handleDeleteImages(data.deletedImages).then((data) => console.log({ data }))
+      }
+      if (data.newImageFiles?.length) {
+        const [uploadedImageUrl] = await handleUploadImages(data.newImageFiles)
+        return uploadedImageUrl
+      }
+      return data.imageUrl
+    } finally {
+      isProcessImageLoading.value = false
+    }
+  }
+
+  const isSubmitLoading = computed(() => isProcessImageLoading.value || isCreateLoading.value || isUpdateLoading.value)
   const handleSubmit = async (event: FormSubmitEvent<SchemaOutput>) => {
     if (!storeId.value) {
       console.error('Store ID is required')
       return
     }
 
-    isWorkingWithSupabase.value = true
-    const BUCKET_NAME = 'billboards'
-    if (deletedImages.value.length) {
-      const storageUrl = 'https://xzlgkmbsvmmtyegkqucl.supabase.co/storage/v1/object/public/billboards/'
-      const deleteImagePaths = deletedImages.value.map((image) => image.replace(storageUrl, ''))
-      const { error } = await supabase.storage.from(BUCKET_NAME).remove(deleteImagePaths)
-      if (error) {
-        console.error('Error deleting images:', error.message)
+    const imageUrl = await processImages(event.data)
+    if (!imageUrl) {
+      push.error('Something went wrong with image processing')
+      return
+    }
+
+    const payload = {
+      name: event.data.name,
+      imageUrl,
+    }
+
+    try {
+      if (billboardId.value) {
+        await handleUpdate({ storeId: storeId.value, billboardId: billboardId.value, payload })
+      } else {
+        await handleCreate({ storeId: storeId.value, payload })
       }
+      handleHide()
+    } catch (error) {
+      push.error('Failed to save billboard')
     }
-
-    if (newImageFiles.value.length) {
-      const uploadPromises = newImageFiles.value.map(async (file) => {
-        const { data, error } = await supabase.storage.from(BUCKET_NAME).upload(`${user.value?.id}/${file.name}`, file)
-
-        if (error) {
-          console.error(`Error uploading ${file.name}:`, error.message)
-          return ''
-        }
-
-        return supabase.storage.from(BUCKET_NAME).getPublicUrl(data.path).data.publicUrl
-      })
-
-      const imagePublicUrls = await Promise.all(uploadPromises)
-      event.data.imageUrl = imagePublicUrls[0]
-    }
-
-    isWorkingWithSupabase.value = false
-    if (billboardId.value) {
-      await handleUpdate({
-        storeId: storeId.value,
-        billboardId: billboardId.value,
-        payload: event.data,
-      })
-    } else {
-      await handleCreate({
-        storeId: storeId.value,
-        payload: event.data,
-      })
-    }
-
-    handleHide()
   }
 
   return {
@@ -123,12 +109,7 @@ export const useModalBillboard = () => {
     schema: validationSchema,
     isSubmitLoading,
     handleSubmit,
-
     modalTitle,
     submitButtonLabel,
-
-    existingImages,
-    deletedImages,
-    newImageFiles,
   }
 }
