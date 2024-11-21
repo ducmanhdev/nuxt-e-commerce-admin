@@ -63,12 +63,17 @@ const handleUploadImage = () => {
 }
 
 const previewImages = ref<string[]>([])
+
+const cleanUpImages = () => {
+  previewImages.value.forEach((image) => URL.revokeObjectURL(image))
+}
+
 watchEffect((onCleanup) => {
   previewImages.value = newImages.value.map((file) => URL.createObjectURL(file))
-  onCleanup(() => {
-    previewImages.value.forEach((image) => URL.revokeObjectURL(image))
-  })
+  onCleanup(cleanUpImages)
 })
+
+onBeforeUnmount(cleanUpImages)
 
 const handleDeleteNewImage = (index: number) => {
   newImages.value.splice(index, 1)
