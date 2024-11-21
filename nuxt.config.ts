@@ -47,9 +47,6 @@ export default defineNuxtConfig({
   colorMode: {
     preference: 'system',
   },
-  fonts: {
-    provider: 'google',
-  },
   notivue: {
     position: 'top-right',
     limit: 4,
