@@ -13,39 +13,9 @@ const { isOpen, schema, state, handleHide, handleSubmit, isSubmitLoading, modalT
         <UFormField label="Price" name="price" required>
           <UInput v-model.number="state.price" type="number" min="0" />
         </UFormField>
-        <UFormField label="Category" name="categoryId" required>
-          <USelectMenu
-            v-model="state.categoryId"
-            :options="[]"
-            placeholder="Select category"
-            searchable
-            searchable-placeholder="Search..."
-            :search-attributes="['label']"
-            value-attribute="value"
-          />
-        </UFormField>
-        <UFormField label="Size" name="sizeId" required>
-          <USelectMenu
-            v-model="state.sizeId"
-            :options="[]"
-            placeholder="Select size"
-            searchable
-            searchable-placeholder="Search..."
-            :search-attributes="['label']"
-            value-attribute="value"
-          />
-        </UFormField>
-        <UFormField label="Color" name="colorId" required>
-          <USelectMenu
-            v-model="state.colorId"
-            :options="[]"
-            placeholder="Select color"
-            searchable
-            searchable-placeholder="Search..."
-            :search-attributes="['label']"
-            value-attribute="value"
-          />
-        </UFormField>
+        <UFormField label="Category" name="categoryId" required></UFormField>
+        <UFormField label="sizeId" name="sizeId" required></UFormField>
+        <UFormField label="Color" name="colorId" required></UFormField>
         <div class="grid grid-cols-2 gap-2">
           <UButton type="button" block :loading="isSubmitLoading" label="Cancel" variant="soft" @click="handleHide" />
           <UButton type="submit" block :loading="isSubmitLoading" :label="submitButtonLabel" />

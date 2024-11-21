@@ -14,14 +14,11 @@ const { isFetching: isFetchingBillboards, data: billboards } = useReferenceBillb
         <UFormField label="Billboard" name="billboardId" required>
           <USelectMenu
             v-model="state.billboardId"
-            :options="billboards"
+            :items="billboards"
+            label-key="name"
+            value-key="id"
             :loading="isFetchingBillboards"
             placeholder="Select a billboard"
-            searchable
-            searchable-placeholder="Search..."
-            :search-attributes="['name']"
-            option-attribute="name"
-            value-attribute="id"
           />
         </UFormField>
         <div class="grid grid-cols-2 gap-2">
