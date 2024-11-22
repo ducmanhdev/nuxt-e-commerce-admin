@@ -18,11 +18,13 @@ const onCancel = () => {
   modal.close()
 }
 
+const modal = useModal()
 const isConfirmLoading = ref(false)
 const onConfirmWrapper = async () => {
   isConfirmLoading.value = true
   await onConfirm()
   isConfirmLoading.value = false
+  await modal.close()
 }
 </script>
 
