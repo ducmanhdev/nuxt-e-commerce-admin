@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { LazyModalStore } from '#components'
+
 const route = useRoute()
 const storeId = computed(() => route.params.storeId as string)
 
@@ -62,7 +64,11 @@ const userDropdownItems = computed(() => {
 })
 
 const { isDark, handleToggleMode } = useThemeMode()
-const { handleShow: handleModalStore } = useModalStore()
+
+const modal = useModal()
+const handeShowCreateStoreModal = () => {
+  modal.open(LazyModalStore)
+}
 
 const navigationItems = computed(() => {
   return [
@@ -125,7 +131,7 @@ const navigationItems = computed(() => {
               aria-label="Create store"
               color="primary"
               variant="ghost"
-              @click="handleModalStore()"
+              @click="handeShowCreateStoreModal"
             />
           </UTooltip>
           <UNavigationMenu :items="navigationItems" />
@@ -148,9 +154,5 @@ const navigationItems = computed(() => {
     <div>
       <slot />
     </div>
-
-    <Teleport to="body">
-      <ModalStore />
-    </Teleport>
   </div>
 </template>

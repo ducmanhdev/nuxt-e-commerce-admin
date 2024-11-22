@@ -13,6 +13,7 @@ import {
   Tooltip,
 } from 'chart.js'
 import { Bar, Line } from 'vue-chartjs'
+import { LazyModalStore } from '#components'
 
 ChartJS.register(
   Title,
@@ -49,7 +50,16 @@ watchEffect(() => {
 })
 
 const { isDeleteLoading, handleDelete } = useActionStore()
-const { handleShow } = useModalStore()
+
+const modal = useModal()
+const handleShowEditStoreModal = () => {
+  modal.open(LazyModalStore, {
+    storeId: store.value?.id,
+    initialValues: {
+      name: store.value?.name,
+    },
+  })
+}
 
 const chartOptions = {
   responsive: true,
@@ -93,12 +103,7 @@ const chartLineData = {
           <UButton
             leading-icon="heroicons:pencil-square"
             label="Edit"
-            @click="
-              handleShow({
-                id: store!.id,
-                name: store!.name,
-              })
-            "
+            @click="handleShowEditStoreModal"
           />
           <UButton
             leading-icon="heroicons:trash"

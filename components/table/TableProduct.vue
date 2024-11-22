@@ -5,10 +5,13 @@ import type { Product } from '~/types'
 import { refDebounced } from '@vueuse/core'
 import type { TableColumn, TableData } from '@nuxt/ui'
 import type { Row, Column, SortingState, VisibilityState } from '@tanstack/vue-table'
+import { LazyModalProduct } from '#components'
 
 const UCheckbox = resolveComponent('UCheckbox')
 const UButton = resolveComponent('UButton')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
+
+const { handleDelete } = useActionProduct()
 
 type Props = {
   storeId: string
@@ -19,6 +22,8 @@ const storeId = toRef(props, 'storeId')
 
 const table = useTemplateRef('table')
 const rowSelection = ref({})
+
+const modal = useModal()
 const getActionItems = (row: Row<Product>) => {
   return [
     [
@@ -26,10 +31,10 @@ const getActionItems = (row: Row<Product>) => {
         label: 'Edit',
         icon: 'heroicons:pencil-square',
         onSelect: () => {
-          const { price, ...rest } = row.original
-          handleShowModalEdit({
-            ...rest,
-            price: price as unknown as number,
+          modal.open(LazyModalProduct, {
+            storeId: row.original.storeId,
+            productId: row.original.id,
+            initialValues: { ...row.original },
           })
         },
       },
@@ -206,9 +211,6 @@ const isFetching = computed(() => status.value === 'pending')
 const rows = computed(() => data.value?.data as Product[])
 const meta = computed(() => data.value.meta)
 const pageTotal = computed(() => meta.value?.totalPages || 1)
-
-const { handleShow: handleShowModalEdit } = useModalProduct()
-const { handleDelete } = useActionProduct()
 </script>
 
 <template>

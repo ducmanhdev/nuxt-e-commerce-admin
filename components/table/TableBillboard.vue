@@ -5,10 +5,13 @@ import type { Billboard } from '~/types'
 import { refDebounced } from '@vueuse/core'
 import type { TableColumn, TableData } from '@nuxt/ui'
 import type { Row, Column, SortingState, VisibilityState } from '@tanstack/vue-table'
+import { LazyModalBillboard } from '#components'
 
 const UCheckbox = resolveComponent('UCheckbox')
 const UButton = resolveComponent('UButton')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
+
+const { handleDelete } = useActionBillboard()
 
 type Props = {
   storeId: string
@@ -19,6 +22,8 @@ const storeId = toRef(props, 'storeId')
 
 const table = useTemplateRef('table')
 const rowSelection = ref({})
+
+const modal = useModal()
 const getActionItems = (row: Row<Billboard>) => {
   return [
     [
@@ -26,7 +31,11 @@ const getActionItems = (row: Row<Billboard>) => {
         label: 'Edit',
         icon: 'heroicons:pencil-square',
         onSelect: () =>
-          handleShowModalEdit({ ...row.original }),
+          modal.open(LazyModalBillboard, {
+            storeId: row.original.storeId,
+            billboardId: row.original.id,
+            initialValues: { ...row.original },
+          }),
       },
     ],
     [
@@ -34,8 +43,7 @@ const getActionItems = (row: Row<Billboard>) => {
         label: 'Delete',
         icon: 'heroicons:trash',
         color: 'error',
-        onSelect: () =>
-          handleDelete({ ...row.original }),
+        onSelect: () => handleDelete({ ...row.original }),
       },
     ],
   ]
@@ -190,9 +198,6 @@ const isFetching = computed(() => status.value === 'pending')
 const rows = computed(() => data.value?.data as Billboard[])
 const meta = computed(() => data.value.meta)
 const pageTotal = computed(() => meta.value?.totalPages || 1)
-
-const { handleShow: handleShowModalEdit } = useModalBillboard()
-const { handleDelete } = useActionBillboard()
 </script>
 
 <template>

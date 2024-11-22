@@ -5,10 +5,13 @@ import type { Color } from '~/types'
 import { refDebounced } from '@vueuse/core'
 import type { TableColumn, TableData } from '@nuxt/ui'
 import type { Row, Column, SortingState, VisibilityState } from '@tanstack/vue-table'
+import { LazyModalColor } from '#components'
 
 const UCheckbox = resolveComponent('UCheckbox')
 const UButton = resolveComponent('UButton')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
+
+const { handleDelete } = useActionColor()
 
 type Props = {
   storeId: string
@@ -19,13 +22,20 @@ const storeId = toRef(props, 'storeId')
 
 const table = useTemplateRef('table')
 const rowSelection = ref({})
+
+const modal = useModal()
 const getActionItems = (row: Row<Color>) => {
   return [
     [
       {
         label: 'Edit',
         icon: 'heroicons:pencil-square',
-        onSelect: () => handleShowModalEdit({ ...row.original }),
+        onSelect: () =>
+          modal.open(LazyModalColor, {
+            storeId: row.original.storeId,
+            colorId: row.original.id,
+            initialValues: { ...row.original },
+          }),
       },
     ],
     [
@@ -188,9 +198,6 @@ const isFetching = computed(() => status.value === 'pending')
 const rows = computed(() => data.value?.data as Color[])
 const meta = computed(() => data.value.meta)
 const pageTotal = computed(() => meta.value?.totalPages || 1)
-
-const { handleShow: handleShowModalEdit } = useModalColor()
-const { handleDelete } = useActionColor()
 </script>
 
 <template>

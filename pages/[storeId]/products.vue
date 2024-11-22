@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { LazyModalProduct } from '#components'
+
 useHead({
   title: 'Products',
 })
@@ -6,7 +8,12 @@ useHead({
 const route = useRoute()
 const storeId = computed(() => route.params.storeId as string)
 
-const { handleShow } = useModalProduct()
+const modal = useModal()
+const handeShowCreateModal = () => {
+  modal.open(LazyModalProduct, {
+    storeId: storeId.value,
+  })
+}
 </script>
 
 <template>
@@ -14,14 +21,10 @@ const { handleShow } = useModalProduct()
     <UContainer>
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-xl font-bold">Products</h2>
-        <UButton leading-icon="heroicons:plus" label="Create" @click="handleShow({ storeId })" />
+        <UButton leading-icon="heroicons:plus" label="Create" @click="handeShowCreateModal" />
       </div>
 
       <TableProduct :store-id="storeId" />
     </UContainer>
-
-    <Teleport to="body">
-      <ModalProduct />
-    </Teleport>
   </section>
 </template>

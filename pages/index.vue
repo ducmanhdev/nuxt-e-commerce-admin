@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { LazyModalStore } from '#components'
+
 useHead({
   title: 'Home',
 })
@@ -11,6 +13,7 @@ const { data, status } = await useFetch('/api/stores', {
     return nuxt.payload.data[key]
   },
 })
+
 const isFetchingStores = computed(() => status.value === 'pending')
 const groups = computed(() => [
   {
@@ -24,7 +27,11 @@ const groups = computed(() => [
   },
 ])
 
-const { handleShow: handleModalStore } = useModalStore()
+
+const modal = useModal()
+const handeShowCreateModal = () => {
+  modal.open(LazyModalStore)
+}
 </script>
 
 <template>
@@ -35,7 +42,7 @@ const { handleShow: handleModalStore } = useModalStore()
           <div class="flex items-center justify-between gap-4">
             <p>Select store</p>
             <UTooltip text="Create new store">
-              <UButton leading-icon="heroicons:plus" @click="handleModalStore()" />
+              <UButton leading-icon="heroicons:plus" @click="handeShowCreateModal" />
             </UTooltip>
           </div>
         </template>

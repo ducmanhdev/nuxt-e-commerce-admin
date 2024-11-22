@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { LazyModalColor } from '#components'
+
 useHead({
   title: 'Colors',
 })
@@ -6,7 +8,12 @@ useHead({
 const route = useRoute()
 const storeId = computed(() => route.params.storeId as string)
 
-const { handleShow } = useModalColor()
+const modal = useModal()
+const handeShowCreateModal = () => {
+  modal.open(LazyModalColor, {
+    storeId: storeId.value,
+  })
+}
 </script>
 
 <template>
@@ -14,14 +21,10 @@ const { handleShow } = useModalColor()
     <UContainer>
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-xl font-bold">Colors</h2>
-        <UButton leading-icon="heroicons:plus" label="Create" @click="handleShow({ storeId })" />
+        <UButton leading-icon="heroicons:plus" label="Create" @click="handeShowCreateModal" />
       </div>
 
       <TableColor :store-id="storeId" />
     </UContainer>
-
-    <Teleport to="body">
-      <ModalColor />
-    </Teleport>
   </section>
 </template>
