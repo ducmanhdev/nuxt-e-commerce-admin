@@ -62,7 +62,7 @@ const { isFetching: isFetchingBillboards, data: billboards } = useReferenceBillb
 </script>
 
 <template>
-  <UModal v-model:open="isOpen" :title="modalTitle" :prevent-close="isSubmitLoading">
+  <UModal :title="modalTitle" :prevent-close="isSubmitLoading">
     <template #body>
       <UForm :schema="schema" :state="state" class="space-y-4" @submit="handleSubmit">
         <UFormField label="Name" name="name" required>
