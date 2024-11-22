@@ -176,7 +176,7 @@ const sorting = ref<SortingState>([
   },
 ])
 const page = ref(1)
-const pageCount = ref(10)
+const itemsPerPage = ref(10)
 const sortColumn = computed(() => sorting.value?.[0].id)
 const sortDirection = computed(() => (sorting.value?.[0].desc ? 'desc' : 'asc'))
 
@@ -189,7 +189,7 @@ const { data, status } = await useFetch(() => `/api/stores/${storeId.value}/size
   query: {
     search: searchDebounced,
     page: page,
-    limit: pageCount,
+    limit: itemsPerPage,
     sort: sortColumn,
     order: sortDirection,
   },
@@ -198,7 +198,6 @@ const isFetching = computed(() => status.value === 'pending')
 
 const rows = computed(() => data.value?.data as Size[])
 const meta = computed(() => data.value.meta)
-const pageTotal = computed(() => meta.value?.totalPages || 1)
 </script>
 
 <template>
@@ -266,9 +265,9 @@ const pageTotal = computed(() => meta.value?.totalPages || 1)
       <div class="flex items-center justify-end gap-4">
         <div class="flex items-center gap-1.5">
           <span class="text-sm leading-5">Rows per page:</span>
-          <USelect v-model.number="pageCount" :items="ROWS_PER_PAGE_OPTIONS" class="w-20" />
+          <USelect v-model.number="itemsPerPage" :items="ROWS_PER_PAGE_OPTIONS" class="w-20" />
         </div>
-        <UPagination v-model="page" :page-count="pageCount" :total="pageTotal" />
+        <UPagination v-model:page="page" :items-per-page="itemsPerPage" :total="meta?.total" />
       </div>
     </template>
   </UCard>
