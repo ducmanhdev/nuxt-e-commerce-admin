@@ -1,6 +1,6 @@
 import prisma from '~/lib/prisma'
 
-export default defineEventHandler(async (event) => {
+export default defineWrappedResponseHandler(async (event) => {
   const user = event.context.user
 
   const stores = await prisma.store.findMany({

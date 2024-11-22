@@ -1,25 +1,10 @@
 import prisma from '~/lib/prisma'
 import schema from '~/schemas/size.schema'
 
-export default defineEventHandler(async (event) => {
+export default defineWrappedResponseHandler(async (event) => {
   const user = event.context.user
 
   const { storeId, sizeId } = getRouterParams(event)
-
-  if (!storeId) {
-    throw createError({
-      statusCode: 404,
-      statusMessage: 'Store ID not found or invalid',
-    })
-  }
-
-  if (!sizeId) {
-    throw createError({
-      statusCode: 404,
-      statusMessage: 'Size ID not found or invalid',
-    })
-  }
-
   const size = await prisma.size.findFirstOrThrow({
     where: {
       id: sizeId,

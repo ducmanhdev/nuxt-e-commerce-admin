@@ -1,7 +1,7 @@
 import prisma from '~/lib/prisma'
 import schema from '~/schemas/store.schema'
 
-export default defineEventHandler(async (event) => {
+export default defineWrappedResponseHandler(async (event) => {
   const user = event.context.user
 
   const body = await readValidatedBody(event, schema.parse)

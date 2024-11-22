@@ -1,20 +1,14 @@
 import prisma from '~/lib/prisma'
-import { handleQuery } from '~/server/utils/queryHandler'
 
-export default defineEventHandler(async (event) => {
+export default defineWrappedResponseHandler(async (event) => {
+  const user = event.context.user
   const storeId = getRouterParam(event, 'storeId')
-  if (!storeId) {
-    throw createError({
-      statusCode: 404,
-      statusMessage: 'Store ID not found or invalid',
-    })
-  }
 
   const { where, pagination, ordering, page, limit } = await handleQuery(event, {
     searchField: 'name',
   })
 
-  const finalWhere = { ...where, storeId }
+  const finalWhere = { ...where, storeId, store: { userId: user.id } }
 
   const [data, total] = await prisma.$transaction([
     prisma.category.findMany({
