@@ -1,5 +1,6 @@
 import type { z } from 'zod'
 import type schema from '~/schemas/product.schema'
+import { LazyModalConfirm } from '#components'
 
 export const useActionProduct = () => {
   type Schema = z.infer<typeof schema>
@@ -53,11 +54,10 @@ export const useActionProduct = () => {
     storeId: string
     id: string
   }
-
-  const { showModal } = useModalConfirm()
+  const modal = useModal()
   const isDeleteLoading = ref(false)
-  const handleDelete = ({ storeId, id }: DeleteArgs) =>
-    showModal({
+  const handleDelete = ({ storeId, id }: DeleteArgs) => {
+    modal.open(LazyModalConfirm, {
       message: 'Are you absolutely to delete this item?',
       onConfirm: async () => {
         try {
@@ -75,6 +75,7 @@ export const useActionProduct = () => {
         }
       },
     })
+  }
 
   return {
     isCreateLoading,

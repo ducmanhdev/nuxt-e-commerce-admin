@@ -3,8 +3,6 @@
     <NuxtLoadingIndicator />
     <NuxtRouteAnnouncer />
 
-    <LazyModalConfirm />
-
     <Notivue v-slot="item">
       <NotivueSwipe :item="item">
         <Notification :item="item" :theme="pastelTheme">

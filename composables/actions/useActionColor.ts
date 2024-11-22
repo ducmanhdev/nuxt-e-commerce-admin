@@ -1,5 +1,6 @@
 import type { z } from 'zod'
 import type schema from '~/schemas/color.schema'
+import { LazyModalConfirm } from '#components'
 
 export const useActionColor = () => {
   type Schema = z.infer<typeof schema>
@@ -53,10 +54,10 @@ export const useActionColor = () => {
     storeId: string
     id: string
   }
-  const { showModal } = useModalConfirm()
+  const modal = useModal()
   const isDeleteLoading = ref(false)
-  const handleDelete = ({ storeId, id }: DeleteArgs) =>
-    showModal({
+  const handleDelete = ({ storeId, id }: DeleteArgs) => {
+    modal.open(LazyModalConfirm, {
       message: 'Are you absolutely to delete this item?',
       onConfirm: async () => {
         try {
@@ -74,6 +75,7 @@ export const useActionColor = () => {
         }
       },
     })
+  }
 
   return {
     isCreateLoading,

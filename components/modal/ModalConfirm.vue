@@ -1,17 +1,36 @@
 <script setup lang="ts">
-const { isOpen, message, confirm, cancel, isConfirmLoading, isCancelLoading } = useModalConfirm()
+type Props = {
+  title?: string
+  description?: string
+  onConfirm?: () => void | Promise<void>
+}
+const {
+  title = 'Confirm',
+  description = 'Are you absolutely to do this?',
+  onConfirm = () => {
+    const modal = useModal()
+    modal.close()
+  },
+} = defineProps<Props>()
+
+const onCancel = () => {
+  const modal = useModal()
+  modal.close()
+}
+
+const isConfirmLoading = ref(false)
+const onConfirmWrapper = async () => {
+  isConfirmLoading.value = true
+  await onConfirm()
+  isConfirmLoading.value = false
+}
 </script>
 
 <template>
-  <UModal
-    v-model:open="isOpen"
-    :prevent-close="isConfirmLoading || isCancelLoading"
-    title="Confirm"
-    :description="message"
-  >
+  <UModal :title="title" :description="description">
     <template #footer>
-      <UButton type="button" block label="Cancel" variant="soft" :loading="isCancelLoading" @click="cancel" />
-      <UButton type="submit" block label="Confirm" :loading="isConfirmLoading" @click="confirm" />
+      <UButton type="button" block label="Cancel" variant="soft" @click="onCancel" />
+      <UButton type="submit" block label="Confirm" :loading="isConfirmLoading" @click="onConfirmWrapper" />
     </template>
   </UModal>
 </template>
