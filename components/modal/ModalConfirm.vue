@@ -29,9 +29,9 @@ const onConfirmWrapper = async () => {
 </script>
 
 <template>
-  <UModal :title="title" :description="description">
+  <UModal :title="title" :description="description" :prevent-close="isConfirmLoading">
     <template #footer>
-      <UButton type="button" block label="Cancel" variant="soft" @click="onCancel" />
+      <UButton type="button" block label="Cancel" variant="soft" :disabled="isConfirmLoading" @click="onCancel" />
       <UButton type="submit" block label="Confirm" :loading="isConfirmLoading" @click="onConfirmWrapper" />
     </template>
   </UModal>

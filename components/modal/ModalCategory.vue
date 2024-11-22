@@ -82,7 +82,7 @@ const { isFetching: isFetchingBillboards, data: billboards } = useReferenceBillb
           <UButton
             type="button"
             block
-            :loading="isSubmitLoading"
+            :disabled="isSubmitLoading"
             label="Cancel"
             variant="soft"
             @click="modal.close()"

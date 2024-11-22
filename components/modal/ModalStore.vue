@@ -60,7 +60,7 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaOutput>) => {
           <UButton
             type="button"
             block
-            :loading="isSubmitLoading"
+            :disabled="isSubmitLoading"
             label="Cancel"
             variant="soft"
             @click="modal.close()"
