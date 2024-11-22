@@ -2,7 +2,7 @@
 @import "@nuxt/ui";
 
 @theme {
-    --font-sans: 'Noto Sans', sans-serif;
+    --font-sans: 'Space Grotesk', sans-serif;
 
     --color-rebeccaPurple-50: #faf6fe;
     --color-rebeccaPurple-100: #f2ebfc;
