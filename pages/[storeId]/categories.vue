@@ -14,13 +14,6 @@ const handeShowCreateModal = () => {
     storeId: storeId.value,
   })
 }
-
-const { handleFetchData } = useReferenceBillboard()
-watchEffect(() => {
-  if (storeId.value) {
-    handleFetchData(storeId.value)
-  }
-})
 </script>
 
 <template>

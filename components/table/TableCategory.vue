@@ -118,7 +118,7 @@ const columns: TableColumn<Category>[] = [
       }),
   },
   { accessorKey: 'name', header: ({ column }) => getHeader(column, 'Name') },
-  { accessorKey: 'billboardId', header: ({ column }) => getHeader(column, 'Billboard') },
+  { accessorKey: 'imageUrl', header: ({ column }) => getHeader(column, 'Image') },
   {
     accessorKey: 'createdAt',
     header: ({ column }) => getHeader(column, 'Created at'),

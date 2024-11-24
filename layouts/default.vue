@@ -77,20 +77,8 @@ const navigationItems = computed(() => {
       to: `/${storeId.value}`,
     },
     {
-      label: 'Billboards',
-      to: `/${storeId.value}/billboards`,
-    },
-    {
       label: 'Categories',
       to: `/${storeId.value}/categories`,
-    },
-    {
-      label: 'Sizes',
-      to: `/${storeId.value}/sizes`,
-    },
-    {
-      label: 'Colors',
-      to: `/${storeId.value}/colors`,
     },
     {
       label: 'Products',
@@ -107,9 +95,9 @@ const navigationItems = computed(() => {
 <template>
   <div>
     <header
-      class="py-4 shadow border-b border-transparent dark:border-[var(--ui-border)] text-[var(--ui-text)] bg-[var(--ui-bg)] sticky top-0 z-50"
+      class="min-h-[82px] flex item-center py-4 shadow border-b border-transparent dark:border-[var(--ui-border)] text-[var(--ui-text)] bg-[var(--ui-bg)] sticky top-0 z-50"
     >
-      <UContainer class="flex items-center">
+      <UContainer class="w-full flex items-center">
         <UTooltip text="Return home">
           <UButton icon="heroicons:home-20-solid" to="/" class="mr-4" />
         </UTooltip>

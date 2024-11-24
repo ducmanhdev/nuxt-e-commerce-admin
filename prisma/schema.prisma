@@ -11,88 +11,174 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+enum CommonStatus {
+  HIDDEN
+  VISIBLE
+  ARCHIVED
+}
+
 model Store {
   id         String      @id @default(uuid())
   name       String
   userId     String
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
-  billboards Billboard[]
   categories Category[]
-  sizes      Size[]
-  colors     Color[]
   products   Product[]
   orders     Order[]
-}
-
-model Billboard {
-  id         String     @id @default(uuid())
-  name       String
-  imageUrl   String
-  storeId    String
-  store      Store      @relation(fields: [storeId], references: [id])
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-  categories Category[]
+  brands     Brand[]
+  attributes Attribute[]
 }
 
 model Category {
+  id        String    @id @default(uuid())
+  name      String
+  storeId   String
+  store     Store     @relation(fields: [storeId], references: [id])
+  imageUrl  String
+  products  Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Brand {
+  id        String    @id @default(uuid())
+  name      String
+  imageUrl  String
+  storeId   String
+  store     Store     @relation(fields: [storeId], references: [id])
+  products  Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+enum FeedbackStar {
+  ONE
+  TWO
+  THREE
+  FOUR
+  FIVE
+}
+
+model Feedback {
+  id        String       @id @default(uuid())
+  userId    String
+  content   String
+  star      FeedbackStar
+  productId String
+  product   Product      @relation(fields: [productId], references: [id])
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+}
+
+model Product {
+  id            String         @id @default(uuid())
+  name          String
+  price         Decimal
+  oldPrice      Decimal?
+  description   String
+  quantity      Int
+  brandId       String
+  brand         Brand          @relation(fields: [brandId], references: [id])
+  storeId       String
+  store         Store          @relation(fields: [storeId], references: [id])
+  categoryId    String
+  category      Category       @relation(fields: [categoryId], references: [id])
+  status        CommonStatus   @default(VISIBLE)
+  orderItems    OrderItem[]
+  feedbacks     Feedback[]
+  newsDetails   NewsDetail[]
+  ProductImages ProductImage[]
+  bannerDetails BannerDetail[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model ProductImage {
+  id        String   @id @default(uuid())
+  imageUrl  String
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Attribute {
+  id                     String                  @id @default(uuid())
+  storeId                String
+  store                  Store                   @relation(fields: [storeId], references: [id])
+  name                   String
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
+  productAttributeValues ProductAttributeValue[]
+}
+
+model ProductAttributeValue {
   id          String    @id @default(uuid())
-  name        String
-  storeId     String
-  store       Store     @relation(fields: [storeId], references: [id])
-  billboardId String
-  billboard   Billboard @relation(fields: [billboardId], references: [id])
-  products    Product[]
+  productId   String
+  attributeId String
+  attribute   Attribute @relation(fields: [attributeId], references: [id])
+  value       String
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }
 
-model Size {
-  id        String    @id @default(uuid())
-  name      String
-  value     String
-  storeId   String
-  store     Store     @relation(fields: [storeId], references: [id])
-  products  Product[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+model News {
+  id        String       @id @default(uuid())
+  title     String
+  image     String?
+  content   String?
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  details   NewsDetail[]
 }
 
-model Color {
-  id        String    @id @default(uuid())
-  name      String
-  value     String
-  storeId   String
-  store     Store     @relation(fields: [storeId], references: [id])
-  products  Product[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-}
-
-model Product {
-  id         String      @id @default(uuid())
-  name       String
-  price      Decimal
-  storeId    String
-  store      Store       @relation(fields: [storeId], references: [id])
-  categoryId String
-  category   Category    @relation(fields: [categoryId], references: [id])
-  sizeId     String
-  size       Size        @relation(fields: [sizeId], references: [id])
-  colorId    String
-  color      Color       @relation(fields: [colorId], references: [id])
-  isArchived Boolean     @default(false)
-  images     Image[]
-  orderItems OrderItem[]
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-}
-
-model Image {
+model NewsDetail {
   id        String   @id @default(uuid())
   productId String
+  newsId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  product Product @relation(fields: [productId], references: [id])
+  news    News    @relation(fields: [newsId], references: [id])
+}
+
+model Banner {
+  id        String         @id @default(uuid())
+  name      String
+  imageUrl  String
+  status    Int
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  details   BannerDetail[]
+}
+
+model BannerDetail {
+  id        String   @id @default(uuid())
+  productId String
+  bannerId  String
   product   Product  @relation(fields: [productId], references: [id])
+  banner    Banner   @relation(fields: [bannerId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Cart {
+  id        String     @id @default(uuid())
+  sessionId String?
+  userId    Int?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  cartItems CartItem[]
+}
+
+model CartItem {
+  id        String   @id @default(uuid())
+  cartId    String
+  productId Int
+  quantity  Int
+  cart      Cart     @relation(fields: [cartId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -113,10 +199,9 @@ enum OrderStatus {
 
 model Order {
   id          String      @id @default(uuid())
+  userId      String
   storeId     String
   store       Store       @relation(fields: [storeId], references: [id])
-  // customerId  String? // Optional, if you support guest orders
-  // customer    Customer?   @relation(fields: [customerId], references: [id])
   orderItems  OrderItem[]
   totalPrice  Decimal
   isPaid      Boolean     @default(false)
@@ -126,6 +211,7 @@ model Order {
   address     String
   voucher     Voucher?    @relation(fields: [voucherId], references: [id])
   voucherId   String?
+  note        String
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 }
@@ -147,19 +233,28 @@ enum DiscountType {
   FIXED
 }
 
+enum VoucherStatus {
+  ACTIVE // Voucher is active and can be used
+  INACTIVE // Voucher is inactive and can't be used
+  EXPIRED // Voucher is expired
+  USED // Voucher is used
+  PENDING // Voucher pending (if pre-approval required)
+  REVOKED // Voucher has been revoked or canceled
+}
+
 model Voucher {
-  id            String       @id @default(uuid())
-  code          String       @unique
+  id            String        @id @default(uuid())
+  code          String        @unique
   discountType  DiscountType
   discountValue Decimal
   minOrderValue Decimal?
   maxDiscount   Decimal?
-  isActive      Boolean      @default(true)
+  status        VoucherStatus @default(ACTIVE)
   usageLimit    Int?
-  usedCount     Int          @default(0)
+  usedCount     Int           @default(0)
   startDate     DateTime
   endDate       DateTime
   orders        Order[]
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 }

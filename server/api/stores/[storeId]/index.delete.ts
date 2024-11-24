@@ -4,8 +4,7 @@ export default defineWrappedResponseHandler(async (event) => {
   const user = event.context.user
 
   const storeId = getRouterParam(event, 'storeId')
-
-  const storeWithBillboards = await prisma.store.findFirstOrThrow({
+  const store = await prisma.store.findFirstOrThrow({
     where: {
       id: storeId,
       userId: user.id,
@@ -14,7 +13,8 @@ export default defineWrappedResponseHandler(async (event) => {
 
   await prisma.store.delete({
     where: {
-      id: storeWithBillboards.id,
+      id: store.id,
+      userId: user.id,
     },
   })
 
