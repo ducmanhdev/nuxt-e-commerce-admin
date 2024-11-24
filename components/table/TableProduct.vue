@@ -125,14 +125,6 @@ const columns: TableColumn<Product>[] = [
     header: ({ column }) => getHeader(column, 'Category'),
   },
   {
-    accessorKey: 'sizeId',
-    header: ({ column }) => getHeader(column, 'Size'),
-  },
-  {
-    accessorKey: 'colorId',
-    header: ({ column }) => getHeader(column, 'Color'),
-  },
-  {
     accessorKey: 'createdAt',
     header: ({ column }) => getHeader(column, 'Created at'),
     cell: ({ row }) => dayjs(row.getValue('createdAt')).format(DATE_TIME_FORMAT),
