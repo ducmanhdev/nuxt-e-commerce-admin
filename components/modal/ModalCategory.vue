@@ -39,11 +39,12 @@ const DEFAULT_STATE: SchemaInfer = {
 }
 
 const state = ref({ ...DEFAULT_STATE })
-
+const attrs = useAttrs()
 watch(
-  () => props.initialValues,
-  (newValue) => {
-    Object.assign(state.value, { ...DEFAULT_STATE, ...newValue })
+  [() => props.initialValues, () => attrs.open],
+  ([newInitialValues, isOpen]) => {
+    if (!isOpen) return
+    Object.assign(state.value, { ...DEFAULT_STATE, ...newInitialValues })
   },
   {
     immediate: true,

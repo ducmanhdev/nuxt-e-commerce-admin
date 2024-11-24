@@ -20,19 +20,18 @@ const modalTitle = computed(() => props.title || (props.storeId ? 'Update produc
 
 const DEFAULT_STATE: SchemaInfer = {
   name: '',
-  sizeId: '',
   categoryId: '',
-  colorId: '',
   price: 0,
   isArchived: false,
 }
 
 const state = ref({ ...DEFAULT_STATE })
-
+const attrs = useAttrs()
 watch(
-  () => props.initialValues,
-  (newValue) => {
-    Object.assign(state.value, { ...DEFAULT_STATE, ...newValue })
+  [() => props.initialValues, () => attrs.open],
+  ([newInitialValues, isOpen]) => {
+    if (!isOpen) return
+    Object.assign(state.value, { ...DEFAULT_STATE, ...newInitialValues })
   },
   {
     immediate: true,
@@ -75,8 +74,6 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaOutput>) => {
           <UInput v-model.number="state.price" type="number" min="0" />
         </UFormField>
         <UFormField label="Category" name="categoryId" required></UFormField>
-        <UFormField label="sizeId" name="sizeId" required></UFormField>
-        <UFormField label="Color" name="colorId" required></UFormField>
         <div class="grid grid-cols-2 gap-2">
           <UButton
             type="button"
