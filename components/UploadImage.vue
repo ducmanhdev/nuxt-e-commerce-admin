@@ -98,7 +98,7 @@ const handleDeleteExistImage = (imageSrc: string) => {
     @click="inputRef?.click()"
   >
     <div class="space-y-2 col-span-full flex flex-col justify-center items-center" v-if="!isContainsImages">
-      <UIcon name="heroicons:arrow-up-tray" size="28" />
+      <UIcon name="heroicons:arrow-up-tray" class="size-7" />
       <p class="text-gray-500">Click to upload {{ multiple ? 'images' : 'an image' }} here</p>
       <p class="text-xs text-gray-400">{{ uploadDescription }}</p>
     </div>
@@ -131,7 +131,7 @@ const handleDeleteExistImage = (imageSrc: string) => {
         v-if="multiple"
         class="relative aspect-square grid place-content-center bg-black/10 dark:bg-white/10 rounded overflow-hidden"
       >
-        <UIcon name="heroicons:plus" size="28" />
+        <UIcon name="heroicons:plus" class="size-7" />
       </div>
     </template>
 
