@@ -9,11 +9,7 @@ const { data, status } = await useFetch('/api/stores', {
   key: 'stores',
   lazy: true,
   server: false,
-  getCachedData: (key, nuxt) => {
-    return nuxt.payload.data[key]
-  },
 })
-
 const isFetchingStores = computed(() => status.value === 'pending')
 const groups = computed(() => [
   {
@@ -27,11 +23,7 @@ const groups = computed(() => [
   },
 ])
 
-
 const modal = useModal()
-const handeShowCreateModal = () => {
-  modal.open(LazyModalStore)
-}
 </script>
 
 <template>
@@ -42,7 +34,7 @@ const handeShowCreateModal = () => {
           <div class="flex items-center justify-between gap-4">
             <p>Select store</p>
             <UTooltip text="Create new store">
-              <UButton leading-icon="heroicons:plus" @click="handeShowCreateModal" />
+              <UButton leading-icon="heroicons:plus" @click="modal.open(LazyModalStore)" />
             </UTooltip>
           </div>
         </template>
