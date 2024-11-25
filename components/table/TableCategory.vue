@@ -3,13 +3,14 @@ import { DATE_TIME_FORMAT, ROWS_PER_PAGE_OPTIONS } from '~/constants'
 import { upperFirst } from 'scule'
 import type { Category } from '~/types'
 import { refDebounced } from '@vueuse/core'
-import type { TableColumn, TableData } from '@nuxt/ui'
-import type { Row, Column, SortingState, VisibilityState } from '@tanstack/vue-table'
+import type { TableColumn } from '@nuxt/ui'
+import type { Column, Row, SortingState, VisibilityState } from '@tanstack/vue-table'
 import { LazyModalCategory } from '#components'
 
 const UCheckbox = resolveComponent('UCheckbox')
 const UButton = resolveComponent('UButton')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
+const NuxtImg = resolveComponent('NuxtImg')
 
 const { handleDelete } = useActionCategory()
 
@@ -49,6 +50,9 @@ const getActionItems = (row: Row<Category>) => {
   ]
 }
 const getHeader = (column: Column<Category>, label: string) => {
+  const isEnableSort = column.getCanSort()
+  if (!isEnableSort) return label
+
   const isSorted = column.getIsSorted()
   return h(
     UDropdownMenu,
@@ -118,7 +122,20 @@ const columns: TableColumn<Category>[] = [
       }),
   },
   { accessorKey: 'name', header: ({ column }) => getHeader(column, 'Name') },
-  { accessorKey: 'imageUrl', header: ({ column }) => getHeader(column, 'Image') },
+  {
+    accessorKey: 'imageUrl',
+    header: 'Image',
+    cell: ({ row }) => {
+      return h(NuxtImg, {
+        src: row.getValue('imageUrl'),
+        placeholder: true,
+        fit: 'cover',
+        width: 80,
+        quality: 80,
+        class: ['aspect-square object-cover']
+      })
+    },
+  },
   {
     accessorKey: 'createdAt',
     header: ({ column }) => getHeader(column, 'Created at'),

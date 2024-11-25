@@ -51,64 +51,67 @@ watch(
   },
 )
 
-const { isCreateLoading, handleCreate, isUpdateLoading, handleUpdate } = useActionCategory()
+const { handleCreate, handleUpdate } = useActionCategory()
 const { handleDeleteImages, handleUploadImages } = useSupabaseStorage('categories')
-const isProcessImageLoading = ref(false)
-const processImages = async (data: SchemaOutput) => {
-  try {
-    isProcessImageLoading.value = true
-    if (data.deletedImages?.length) {
-      handleDeleteImages(data.deletedImages).then((data) => console.log({ data }))
-    }
-    if (data.newImageFiles?.length) {
-      const [uploadedImageUrl] = await handleUploadImages(data.newImageFiles)
-      return uploadedImageUrl
-    }
-    return data.imageUrl
-  } finally {
-    isProcessImageLoading.value = false
-  }
-}
 
-const isSubmitLoading = computed(() => isCreateLoading.value || isUpdateLoading.value)
+const isSubmitLoading = ref(false)
 const handleSubmit = async (event: FormSubmitEvent<SchemaOutput>) => {
-  if (!props.storeId) {
-    console.error('Store ID is required')
-    return
-  }
+  try {
+    isSubmitLoading.value = true
 
-  const imageUrl = await processImages(event.data)
-  if (!imageUrl) {
-    push.error('Something went wrong with image processing')
-    return
-  }
+    if (!props.storeId) {
+      console.error('Store ID is required')
+      return
+    }
 
-  const payload = {
-    name: event.data.name,
-    imageUrl,
-  }
+    if (event.data.deletedImages?.length) {
+      handleDeleteImages(event.data.deletedImages)
+    }
 
-  if (props.categoryId) {
-    await handleUpdate({
-      storeId: props.storeId,
-      categoryId: props.categoryId,
-      payload: payload,
-    })
-  } else {
-    await handleCreate({
-      storeId: props.storeId,
-      payload: payload,
-    })
-  }
+    if (event.data.newImageFiles?.length) {
+      const uploadResponse = await handleUploadImages(event.data.newImageFiles)
+      const { data, error } = uploadResponse[0]
+      if (error) {
+        push.error(error.message)
+        return
+      }
+      event.data.imageUrl = data
+    }
 
-  await modal.close()
+    if (!event.data.imageUrl) {
+      push.error('Image URL is required')
+      return
+    }
+
+    const payload = {
+      name: event.data.name,
+      imageUrl: event.data.imageUrl,
+    }
+
+    if (props.categoryId) {
+      await handleUpdate({
+        storeId: props.storeId,
+        categoryId: props.categoryId,
+        payload: payload,
+      })
+    } else {
+      await handleCreate({
+        storeId: props.storeId,
+        payload: payload,
+      })
+    }
+
+    modal.close()
+  } finally {
+    isSubmitLoading.value = false
+  }
 }
 </script>
 
 <template>
   <UModal :title="modalTitle" :prevent-close="isSubmitLoading">
     <template #body>
-      <UForm :schema="schema" :state="state" class="space-y-4" @submit="handleSubmit">
+      <UForm :schema="validationSchema" :state="state" class="space-y-4" @submit="handleSubmit">
         <UFormField label="Name" name="name" required>
           <UInput v-model="state.name" />
         </UFormField>

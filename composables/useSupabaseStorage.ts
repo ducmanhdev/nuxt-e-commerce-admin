@@ -11,12 +11,7 @@ export const useSupabaseStorage = (bucketName: string) => {
     try {
       isDeleteImagesLoading.value = true
       const deleteImagePaths = deletedImages.map((image) => image.replace(config.public.supabaseStorageUrl, ''))
-      const { data, error } = await supabase.storage.from(bucketName).remove(deleteImagePaths)
-      if (error) {
-        console.error('Error deleting images:', error.message)
-        return
-      }
-      return data
+      return await supabase.storage.from(bucketName).remove(deleteImagePaths)
     } finally {
       isDeleteImagesLoading.value = false
     }
@@ -33,10 +28,11 @@ export const useSupabaseStorage = (bucketName: string) => {
           .from(bucketName)
           .upload(`${user.value?.id}/${randomFileName}`, file)
         if (error) {
-          console.error(`Error uploading ${file.name}:`, error.message)
-          return ''
+          return { error }
         }
-        return supabase.storage.from(bucketName).getPublicUrl(data.path).data.publicUrl
+        return {
+          data: supabase.storage.from(bucketName).getPublicUrl(data.path).data.publicUrl,
+        }
       })
 
       return Promise.all(uploadPromises)
