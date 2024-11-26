@@ -1,3 +1,8 @@
+<script setup lang="ts">
+const { fetchStores } = useActionStore()
+fetchStores()
+</script>
+
 <template>
   <div>
     <NuxtLoadingIndicator />
@@ -18,4 +23,3 @@
     </UApp>
   </div>
 </template>
-<script setup lang="ts"></script>

@@ -1,10 +1,25 @@
 import type { z } from 'zod'
 import type schema from '~/schemas/store.schema'
 import { LazyModalConfirm } from '#components'
+import type { Store } from '~/types'
 
 export const useActionStore = () => {
-  type Schema = z.infer<typeof schema>
+  const stores = useState<Store[]>('stores', () => [])
+  const isFetchingStores = useState('isFetchingStores', () => false)
+  const fetchStores = async () => {
+    try {
+      isFetchingStores.value = true
+      const response = await $fetch('/api/stores')
+      stores.value = response.data as any
+    } catch (error) {
+      console.log('[FETCH_STORES_ERROR]', error)
+      push.error('Fetch stores error')
+    } finally {
+      isFetchingStores.value = false
+    }
+  }
 
+  type Schema = z.infer<typeof schema>
   type CreateArgs = Schema
   const isCreateLoading = useState(() => false)
   const handleCreate = async (payload: CreateArgs) => {
@@ -14,7 +29,7 @@ export const useActionStore = () => {
         method: 'POST',
         body: payload,
       })
-      await refreshNuxtData('stores')
+      fetchStores()
     } catch (error: any) {
       console.log(error)
       push.error(error.statusMessage || 'Something went wrong')
@@ -36,8 +51,7 @@ export const useActionStore = () => {
         body: payload,
       })
       push.success('Updated successfully')
-      await refreshNuxtData('stores')
-      await refreshNuxtData(`store-${storeId}`)
+      fetchStores()
     } catch (error: any) {
       console.log(error)
       push.error(error.statusMessage || 'Something went wrong')
@@ -58,7 +72,7 @@ export const useActionStore = () => {
             method: 'DELETE',
           })
           push.success('Deleted successfully')
-          await refreshNuxtData('stores')
+          fetchStores()
           await navigateTo('/')
         } catch (error: any) {
           console.log(error)
@@ -71,6 +85,10 @@ export const useActionStore = () => {
   }
 
   return {
+    stores,
+    isFetchingStores,
+    fetchStores,
+
     isCreateLoading,
     handleCreate,
     isUpdateLoading,

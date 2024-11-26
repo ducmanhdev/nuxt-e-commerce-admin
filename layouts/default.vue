@@ -4,13 +4,8 @@ import { LazyModalStore } from '#components'
 const route = useRoute()
 const storeId = computed(() => route.params.storeId as string)
 
-const { data, status } = await useFetch('/api/stores', {
-  key: 'stores',
-  lazy: true,
-})
+const { stores, isFetchingStores } = useActionStore()
 
-const stores = computed(() => data.value?.data || [])
-const isFetchingStores = computed(() => status.value === 'pending')
 const storesOptions = computed(() => {
   return stores.value.map((item) => ({
     id: item.id,
@@ -64,9 +59,6 @@ const userDropdownItems = computed(() => {
 const { isDark, handleToggleMode } = useThemeMode()
 
 const modal = useModal()
-const handeShowCreateStoreModal = () => {
-  modal.open(LazyModalStore)
-}
 
 const navigationItems = computed(() => {
   return [
@@ -77,14 +69,6 @@ const navigationItems = computed(() => {
     {
       label: 'Categories',
       to: `/${storeId.value}/categories`,
-    },
-    {
-      label: 'Products',
-      to: `/${storeId.value}/products`,
-    },
-    {
-      label: 'Settings',
-      to: `/${storeId.value}/settings`,
     },
   ]
 })
@@ -117,7 +101,7 @@ const navigationItems = computed(() => {
               aria-label="Create store"
               color="primary"
               variant="ghost"
-              @click="handeShowCreateStoreModal"
+              @click="modal.open(LazyModalStore)"
             />
           </UTooltip>
           <UNavigationMenu :items="navigationItems" />

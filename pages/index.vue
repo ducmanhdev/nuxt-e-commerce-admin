@@ -5,17 +5,13 @@ useHead({
   title: 'Home',
 })
 
-const { data, status } = await useFetch('/api/stores', {
-  key: 'stores',
-  lazy: true,
-  server: false,
-})
-const isFetchingStores = computed(() => status.value === 'pending')
+const { stores, isFetchingStores } = useActionStore()
+
 const groups = computed(() => [
   {
     id: 'stores',
     label: '',
-    items: (data.value?.data || []).map((store) => ({
+    items: (stores.value || []).map((store) => ({
       icon: 'ion:ios-grid-view-outline',
       label: store.name,
       id: store.id,

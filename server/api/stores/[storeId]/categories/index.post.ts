@@ -13,7 +13,7 @@ export default defineWrappedResponseHandler(async (event) => {
   })
 
   const body = await readValidatedBody(event, schema.parse)
-  const createdCategory = await prisma.category.create({
+  const data = await prisma.category.create({
     data: {
       storeId: store.id,
       ...body,
@@ -21,6 +21,6 @@ export default defineWrappedResponseHandler(async (event) => {
   })
 
   return {
-    data: createdCategory,
+    data,
   }
 })

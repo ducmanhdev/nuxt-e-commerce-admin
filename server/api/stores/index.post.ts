@@ -5,7 +5,7 @@ export default defineWrappedResponseHandler(async (event) => {
   const user = event.context.user
 
   const body = await readValidatedBody(event, schema.parse)
-  const createdStore = await prisma.store.create({
+  const data = await prisma.store.create({
     data: {
       userId: user.id,
       ...body,
@@ -13,6 +13,6 @@ export default defineWrappedResponseHandler(async (event) => {
   })
 
   return {
-    data: createdStore,
+    data,
   }
 })

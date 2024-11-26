@@ -16,7 +16,7 @@ export default defineWrappedResponseHandler(async (event) => {
   })
 
   const body = await readValidatedBody(event, schema.parse)
-  const updatedCategory = await prisma.category.update({
+  const data = await prisma.category.update({
     where: {
       id: category.id,
     },
@@ -26,6 +26,6 @@ export default defineWrappedResponseHandler(async (event) => {
   })
 
   return {
-    data: updatedCategory,
+    data,
   }
 })
