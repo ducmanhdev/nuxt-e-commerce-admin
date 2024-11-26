@@ -1,31 +1,19 @@
 import prisma from '~/lib/prisma'
+import schema from '~/schemas/query.schema'
 
 export default defineWrappedResponseHandler(async (event) => {
   const user = event.context.user
   const storeId = getRouterParam(event, 'storeId')
 
-  const { where, pagination, ordering, page, limit } = await handleQuery(event, {
-    searchField: 'name',
-  })
-
-  const finalWhere = { ...where, storeId, store: { userId: user.id } }
-
-  const [data, total] = await prisma.$transaction([
-    prisma.category.findMany({
-      where: finalWhere,
-      ...pagination,
-      ...(ordering ? { orderBy: ordering } : {}),
-    }),
-    prisma.category.count({ where: finalWhere }),
-  ])
-
-  return {
-    data,
-    meta: {
-      total,
-      currentPage: Number(page),
-      itemsPerPage: Number(limit),
-      totalPages: Math.ceil(total / Number(limit)),
+  const queries = await getValidatedQuery(event, schema.parse)
+  return await prisma.category.paginate(queries, {
+    storeId: storeId,
+    store: {
+      userId: user.id,
     },
-  }
+    name: {
+      contains: queries.search || '',
+      mode: 'insensitive',
+    },
+  })
 })
