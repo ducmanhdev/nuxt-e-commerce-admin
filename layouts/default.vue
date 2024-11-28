@@ -121,8 +121,8 @@ const navigationItems = computed(() => {
         </div>
       </UContainer>
     </header>
-    <div>
+    <main>
       <slot />
-    </div>
+    </main>
   </div>
 </template>
