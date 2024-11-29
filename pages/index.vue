@@ -5,13 +5,13 @@ useHead({
   title: 'Home',
 })
 
-const { stores, isFetchingStores } = useActionStore()
+const storesStore = useStoresStore()
 
 const groups = computed(() => [
   {
     id: 'stores',
     label: '',
-    items: (stores.value || []).map((store) => ({
+    items: (storesStore.stores || []).map((store) => ({
       icon: 'ion:ios-grid-view-outline',
       label: store.name,
       id: store.id,
@@ -35,7 +35,7 @@ const modal = useModal()
             </UTooltip>
           </div>
         </template>
-        <UCommandPalette nullable :loading="isFetchingStores" :autoselect="false" :groups="groups">
+        <UCommandPalette nullable :loading="storesStore.isFetchingStores" :autoselect="false" :groups="groups">
           <template #empty>
             <div class="text-center space-y-4 p-6">
               <UIcon name="heroicons:magnifying-glass-20-solid" class="size-10" />

@@ -2,8 +2,7 @@
 import type { z } from 'zod'
 import type { FormSubmitEvent } from '#ui/types'
 import schema from '~/schemas/store.schema'
-
-const modal = useModal()
+import { LazyModalConfirm } from '#components'
 
 type SchemaInfer = z.infer<typeof schema>
 type SchemaOutput = z.output<typeof schema>
@@ -16,6 +15,9 @@ type Props = {
 const props = defineProps<Props>()
 
 const modalTitle = computed(() => props.title || (props.storeId ? 'Update store' : 'Create store'))
+const submitSuccessMessage = computed(() =>
+  props.storeId ? 'Updated store successfully' : 'Created store successfully',
+)
 
 const DEFAULT_STATE: SchemaInfer = {
   name: '',
@@ -34,19 +36,33 @@ watch(
   },
 )
 
-const { isCreateLoading, handleCreate, isUpdateLoading, handleUpdate } = useActionStore()
-const isSubmitLoading = computed(() => isCreateLoading.value || isUpdateLoading.value)
+const toast = useCustomToast()
+const modal = useModal()
+const storesStore = useStoresStore()
+const isSubmitLoading = ref(false)
 const handleSubmit = async (event: FormSubmitEvent<SchemaOutput>) => {
-  if (props.storeId) {
-    await handleUpdate({
-      storeId: props.storeId,
-      payload: event.data,
-    })
-  } else {
-    await handleCreate(event.data)
+  try {
+    isSubmitLoading.value = true
+    if (props.storeId) {
+      await $fetch(`/api/stores/${props.storeId}`, {
+        method: 'PATCH',
+        body: event.data,
+      })
+    } else {
+      await $fetch('/api/stores', {
+        method: 'POST',
+        body: event.data,
+      })
+    }
+    toast.success(submitSuccessMessage.value)
+    storesStore.fetchStores()
+    await modal.close()
+  } catch (error: any) {
+    console.log(error)
+    toast.error(error.statusMessage || 'Something went wrong')
+  } finally {
+    isSubmitLoading.value = false
   }
-
-  await modal.close()
 }
 </script>
 

@@ -3,16 +3,14 @@ import { DATE_TIME_FORMAT, ROWS_PER_PAGE_OPTIONS } from '~/constants'
 import { upperFirst } from 'scule'
 import type { Category } from '~/types'
 import { refDebounced } from '@vueuse/core'
-import type { TableColumn } from '@nuxt/ui'
+import type { TableColumn } from '#ui/components/Table.vue'
 import type { Column, Row, SortingState, VisibilityState } from '@tanstack/vue-table'
-import { LazyModalCategory } from '#components'
+import { LazyModalCategory, LazyModalConfirm } from '#components'
 
 const UCheckbox = resolveComponent('UCheckbox')
 const UButton = resolveComponent('UButton')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
 const NuxtImg = resolveComponent('NuxtImg')
-
-const { handleDelete } = useActionCategory()
 
 type Props = {
   storeId: string
@@ -24,7 +22,25 @@ const storeId = toRef(props, 'storeId')
 const table = useTemplateRef('table')
 const rowSelection = ref({})
 
+const toast = useCustomToast()
 const modal = useModal()
+const handleDelete = ({ storeId, id }: { storeId: string; id: string }) => {
+  modal.open(LazyModalConfirm, {
+    message: 'Are you absolutely to delete this item?',
+    onConfirm: async () => {
+      try {
+        await $fetch(`/api/stores/${storeId}/categories/${id}`, {
+          method: 'DELETE',
+        })
+        toast.success('Deleted successfully')
+        await refreshNuxtData('categories')
+      } catch (error: any) {
+        console.log(error)
+        toast.error(error.statusMessage || 'Something went wrong')
+      }
+    },
+  })
+}
 const getActionItems = (row: Row<Category>) => {
   return [
     [
@@ -44,7 +60,11 @@ const getActionItems = (row: Row<Category>) => {
         label: 'Delete',
         icon: 'heroicons:trash',
         color: 'error',
-        onSelect: () => handleDelete({ ...row.original }),
+        onSelect: () =>
+          handleDelete({
+            storeId: row.original.storeId,
+            id: row.original.id,
+          }),
       },
     ],
   ]
@@ -132,7 +152,7 @@ const columns: TableColumn<Category>[] = [
         fit: 'cover',
         width: 80,
         quality: 80,
-        class: ['aspect-square object-cover']
+        class: ['aspect-square object-cover'],
       })
     },
   },
@@ -188,7 +208,7 @@ const handleResetFilters = () => {
 const sorting = ref<SortingState>([
   {
     id: 'createdAt',
-    desc: false,
+    desc: true,
   },
 ])
 const page = ref(1)

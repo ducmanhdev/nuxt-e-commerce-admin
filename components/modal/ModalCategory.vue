@@ -30,6 +30,9 @@ type Props = {
 const props = defineProps<Props>()
 
 const modalTitle = computed(() => props.title || (props.categoryId ? 'Update category' : 'Create category'))
+const submitSuccessMessage = computed(() =>
+  props.categoryId ? 'Updated category successfully' : 'Created category successfully',
+)
 
 const DEFAULT_STATE: SchemaInfer = {
   name: '',
@@ -51,9 +54,9 @@ watch(
   },
 )
 
-const { handleCreate, handleUpdate } = useActionCategory()
 const { handleDeleteImages, handleUploadImages } = useSupabaseStorage('categories')
 
+const toast = useCustomToast()
 const isSubmitLoading = ref(false)
 const handleSubmit = async (event: FormSubmitEvent<SchemaOutput>) => {
   try {
@@ -72,14 +75,14 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaOutput>) => {
       const uploadResponse = await handleUploadImages(event.data.newImageFiles)
       const { data, error } = uploadResponse[0]
       if (error) {
-        push.error(error.message)
+        toast.error(error.message)
         return
       }
       event.data.imageUrl = data
     }
 
     if (!event.data.imageUrl) {
-      push.error('Image URL is required')
+      toast.error('Image URL is required')
       return
     }
 
@@ -89,19 +92,22 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaOutput>) => {
     }
 
     if (props.categoryId) {
-      await handleUpdate({
-        storeId: props.storeId,
-        categoryId: props.categoryId,
-        payload: payload,
+      await $fetch(`/api/stores/${props.storeId}/categories/${props.categoryId}`, {
+        method: 'PATCH',
+        body: payload,
       })
     } else {
-      await handleCreate({
-        storeId: props.storeId,
-        payload: payload,
+      await $fetch(`/api/stores/${props.storeId}/categories`, {
+        method: 'POST',
+        body: payload,
       })
     }
-
-    modal.close()
+    toast.success(submitSuccessMessage.value)
+    refreshNuxtData('categories')
+    await modal.close()
+  } catch (error: any) {
+    console.log(error)
+    toast.error(error.statusMessage || 'Something went wrong')
   } finally {
     isSubmitLoading.value = false
   }

@@ -1,16 +1,11 @@
 export default defineAppConfig({
   ui: {
     colors: {
-      primary: 'rebeccaPurple',
+      primary: 'rebeccaPurple' as any,
     },
     input: {
       slots: {
         root: 'w-full',
-      },
-    },
-    selectMenu: {
-      slots: {
-        base: 'w-full',
       },
     },
   },

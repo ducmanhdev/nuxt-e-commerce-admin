@@ -19,16 +19,12 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@prisma/nuxt',
     '@nuxt/eslint',
-    'notivue/nuxt',
     '@vueuse/nuxt',
     'dayjs-nuxt',
     '@pinia/nuxt',
     '@nuxt/image',
   ],
   css: [
-    'notivue/notification.css',
-    'notivue/animations.css',
-    'notivue/notification-progress.css',
     '~/assets/css/main.css',
   ],
   supabase: {
@@ -46,17 +42,6 @@ export default defineNuxtConfig({
   },
   colorMode: {
     preference: 'system',
-  },
-  notivue: {
-    position: 'top-right',
-    limit: 4,
-    enqueue: false,
-    avoidDuplicates: false,
-    notifications: {
-      global: {
-        duration: 3000,
-      },
-    },
   },
   dayjs: {
     plugins: [],

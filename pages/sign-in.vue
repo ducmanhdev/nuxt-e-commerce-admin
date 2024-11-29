@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '#ui/types'
 import { z } from 'zod'
+import { useCustomToast } from '~/composables/useCustomToast'
 
 useHead({
   title: 'Sign In',
@@ -8,7 +9,7 @@ useHead({
 
 definePageMeta({
   layout: false,
-  middleware: ['redirect-if-authenticated'],
+  middleware: ['guest-only'],
 })
 
 const schema = z.object({
@@ -33,32 +34,24 @@ const state = ref<InferSchema>({
 })
 
 const supabase = useSupabaseClient()
-const runtimeConfig = useRuntimeConfig()
-
+const isSubmitLoading = ref(false)
+const toast = useCustomToast()
 const onSubmit = async (event: FormSubmitEvent<OutputSchema>) => {
+  isSubmitLoading.value = true
   const { error } = await supabase.auth.signInWithPassword({
     email: event.data.email,
     password: event.data.password,
   })
   if (error) {
-    console.log(error)
-    push.error('Something went wrong, please try again!')
+    console.log('[LOGIN_ERROR]', error)
+    toast.error(
+      error.code === 'invalid_credentials'
+        ? 'Wrong email or password. Please try again!'
+        : error.message || 'Something went wrong, please try again!',
+    )
   }
+  isSubmitLoading.value = false
   await navigateTo('/')
-}
-
-const signInWithGithub = async () => {
-  const { error } = await supabase.auth.signInWithOAuth({
-    provider: 'github',
-    options: {
-      redirectTo: `${runtimeConfig.public.baseUrl}/confirm`,
-    },
-  })
-
-  if (error) {
-    console.log(error)
-    push.error('Something went wrong, please try again!')
-  }
 }
 </script>
 
@@ -74,21 +67,8 @@ const signInWithGithub = async () => {
           <UFormField label="Password" name="password">
             <UInput v-model="state.password" type="password" />
           </UFormField>
-          <div class="text-center">
-            Don't have an account?
-            <RouterLink to="/sign-up" class="text-primary text-underline">Sign Up</RouterLink>
-          </div>
-          <UButton type="submit" block>Submit</UButton>
+          <UButton type="submit" block :loading="isSubmitLoading">Submit</UButton>
         </UForm>
-        <USeparator label="OR" />
-        <UButton
-          color="neutral"
-          label="Sign in with GitHub"
-          leading-icon="i-simple-icons-github"
-          block
-          @click="signInWithGithub"
-        />
-        <UButton color="neutral" label="Sign in with Google" icon="i-simple-icons-google" block disabled />
       </div>
     </UCard>
   </div>

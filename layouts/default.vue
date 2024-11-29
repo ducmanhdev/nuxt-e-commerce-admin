@@ -1,18 +1,13 @@
 <script setup lang="ts">
-import { LazyModalStore } from '#components'
+import { LazyModalConfirm, LazyModalStore } from '#components'
 
-const route = useRoute()
-const storeId = computed(() => route.params.storeId as string)
-
-const { stores, isFetchingStores } = useActionStore()
-
+const storesStore = useStoresStore()
 const storesOptions = computed(() => {
-  return stores.value.map((item) => ({
+  return storesStore.stores.map((item) => ({
     id: item.id,
     label: item.name,
   }))
 })
-
 const handleSelectStore = async (newStoreId: string) => {
   await navigateTo({
     name: route.name,
@@ -24,16 +19,24 @@ const handleSelectStore = async (newStoreId: string) => {
   })
 }
 
+const modal = useModal()
 const supabase = useSupabaseClient()
 const user = useSupabaseUser()
 const handleSignOut = async () => {
-  const { error } = await supabase.auth.signOut()
-  if (error) {
-    console.log(error)
-    return
-  }
-  await navigateTo('/sign-in')
+  modal.open(LazyModalConfirm, {
+    description: 'Are you to logout?',
+    onConfirm: async () => {
+      const { error } = await supabase.auth.signOut()
+      if (error) {
+        console.log(error)
+        return
+      }
+      await navigateTo('/sign-in')
+    },
+  })
 }
+
+const isUserDropdownOpen = ref(false)
 const userDropdownItems = computed(() => {
   return [
     [
@@ -41,16 +44,13 @@ const userDropdownItems = computed(() => {
         label: 'Profile',
         icon: 'heroicons:user-circle',
       },
-      {
-        label: 'Settings',
-        icon: 'heroicons:cog-6-tooth',
-      },
     ],
     [
       {
         label: 'Sign Out',
         icon: 'heroicons:arrow-right-start-on-rectangle',
-        click: handleSignOut,
+        color: 'error' as const,
+        onSelect: handleSignOut,
       },
     ],
   ]
@@ -58,8 +58,8 @@ const userDropdownItems = computed(() => {
 
 const { isDark, handleToggleMode } = useThemeMode()
 
-const modal = useModal()
-
+const route = useRoute()
+const storeId = computed(() => route.params.storeId as string)
 const navigationItems = computed(() => {
   return [
     {
@@ -72,6 +72,9 @@ const navigationItems = computed(() => {
     },
   ]
 })
+
+const { fetchStores } = useStoresStore()
+fetchStores()
 </script>
 
 <template>
@@ -86,7 +89,7 @@ const navigationItems = computed(() => {
         <div v-if="storeId" class="flex items-center gap-2">
           <USelectMenu
             :items="storesOptions"
-            :loading="isFetchingStores"
+            :loading="storesStore.isFetchingStores"
             leading-icon="heroicons:building-storefront"
             highlight
             value-key="id"
@@ -115,8 +118,14 @@ const navigationItems = computed(() => {
               @click="handleToggleMode()"
             />
           </UTooltip>
-          <UDropdownMenu :items="userDropdownItems" :popper="{ placement: 'bottom-start' }">
-            <UAvatar :src="user?.user_metadata?.avatar_url" :alt="user?.user_metadata?.name" icon="heroicons:user" />
+          <UDropdownMenu
+            v-model:open="isUserDropdownOpen"
+            :items="userDropdownItems"
+            :popper="{ placement: 'bottom-start' }"
+          >
+            <div @click="isUserDropdownOpen = true">
+              <UAvatar :src="user?.user_metadata?.avatar_url" :alt="user?.user_metadata?.name" icon="heroicons:user" />
+            </div>
           </UDropdownMenu>
         </div>
       </UContainer>

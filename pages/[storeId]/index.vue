@@ -13,7 +13,7 @@ import {
   Tooltip,
 } from 'chart.js'
 import { Bar, Line } from 'vue-chartjs'
-import { LazyModalStore } from '#components'
+import { LazyModalConfirm, LazyModalStore } from '#components'
 
 ChartJS.register(
   Title,
@@ -49,14 +49,38 @@ watchEffect(() => {
   }
 })
 
-const { isDeleteLoading, handleDelete } = useActionStore()
-
 const modal = useModal()
-const handleShowEditStoreModal = () => {
+const storesStore = useStoresStore()
+const handleShowEditModal = () => {
   modal.open(LazyModalStore, {
     storeId: store.value?.id,
     initialValues: {
       name: store.value?.name,
+    },
+  })
+}
+
+const toast = useCustomToast()
+const isDeleteLoading = ref(false)
+const handleDelete = () => {
+  modal.open(LazyModalConfirm, {
+    description: 'Are you sure you want to delete this item?',
+    onConfirm: async () => {
+      try {
+        isDeleteLoading.value = true
+        await $fetch(`/api/stores/${storeId.value}`, {
+          method: 'DELETE',
+        })
+        toast.success('Deleted successfully')
+        storesStore.fetchStores()
+        await modal.close()
+        await navigateTo('/')
+      } catch (error: any) {
+        console.log(error)
+        toast.error(error.statusMessage || 'Something went wrong')
+      } finally {
+        isDeleteLoading.value = false
+      }
     },
   })
 }
@@ -100,17 +124,13 @@ const chartLineData = {
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-xl font-bold">Overview</h2>
         <div class="flex gap-2">
-          <UButton
-            leading-icon="heroicons:pencil-square"
-            label="Edit"
-            @click="handleShowEditStoreModal"
-          />
+          <UButton leading-icon="heroicons:pencil-square" label="Edit" @click="handleShowEditModal" />
           <UButton
             leading-icon="heroicons:trash"
             label="Delete"
             color="error"
             :loading="isDeleteLoading"
-            @click="handleDelete(store!.id)"
+            @click="handleDelete"
           />
         </div>
       </div>
