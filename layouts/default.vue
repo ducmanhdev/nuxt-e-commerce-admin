@@ -2,6 +2,8 @@
 import { LazyModalConfirm, LazyModalStore } from '#components'
 
 const storesStore = useStoresStore()
+storesStore.fetchStores()
+
 const storesOptions = computed(() => {
   return storesStore.stores.map((item) => ({
     id: item.id,
@@ -72,9 +74,6 @@ const navigationItems = computed(() => {
     },
   ]
 })
-
-const { fetchStores } = useStoresStore()
-fetchStores()
 </script>
 
 <template>
