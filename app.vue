@@ -3,7 +3,11 @@
     <NuxtLoadingIndicator />
     <NuxtRouteAnnouncer />
 
-    <UApp>
+    <UApp
+      :toaster="{
+        position: 'top-right',
+      }"
+    >
       <NuxtLayout>
         <NuxtPage />
       </NuxtLayout>
