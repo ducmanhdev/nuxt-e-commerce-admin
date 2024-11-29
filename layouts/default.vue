@@ -38,7 +38,6 @@ const handleSignOut = async () => {
   })
 }
 
-const isUserDropdownOpen = ref(false)
 const userDropdownItems = computed(() => {
   return [
     [
@@ -133,22 +132,31 @@ const navigationItems = computed(() => {
           <UNavigationMenu :items="navigationItems" />
         </div>
         <div class="flex items-center gap-2 ml-auto">
+          <UChip inset>
+            <UButton icon="heroicons:bell-solid" variant="ghost" color="neutral" @click="" />
+          </UChip>
           <UTooltip text="Toggle dark mode">
             <UButton
               :icon="isDark ? 'heroicons:moon-solid' : 'heroicons:sun-solid'"
               variant="ghost"
-              aria-label="Theme"
+              color="neutral"
               @click="handleToggleMode()"
             />
           </UTooltip>
-          <UDropdownMenu
-            v-model:open="isUserDropdownOpen"
-            :items="userDropdownItems"
-            :popper="{ placement: 'bottom-start' }"
-          >
-            <div @click="isUserDropdownOpen = true">
-              <UAvatar :src="user?.user_metadata?.avatar_url" :alt="user?.user_metadata?.name" icon="heroicons:user" />
-            </div>
+          <UDropdownMenu :items="userDropdownItems" :popper="{ placement: 'bottom-start' }">
+            <UButton
+              :avatar="{
+                src: user?.user_metadata?.avatar_url,
+                alt: user?.user_metadata?.name,
+                icon: 'heroicons:user',
+                size: 'sm',
+              }"
+              variant="ghost"
+              color="neutral"
+              :ui="{
+                base: 'p-0',
+              }"
+            />
           </UDropdownMenu>
         </div>
       </UContainer>
