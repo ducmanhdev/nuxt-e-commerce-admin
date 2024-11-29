@@ -72,6 +72,30 @@ const navigationItems = computed(() => {
       label: 'Categories',
       to: `/${storeId.value}/categories`,
     },
+    {
+      label: 'Brand',
+      disabled: true,
+    },
+    {
+      label: 'Products',
+      to: `/${storeId.value}/products`,
+    },
+    {
+      label: 'News',
+      disabled: true,
+    },
+    {
+      label: 'Banners',
+      disabled: true,
+    },
+    {
+      label: 'Vouchers',
+      disabled: true,
+    },
+    {
+      label: 'Orders',
+      disabled: true,
+    },
   ]
 })
 </script>
