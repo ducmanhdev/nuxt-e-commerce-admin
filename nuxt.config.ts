@@ -23,6 +23,7 @@ export default defineNuxtConfig({
     'dayjs-nuxt',
     '@pinia/nuxt',
     '@nuxt/image',
+    'nuxt-security',
   ],
   css: [
     '~/assets/css/main.css',
