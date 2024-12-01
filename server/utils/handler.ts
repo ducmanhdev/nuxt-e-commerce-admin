@@ -8,6 +8,11 @@ export const defineWrappedResponseHandler = <T extends EventHandlerRequest, D>(
     try {
       return await handler(event)
     } catch (e: unknown) {
+      const config = useRuntimeConfig(event)
+      const isDev = config.environment !== 'production'
+      if (isDev) {
+        throw e
+      }
       if (e instanceof H3Error) {
         throw e
       }
@@ -18,32 +23,27 @@ export const defineWrappedResponseHandler = <T extends EventHandlerRequest, D>(
               statusCode: 400,
               statusMessage: `A record with this unique field already exists. Details: ${JSON.stringify(e.meta)}`,
             })
-
           case 'P2003':
             const relatedTable = (e.meta?.field_name as string)?.split('_')[0] || 'unknown'
             throw createError({
               statusCode: 400,
               statusMessage: `Cannot perform this action due to foreign key constraint. Related table: ${relatedTable}`,
             })
-
           case 'P2025':
             throw createError({
               statusCode: 404,
               statusMessage: `The record you are trying to access does not exist or has been deleted.`,
             })
-
           case 'P2000':
             throw createError({
               statusCode: 400,
               statusMessage: `The value provided is too long for the field. Details: ${JSON.stringify(e.meta)}`,
             })
-
           case 'P2004':
             throw createError({
               statusCode: 400,
               statusMessage: `A database constraint was violated. Details: ${JSON.stringify(e.meta)}`,
             })
-
           default:
             throw createError({
               statusCode: 500,
