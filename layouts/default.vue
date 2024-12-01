@@ -89,7 +89,7 @@ const navigationItems = computed(() => {
     },
     {
       label: 'Vouchers',
-      disabled: true,
+      to: `/${storeId.value}/vouchers`,
     },
     {
       label: 'Orders',

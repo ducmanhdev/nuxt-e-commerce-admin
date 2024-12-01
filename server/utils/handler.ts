@@ -11,7 +11,8 @@ export const defineWrappedResponseHandler = <T extends EventHandlerRequest, D>(
       const config = useRuntimeConfig(event)
       const isDev = config.environment !== 'production'
       if (isDev) {
-        throw e
+        console.log(e)
+        // throw e
       }
       if (e instanceof H3Error) {
         throw e
@@ -19,9 +20,12 @@ export const defineWrappedResponseHandler = <T extends EventHandlerRequest, D>(
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         switch (e.code) {
           case 'P2002':
+            const targetFields = e.meta?.target
             throw createError({
               statusCode: 400,
-              statusMessage: `A record with this unique field already exists. Details: ${JSON.stringify(e.meta)}`,
+              statusMessage: targetFields
+                ? `A record with the unique field(s) ${targetFields} already exists.`
+                : 'A record with this unique field already exists.',
             })
           case 'P2003':
             const relatedTable = (e.meta?.field_name as string)?.split('_')[0] || 'unknown'

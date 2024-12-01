@@ -28,6 +28,7 @@ model Store {
   orders     Order[]
   brands     Brand[]
   attributes Attribute[]
+  voucher    Voucher[]
 }
 
 model Category {
@@ -52,23 +53,15 @@ model Brand {
   updatedAt DateTime  @updatedAt
 }
 
-enum FeedbackStar {
-  ONE
-  TWO
-  THREE
-  FOUR
-  FIVE
-}
-
 model Feedback {
-  id        String       @id @default(uuid())
+  id        String   @id @default(uuid())
   userId    String
   content   String
-  star      FeedbackStar
+  star      Int
   productId String
-  product   Product      @relation(fields: [productId], references: [id])
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
+  product   Product  @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Product {
@@ -181,20 +174,6 @@ model CartItem {
   updatedAt DateTime @updatedAt
 }
 
-enum PaymentType {
-  CREDIT_CARD
-  CASH
-}
-
-enum OrderStatus {
-  PENDING // Order is created but not yet processed
-  CONFIRMED // Order is confirmed and payment is successful
-  CANCELED // Order is canceled by the user or admin
-  FAILED // Payment failed or order couldn't be processed
-  SHIPPED // Order is shipped (optional, for delivery tracking)
-  COMPLETED // Order is delivered or successfully completed
-}
-
 model Order {
   id          String      @id @default(uuid())
   userId      String
@@ -203,8 +182,8 @@ model Order {
   orderItems  OrderItem[]
   totalPrice  Decimal
   isPaid      Boolean     @default(false)
-  paymentType PaymentType
-  status      OrderStatus @default(PENDING)
+  paymentType Int
+  status      Int         @default(0)
   phone       String
   address     String
   voucher     Voucher?    @relation(fields: [voucherId], references: [id])
@@ -226,33 +205,21 @@ model OrderItem {
   updatedAt DateTime @updatedAt
 }
 
-enum DiscountType {
-  PERCENTAGE
-  FIXED
-}
-
-enum VoucherStatus {
-  ACTIVE // Voucher is active and can be used
-  INACTIVE // Voucher is inactive and can't be used
-  EXPIRED // Voucher is expired
-  USED // Voucher is used
-  PENDING // Voucher pending (if pre-approval required)
-  REVOKED // Voucher has been revoked or canceled
-}
-
 model Voucher {
-  id            String        @id @default(uuid())
-  code          String        @unique
-  discountType  DiscountType
+  id            String   @id @default(uuid())
+  storeId       String
+  store         Store    @relation(fields: [storeId], references: [id])
+  code          String   @unique
+  discountType  Int
   discountValue Decimal
   minOrderValue Decimal?
   maxDiscount   Decimal?
-  status        VoucherStatus @default(ACTIVE)
+  status        Int
   usageLimit    Int?
-  usedCount     Int           @default(0)
+  usedCount     Int      @default(0)
   startDate     DateTime
   endDate       DateTime
   orders        Order[]
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
