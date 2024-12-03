@@ -233,12 +233,11 @@ const itemsPerPage = ref(10)
 const sortColumn = computed(() => sorting.value?.[0].id)
 const sortDirection = computed(() => (sorting.value?.[0].desc ? 'desc' : 'asc'))
 
+const { data: cachedVoucher } = useNuxtData('categories')
 const { data, status } = await useFetch(() => `/api/stores/${storeId.value}/vouchers`, {
   key: 'vouchers',
-  default: () => ({
-    data: [],
-    meta: undefined,
-  }),
+  lazy: !!cachedVoucher.value,
+  default: () => cachedVoucher.value,
   query: {
     search: searchDebounced,
     page: page,

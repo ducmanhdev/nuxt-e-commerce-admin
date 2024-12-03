@@ -216,12 +216,11 @@ const itemsPerPage = ref(10)
 const sortColumn = computed(() => sorting.value?.[0].id)
 const sortDirection = computed(() => (sorting.value?.[0].desc ? 'desc' : 'asc'))
 
+const { data: cachedCategories } = useNuxtData('categories')
 const { data, status } = await useFetch(() => `/api/stores/${storeId.value}/categories`, {
   key: 'categories',
-  default: () => ({
-    data: [],
-    meta: undefined,
-  }),
+  lazy: !!cachedCategories.value,
+  default: () => cachedCategories.value,
   query: {
     search: searchDebounced,
     page: page,
