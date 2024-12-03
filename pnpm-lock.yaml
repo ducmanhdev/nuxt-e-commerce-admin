@@ -42,8 +42,8 @@ importers:
         specifier: 3.14.1592
         version: 3.14.1592(@parcel/watcher@2.5.0)(@types/node@22.10.1)(eslint@9.15.0(jiti@2.4.0))(ioredis@5.4.1)(lightningcss@1.28.2)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.27.4)(terser@5.36.0)(typescript@5.7.2)(vite@5.4.11(@types/node@22.10.1)(lightningcss@1.28.2)(terser@5.36.0))
       nuxt-security:
-        specifier: 2.1.4
-        version: 2.1.4(magicast@0.3.5)(rollup@4.27.4)
+        specifier: 2.1.5
+        version: 2.1.5(magicast@0.3.5)(rollup@4.27.4)
       pinia:
         specifier: ^2.2.8
         version: 2.2.8(typescript@5.7.2)(vue@3.5.13(typescript@5.7.2))
@@ -3325,8 +3325,8 @@ packages:
   nuxt-csurf@1.6.5:
     resolution: {integrity: sha512-/DMNTON8LIVhntamKbBmAuM879B0QnuSJa7ZAkmkZe+21m+1QGcjVUxtSkizaM48NUvkuAGYOG0ncn+kqEgrzw==}
 
-  nuxt-security@2.1.4:
-    resolution: {integrity: sha512-OWIC9JiguvXb3jC5QD+8mMBOKSoGBdNzOafrh14GxxirW1Psi+jYSFtR1/sTNAGEmHtNCxLaCqC6OwWY7vvg2Q==}
+  nuxt-security@2.1.5:
+    resolution: {integrity: sha512-2nrkEsj1tS7RqqFq+sdmYatsAtISHt/o91w8xfMPeUz95CYxZ+HPbodKf+oAGdOmmCJcgYs6e+5XNba45M6BIw==}
     engines: {node: '>=18.0.0'}
 
   nuxt@3.14.1592:
@@ -8549,7 +8549,7 @@ snapshots:
       - rollup
       - supports-color
 
-  nuxt-security@2.1.4(magicast@0.3.5)(rollup@4.27.4):
+  nuxt-security@2.1.5(magicast@0.3.5)(rollup@4.27.4):
     dependencies:
       '@nuxt/kit': 3.14.1592(magicast@0.3.5)(rollup@4.27.4)
       basic-auth: 2.0.1
