@@ -22,9 +22,7 @@ export default defineNuxtConfig({
     '@nuxt/image',
     'nuxt-security',
   ],
-  css: [
-    '~/assets/css/main.css',
-  ],
+  css: ['~/assets/css/main.css'],
   supabase: {
     redirect: true,
     redirectOptions: {
@@ -43,5 +41,12 @@ export default defineNuxtConfig({
   },
   dayjs: {
     plugins: [],
+  },
+  security: {
+    headers: {
+      contentSecurityPolicy: {
+        'img-src': ["'self'", 'data:', process.env.SUPABASE_URL],
+      },
+    },
   },
 })
