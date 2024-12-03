@@ -45,7 +45,7 @@ export default defineNuxtConfig({
   security: {
     headers: {
       contentSecurityPolicy: {
-        'img-src': ["'self'", 'data:', process.env.SUPABASE_URL],
+        'img-src': ["'self'", 'data:', process.env.SUPABASE_URL!],
       },
     },
   },
