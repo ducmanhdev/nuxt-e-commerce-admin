@@ -15,7 +15,9 @@ const groups = computed(() => [
       icon: 'ion:ios-grid-view-outline',
       label: store.name,
       id: store.id,
-      onSelect: () => navigateTo(store.id),
+      onSelect: async () => {
+        await navigateTo(store.id);
+      },
     })),
   },
 ])

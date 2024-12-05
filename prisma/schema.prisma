@@ -11,12 +11,6 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-enum CommonStatus {
-  HIDDEN
-  VISIBLE
-  ARCHIVED
-}
-
 model Store {
   id         String      @id @default(uuid())
   name       String
@@ -65,27 +59,28 @@ model Feedback {
 }
 
 model Product {
-  id                     String                  @id @default(uuid())
-  name                   String
-  price                  Decimal
-  oldPrice               Decimal?
-  description            String
-  quantity               Int
-  brandId                String
-  brand                  Brand                   @relation(fields: [brandId], references: [id])
-  storeId                String
-  store                  Store                   @relation(fields: [storeId], references: [id])
-  categoryId             String
-  category               Category                @relation(fields: [categoryId], references: [id])
-  status                 CommonStatus            @default(VISIBLE)
-  orderItems             OrderItem[]
-  feedbacks              Feedback[]
-  newsDetails            NewsDetail[]
-  images                 ProductImage[]
-  bannerDetails          BannerDetail[]
-  createdAt              DateTime                @default(now())
-  updatedAt              DateTime                @updatedAt
-  productAttributeValues ProductAttributeValue[]
+  id              String                  @id @default(uuid())
+  name            String
+  description     String
+  stock           Int
+  brandId         String
+  brand           Brand                   @relation(fields: [brandId], references: [id])
+  storeId         String
+  store           Store                   @relation(fields: [storeId], references: [id])
+  categoryId      String
+  category        Category                @relation(fields: [categoryId], references: [id])
+  status          Int                     @default(0)
+  totalRating     Int
+  totalSold       Int
+  orderItems      OrderItem[]
+  feedbacks       Feedback[]
+  newsDetails     NewsDetail[]
+  images          ProductImage[]
+  bannerDetails   BannerDetail[]
+  attributeValues ProductAttributeValue[]
+  variantValues   ProductVariantValue[]
+  createdAt       DateTime                @default(now())
+  updatedAt       DateTime                @updatedAt
 }
 
 model ProductImage {
@@ -93,6 +88,34 @@ model ProductImage {
   imageUrl  String
   productId String
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ProductVariantValue {
+  id        String   @id @default(uuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  price     Decimal
+  oldPrice  Decimal?
+  stock     Int
+  sku       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VariantValue {
+  id        String   @id @default(uuid())
+  variantId String
+  value     String
+  imagaUrl  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Variant {
+  id        String   @id @default(uuid())
+  name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

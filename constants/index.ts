@@ -7,6 +7,11 @@ export const CURRENCY_FORMAT_OPTIONS = {
   currencySign: 'accounting',
 } as const
 
+export const COMMON_STATUSES = {
+  VISIBLE: 0,
+  HIDDEN: 1,
+  ARCHIVED: 2,
+}
 
 const FEEDBACK_STARTS = {
   ONE: 0,
