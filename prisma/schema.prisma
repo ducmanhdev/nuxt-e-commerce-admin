@@ -20,7 +20,7 @@ model Store {
   categories Category[]
   products   Product[]
   orders     Order[]
-  brands     Brand[]
+  // brands     Brand[]
   attributes Attribute[]
   voucher    Voucher[]
 }
@@ -36,16 +36,16 @@ model Category {
   updatedAt DateTime  @updatedAt
 }
 
-model Brand {
-  id        String    @id @default(uuid())
-  name      String
-  imageUrl  String
-  storeId   String
-  store     Store     @relation(fields: [storeId], references: [id])
-  products  Product[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-}
+// model Brand {
+//   id        String    @id @default(uuid())
+//   name      String
+//   imageUrl  String
+//   storeId   String
+//   store     Store     @relation(fields: [storeId], references: [id])
+//   products  Product[]
+//   createdAt DateTime  @default(now())
+//   updatedAt DateTime  @updatedAt
+// }
 
 model Feedback {
   id        String   @id @default(uuid())
@@ -62,16 +62,15 @@ model Product {
   id              String                  @id @default(uuid())
   name            String
   description     String
-  stock           Int
-  brandId         String
-  brand           Brand                   @relation(fields: [brandId], references: [id])
+  // stock           Int
+  // brandId         String
+  // brand           Brand                   @relation(fields: [brandId], references: [id])
   storeId         String
   store           Store                   @relation(fields: [storeId], references: [id])
   categoryId      String
   category        Category                @relation(fields: [categoryId], references: [id])
-  status          Int                     @default(0)
-  totalRating     Int
-  totalSold       Int
+  status          Int
+  // totalRating     Int                     @default(0)
   orderItems      OrderItem[]
   feedbacks       Feedback[]
   newsDetails     NewsDetail[]

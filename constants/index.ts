@@ -11,7 +11,7 @@ export const COMMON_STATUSES = {
   VISIBLE: 0,
   HIDDEN: 1,
   ARCHIVED: 2,
-}
+} as const
 
 const FEEDBACK_STARTS = {
   ONE: 0,
@@ -19,7 +19,7 @@ const FEEDBACK_STARTS = {
   THREE: 2,
   FOUR: 3,
   FIVE: 4,
-}
+} as const
 
 export const VOUCHER_DISCOUNT_TYPES = {
   PERCENTAGE: 0,
