@@ -8,7 +8,6 @@ import { VOUCHER_STATUSES, VOUCHER_DISCOUNT_TYPES, CURRENCY_FORMAT_OPTIONS } fro
 const modal = useModal()
 
 type SchemaInfer = z.infer<typeof schema>
-type SchemaOutput = z.output<typeof schema>
 
 type Props = {
   title?: string
@@ -23,7 +22,7 @@ const submitSuccessMessage = computed(() =>
   props.voucherId ? 'Updated voucher successfully' : 'Created voucher successfully',
 )
 
-const DEFAULT_STATE: SchemaInfer = {
+const DEFAULT_STATE: Partial<SchemaInfer> = {
   code: '',
   discountType: VOUCHER_DISCOUNT_TYPES.FIXED,
   discountValue: 0,
@@ -50,7 +49,7 @@ watch(
 
 const toast = useCustomToast()
 const isSubmitLoading = ref(false)
-const handleSubmit = async (event: FormSubmitEvent<SchemaOutput>) => {
+const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
   try {
     isSubmitLoading.value = true
 

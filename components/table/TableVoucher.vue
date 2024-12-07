@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DATE_TIME_FORMAT, ROWS_PER_PAGE_OPTIONS } from '~/constants'
+import { COMMON_STATUSES, DATE_TIME_FORMAT, ROWS_PER_PAGE_OPTIONS } from '~/constants'
 import { upperFirst } from 'scule'
 import type { Voucher } from '~/types'
 import { refDebounced } from '@vueuse/core'
@@ -146,11 +146,15 @@ const columns: TableColumn<Voucher>[] = [
   {
     accessorKey: 'discountType',
     header: ({ column }) => getHeader(column, 'Discount type'),
-    cell: ({ row }) =>
-      h(
-        UBadge,
-        Object.entries(VOUCHER_DISCOUNT_TYPES).find(([key, value]) => value === row.getValue('discountType'))?.[0],
-      ),
+    cell: ({ row }) => {
+      const value = row.getValue('discountType')
+      const color = {
+        [VOUCHER_DISCOUNT_TYPES.FIXED]: 'primary' as const,
+        [VOUCHER_DISCOUNT_TYPES.PERCENTAGE]: 'secondary' as const,
+      }[value as string]
+      const label = Object.entries(VOUCHER_DISCOUNT_TYPES).find(([_, _value]) => _value === value)?.[0]
+      return h(UBadge, { color, label, variant: 'subtle' })
+    },
   },
   { accessorKey: 'discountValue', header: ({ column }) => getHeader(column, 'Discount value') },
   { accessorKey: 'minOrderValue', header: ({ column }) => getHeader(column, 'Min order value') },
@@ -158,9 +162,19 @@ const columns: TableColumn<Voucher>[] = [
   {
     accessorKey: 'status',
     header: ({ column }) => getHeader(column, 'Status'),
-    cell: ({ row }) =>
-      h(UBadge, Object.entries(VOUCHER_STATUSES).find(([key, value]) => value === row.getValue('status'))?.[0]),
+    cell: ({ row }) => {
+      const value = row.getValue('status')
+      const color = {
+        [VOUCHER_STATUSES.ACTIVE]: 'primary' as const,
+        [VOUCHER_STATUSES.INACTIVE]: 'secondary' as const,
+        [VOUCHER_STATUSES.EXPIRED]: 'warning' as const,
+        [VOUCHER_STATUSES.REVOKED]: 'error' as const,
+      }[value as string]
+      const label = Object.entries(VOUCHER_STATUSES).find(([_, _value]) => _value === value)?.[0]
+      return h(UBadge, { color, label, variant: 'subtle' })
+    },
   },
+
   { accessorKey: 'usageLimit', header: ({ column }) => getHeader(column, 'Usage limit') },
   { accessorKey: 'usedCount', header: ({ column }) => getHeader(column, 'Usage count') },
   {

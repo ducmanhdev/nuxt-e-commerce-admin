@@ -3,10 +3,10 @@ import prisma from '~/lib/prisma'
 export default defineWrappedResponseHandler(async (event) => {
   const user = event.context.user
 
-  const { storeId, categoryId } = getRouterParams(event)
-  const category = await prisma.category.findFirstOrThrow({
+  const { storeId, productId } = getRouterParams(event)
+  const product = await prisma.product.findFirstOrThrow({
     where: {
-      id: categoryId,
+      id: productId,
       storeId: storeId,
       store: {
         userId: user.id,
@@ -14,9 +14,9 @@ export default defineWrappedResponseHandler(async (event) => {
     },
   })
 
-  await prisma.category.delete({
+  await prisma.product.delete({
     where: {
-      id: category.id,
+      id: product.id,
     },
   })
 

@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { z } from 'zod'
-import type { FormErrorEvent, FormSubmitEvent } from '#ui/types'
-import schema, {attributeValidator} from '~/schemas/product.schema'
-import { COMMON_STATUSES } from '~/constants'
+import type { FormSubmitEvent } from '#ui/types'
+import schema, { attributeValidator } from '~/schemas/product.schema'
+import type { Category, Attribute } from '~/types'
 
 const modal = useModal()
 
 type SchemaInfer = z.infer<typeof schema>
-type SchemaOutput = z.output<typeof schema>
 
 type Props = {
   title?: string
@@ -27,10 +26,9 @@ const DEFAULT_ATTRIBUTE = {
   value: '',
 }
 
-const DEFAULT_STATE: SchemaInfer = {
+const DEFAULT_STATE: Partial<SchemaInfer> = {
   name: '',
   description: '',
-  status: COMMON_STATUSES.VISIBLE,
   categoryId: '',
   attributes: [{ ...DEFAULT_ATTRIBUTE }],
 }
@@ -51,7 +49,7 @@ watch(
 
 const toast = useCustomToast()
 const isSubmitLoading = ref(false)
-const handleSubmit = async (event: FormSubmitEvent<SchemaOutput>) => {
+const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
   try {
     isSubmitLoading.value = true
 
@@ -82,11 +80,6 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaOutput>) => {
   }
 }
 
-const COMMON_STATUS_OPTIONS = Object.entries(COMMON_STATUSES).map(([key, value]) => ({
-  label: key,
-  value: value,
-}))
-
 const handleAddAttribute = () => {
   state.value.attributes = [...(state.value.attributes || []), { ...DEFAULT_ATTRIBUTE }]
 }
@@ -100,12 +93,50 @@ const onCreate = (item: string) => {
   items.value.push(item)
 }
 
-const categoryOptions = [
-  {
-    label: 'label',
-    value: '0e1d3f49-6fa8-4abc-b7b8-e19bb19b1e05',
-  },
-]
+const useCategoryOptions = () => {
+  const searchTerm = ref('')
+  const searchTermDebounced = refDebounced(searchTerm, 200)
+  const { data, status } = useLazyFetch(`/api/stores/${props.storeId}/categories`, {
+    params: { search: searchTermDebounced },
+    transform: ({ data }) => {
+      return (
+        data?.map((item) => ({
+          label: (item as unknown as Category).name,
+          value: (item as unknown as Category).id,
+        })) || []
+      )
+    },
+  })
+
+  return {
+    searchTerm,
+    data,
+    status,
+  }
+}
+const { searchTerm: categorySearchTerm, data: categoryOptions, status: getCategoryOptionsStatus } = useCategoryOptions()
+
+const useAttributeOptions = () => {
+  const searchTerm = ref('')
+  const searchTermDebounced = refDebounced(searchTerm, 200)
+  const { data, status } = useLazyFetch(`/api/stores/${props.storeId}/attributes`, {
+    params: { search: searchTermDebounced },
+    transform: ({ data }) => {
+      return data?.map((item) => (item as unknown as Attribute).name) || []
+    },
+  })
+
+  return {
+    searchTerm,
+    data,
+    status,
+  }
+}
+const {
+  searchTerm: attributeSearchTerm,
+  data: attributeOptions,
+  status: getAttributeOptionsStatus,
+} = useAttributeOptions()
 </script>
 
 <template>
@@ -118,11 +149,14 @@ const categoryOptions = [
         <UFormField label="Description" name="description" required>
           <UInput v-model="state.description" />
         </UFormField>
-        <UFormField label="Status" name="status" required>
-          <USelect v-model="state.status" :items="COMMON_STATUS_OPTIONS" />
-        </UFormField>
         <UFormField label="Category" name="categoryId" required>
-          <USelectMenu v-model="state.categoryId" value-key="value" :items="categoryOptions" />
+          <USelectMenu
+            v-model:search-term="categorySearchTerm"
+            v-model="state.categoryId"
+            :loading="getCategoryOptionsStatus === 'pending'"
+            :items="categoryOptions || []"
+            value-key="value"
+          />
         </UFormField>
 
         <UForm
@@ -134,9 +168,12 @@ const categoryOptions = [
         >
           <UFormField :label="!index ? 'Name' : undefined" name="name">
             <UInputMenu
+              v-model:search-term="attributeSearchTerm"
               v-model="attribute.name"
               create-item
-              :items="items"
+              ignore-filter
+              :items="attributeOptions || []"
+              :loading="getAttributeOptionsStatus === 'pending'"
               @create="(_, item) => onCreate(item)"
             />
           </UFormField>

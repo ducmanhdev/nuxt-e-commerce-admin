@@ -22,6 +22,7 @@ export const pagination = Prisma.defineExtension({
         this: T,
         queries: Query = {},
         filter: Prisma.Args<T, 'findMany'>['where'] = {},
+        options: Prisma.Args<T, 'findMany'> = {} as Prisma.Args<T, 'findMany'>,
       ): Promise<PaginatedResult<T>> {
         const context = Prisma.getExtensionContext(this)
 
@@ -34,6 +35,7 @@ export const pagination = Prisma.defineExtension({
 
         const [data, total] = await Promise.all([
           (context as any).findMany({
+            ...options,
             where: filter,
             orderBy: { [sort]: order },
             skip: offset,

@@ -1,13 +1,13 @@
 import prisma from '~/lib/prisma'
-import schema from '~/schemas/category.schema'
+import schema from '~/schemas/product.schema'
 
 export default defineWrappedResponseHandler(async (event) => {
   const user = event.context.user
 
-  const { storeId, categoryId } = getRouterParams(event)
-  const category = await prisma.category.findFirstOrThrow({
+  const { storeId, productId } = getRouterParams(event)
+  const product = await prisma.product.findFirstOrThrow({
     where: {
-      id: categoryId,
+      id: productId,
       storeId: storeId,
       store: {
         userId: user.id,
@@ -16,9 +16,9 @@ export default defineWrappedResponseHandler(async (event) => {
   })
 
   const body = await readValidatedBody(event, schema.parse)
-  const data = await prisma.category.update({
+  const data = await prisma.product.update({
     where: {
-      id: category.id,
+      id: product.id,
     },
     data: {
       ...body,

@@ -9,10 +9,12 @@ export const attributeValidator = z.object({
 export default z.object({
   name: z.string().min(1, 'Please enter product name'),
   description: z.string().min(1, 'Please enter product description'),
-  status: z.nativeEnum(COMMON_STATUSES, {
-    required_error: 'Product status is required',
-    invalid_type_error: 'Product status is not valid',
-  }),
+  status: z
+    .nativeEnum(COMMON_STATUSES, {
+      required_error: 'Product status is required',
+      invalid_type_error: 'Product status is not valid',
+    })
+    .default(COMMON_STATUSES.VISIBLE),
   // brandId: z.string().min(1, 'Please select product brand'),
   categoryId: z.string().min(1, 'Please select product category'),
   attributes: z.array(attributeValidator).optional(),

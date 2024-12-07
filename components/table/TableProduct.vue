@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DATE_TIME_FORMAT, ROWS_PER_PAGE_OPTIONS } from '~/constants'
+import { COMMON_STATUSES, DATE_TIME_FORMAT, ROWS_PER_PAGE_OPTIONS } from '~/constants'
 import { upperFirst } from 'scule'
 import type { Category } from '~/types'
 import { refDebounced } from '@vueuse/core'
@@ -8,9 +8,9 @@ import type { Column, Row, SortingState, VisibilityState } from '@tanstack/vue-t
 import { LazyModalCategory, LazyModalConfirm } from '#components'
 
 const UCheckbox = resolveComponent('UCheckbox')
+const UBadge = resolveComponent('UBadge')
 const UButton = resolveComponent('UButton')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
-const NuxtImg = resolveComponent('NuxtImg')
 
 type Props = {
   storeId: string
@@ -142,20 +142,22 @@ const columns: TableColumn<Category>[] = [
       }),
   },
   { accessorKey: 'name', header: ({ column }) => getHeader(column, 'Name') },
+  { accessorKey: 'description', header: ({ column }) => getHeader(column, 'Description') },
   {
-    accessorKey: 'imageUrl',
-    header: 'Image',
+    accessorKey: 'status',
+    header: ({ column }) => getHeader(column, 'Status'),
     cell: ({ row }) => {
-      return h(NuxtImg, {
-        src: row.getValue('imageUrl'),
-        placeholder: true,
-        fit: 'cover',
-        width: 80,
-        quality: 80,
-        class: ['aspect-square object-cover'],
-      })
+      const value = row.getValue('status')
+      const color = {
+        [COMMON_STATUSES.VISIBLE]: 'primary' as const,
+        [COMMON_STATUSES.ARCHIVED]: 'secondary' as const,
+        [COMMON_STATUSES.HIDDEN]: 'error' as const,
+      }[value as string]
+      const label = Object.entries(COMMON_STATUSES).find(([_, _value]) => _value === value)?.[0]
+      return h(UBadge, { color, label, variant: 'subtle' })
     },
   },
+  { accessorKey: 'category.name', header: ({ column }) => getHeader(column, 'Category') },
   {
     accessorKey: 'createdAt',
     header: ({ column }) => getHeader(column, 'Created at'),

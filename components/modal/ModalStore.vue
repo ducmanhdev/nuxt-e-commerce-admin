@@ -5,7 +5,6 @@ import schema from '~/schemas/store.schema'
 import { LazyModalConfirm } from '#components'
 
 type SchemaInfer = z.infer<typeof schema>
-type SchemaOutput = z.output<typeof schema>
 
 type Props = {
   title?: string
@@ -19,7 +18,7 @@ const submitSuccessMessage = computed(() =>
   props.storeId ? 'Updated store successfully' : 'Created store successfully',
 )
 
-const DEFAULT_STATE: SchemaInfer = {
+const DEFAULT_STATE: Partial<SchemaInfer> = {
   name: '',
 }
 
@@ -40,7 +39,7 @@ const toast = useCustomToast()
 const modal = useModal()
 const storesStore = useStoresStore()
 const isSubmitLoading = ref(false)
-const handleSubmit = async (event: FormSubmitEvent<SchemaOutput>) => {
+const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
   try {
     isSubmitLoading.value = true
     if (props.storeId) {

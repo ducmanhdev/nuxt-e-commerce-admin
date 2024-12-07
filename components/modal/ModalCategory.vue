@@ -19,7 +19,6 @@ const validationSchema = schema
   })
 
 type SchemaInfer = z.infer<typeof validationSchema>
-type SchemaOutput = z.output<typeof validationSchema>
 
 type Props = {
   title?: string
@@ -34,7 +33,7 @@ const submitSuccessMessage = computed(() =>
   props.categoryId ? 'Updated category successfully' : 'Created category successfully',
 )
 
-const DEFAULT_STATE: SchemaInfer = {
+const DEFAULT_STATE: Partial<SchemaInfer> = {
   name: '',
   imageUrl: '',
   newImageFiles: [],
@@ -58,7 +57,7 @@ const { handleDeleteImages, handleUploadImages } = useSupabaseStorage('categorie
 
 const toast = useCustomToast()
 const isSubmitLoading = ref(false)
-const handleSubmit = async (event: FormSubmitEvent<SchemaOutput>) => {
+const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
   try {
     isSubmitLoading.value = true
 

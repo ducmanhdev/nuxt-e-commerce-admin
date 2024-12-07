@@ -6,14 +6,26 @@ export default defineWrappedResponseHandler(async (event) => {
   const storeId = getRouterParam(event, 'storeId')
 
   const queries = await getValidatedQuery(event, schema.parse)
-  return await prisma.product.paginate(queries, {
-    storeId: storeId,
-    store: {
-      userId: user.id,
+  return await prisma.product.paginate(
+    queries,
+    {
+      storeId: storeId,
+      store: {
+        userId: user.id,
+      },
+      name: {
+        contains: queries.search || '',
+        mode: 'insensitive',
+      },
     },
-    name: {
-      contains: queries.search || '',
-      mode: 'insensitive',
+    {
+      include: {
+        category: {
+          select: {
+            name: true,
+          },
+        },
+      },
     },
-  })
+  )
 })
