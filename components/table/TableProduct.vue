@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { COMMON_STATUSES, DATE_TIME_FORMAT, ROWS_PER_PAGE_OPTIONS } from '~/constants'
 import { upperFirst } from 'scule'
-import type { Category } from '~/types'
+import type { Attribute, Product, ProductAttributeValue } from '~/types'
 import { refDebounced } from '@vueuse/core'
 import type { TableColumn } from '#ui/components/Table.vue'
 import type { Column, Row, SortingState, VisibilityState } from '@tanstack/vue-table'
-import { LazyModalCategory, LazyModalConfirm } from '#components'
+import { LazyModalConfirm, LazyModalProduct } from '#components'
 
 const UCheckbox = resolveComponent('UCheckbox')
 const UBadge = resolveComponent('UBadge')
@@ -41,16 +41,16 @@ const handleDelete = ({ storeId, id }: { storeId: string; id: string }) => {
     },
   })
 }
-const getActionItems = (row: Row<Category>) => {
+const getActionItems = (row: Row<Product>) => {
   return [
     [
       {
         label: 'Edit',
         icon: 'heroicons:pencil-square',
         onSelect: () =>
-          modal.open(LazyModalCategory, {
+          modal.open(LazyModalProduct, {
             storeId: row.original.storeId,
-            categoryId: row.original.id,
+            productId: row.original.id,
             initialValues: { ...row.original },
           }),
       },
@@ -69,7 +69,7 @@ const getActionItems = (row: Row<Category>) => {
     ],
   ]
 }
-const getHeader = (column: Column<Category>, label: string) => {
+const getHeader = (column: Column<Product>, label: string) => {
   const isEnableSort = column.getCanSort()
   if (!isEnableSort) return label
 
@@ -123,7 +123,7 @@ const getHeader = (column: Column<Category>, label: string) => {
       }),
   )
 }
-const columns: TableColumn<Category>[] = [
+const columns: TableColumn<Product>[] = [
   {
     id: 'select',
     enableHiding: false,
@@ -233,7 +233,7 @@ const { data, status } = await useFetch(() => `/api/stores/${storeId.value}/prod
 })
 const isFetching = computed(() => status.value === 'pending')
 
-const rows = computed(() => data.value?.data as Category[])
+const rows = computed(() => data.value?.data as Product[])
 const meta = computed(() => data.value.meta)
 </script>
 
