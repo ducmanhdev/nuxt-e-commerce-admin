@@ -22,13 +22,6 @@ const newImages = ref<File[]>([])
 
 const isContainsImages = computed(() => previewImages.value.length || existingImages.value.length)
 
-const convertMBToBytes = (megabytes: number) => {
-  if (megabytes < 0) {
-    throw new Error('Input must be a non-negative number.')
-  }
-  return megabytes * 1024 * 1024
-}
-
 const uploadDescription = computed(
   () =>
     `${ACCEPTED_UPLOAD_IMAGE_MIME_TYPES.map((mime) => '.' + mime.split('/')[1])
@@ -47,7 +40,7 @@ const handleUploadImage = () => {
       console.error(`${file.name} is not acceptable.`)
       return
     }
-    if (file.size > convertMBToBytes(maxFileSize)) {
+    if (file.size > MBToBytes(maxFileSize)) {
       console.error(`${file.name} exceeds ${maxFileSize} MB.`)
       return
     }
