@@ -17,3 +17,22 @@ export const formatMoney = (
     currency,
     minimumFractionDigits,
   }).format(amount)
+
+
+/**
+ * Converts bytes to megabytes.
+ * @param bytes - The number of bytes to convert.
+ * @returns The equivalent megabytes, rounded to 2 decimal places.
+ */
+export const bytesToMB = (bytes: number): number => {
+  return Number((bytes / (1024 * 1024)).toFixed(2))
+}
+
+/**
+ * Converts megabytes to bytes.
+ * @param megabytes - The number of megabytes to convert.
+ * @returns The equivalent bytes.
+ */
+export const MBToBytes = (megabytes: number): number => {
+  return megabytes * (1024 * 1024)
+}

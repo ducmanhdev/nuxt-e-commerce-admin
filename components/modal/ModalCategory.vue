@@ -53,10 +53,9 @@ watch(
   },
 )
 
-const { handleDeleteImages, handleUploadImages } = useSupabaseStorage('categories')
-
 const toast = useCustomToast()
 const isSubmitLoading = ref(false)
+const bucketName = 'categories'
 const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
   try {
     isSubmitLoading.value = true
@@ -67,17 +66,29 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
     }
 
     if (event.data.deletedImages?.length) {
-      handleDeleteImages(event.data.deletedImages)
+      $fetch(`/api/delete-images`, {
+        method: 'DELETE',
+        body: {
+          imageUrls: event.data.deletedImages,
+          bucketName,
+        },
+      })
     }
 
     if (event.data.newImageFiles?.length) {
-      const uploadResponse = await handleUploadImages(event.data.newImageFiles)
+      const formData = new FormData()
+      event.data.newImageFiles.forEach((file) => formData.append('files', file))
+      formData.append('bucketName', bucketName)
+      const { data: uploadResponse } = await $fetch(`/api/upload-images`, {
+        method: 'POST',
+        body: formData,
+      })
       const { data, error } = uploadResponse[0]
       if (error) {
         toast.error(error.message)
         return
       }
-      event.data.imageUrl = data
+      event.data.imageUrl = data!
     }
 
     if (!event.data.imageUrl) {

@@ -1,5 +1,8 @@
 export const DATE_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss'
 export const ROWS_PER_PAGE_OPTIONS = [3, 5, 10, 20, 30, 40]
+export const ACCEPTED_UPLOAD_IMAGE_MIME_TYPES = ['image/png', 'image/jpeg', 'image/jpg']
+export const MAX_UPLOAD_IMAGE_FILE_SIZE_IN_BYTES = 2 * 1024 * 1024
+
 export const CURRENCY_FORMAT_OPTIONS = {
   style: 'currency',
   currency: 'USD',

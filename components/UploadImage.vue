@@ -1,11 +1,13 @@
 <script setup lang="ts">
+import { ACCEPTED_UPLOAD_IMAGE_MIME_TYPES, MAX_UPLOAD_IMAGE_FILE_SIZE_IN_BYTES } from '~/constants'
+
 type Props = {
   existing?: string[]
   multiple?: boolean
   maxFileSize?: number
 }
 
-const { existing = [], multiple = false, maxFileSize = 2 } = defineProps<Props>()
+const { existing = [], multiple = false, maxFileSize = MAX_UPLOAD_IMAGE_FILE_SIZE_IN_BYTES } = defineProps<Props>()
 
 type Emit = {
   (e: 'update:existing', images: string[]): void
@@ -27,10 +29,9 @@ const convertMBToBytes = (megabytes: number) => {
   return megabytes * 1024 * 1024
 }
 
-const ACCEPT = ['image/png', 'image/jpeg', 'image/jpg']
 const uploadDescription = computed(
   () =>
-    `${ACCEPT.map((mime) => '.' + mime.split('/')[1])
+    `${ACCEPTED_UPLOAD_IMAGE_MIME_TYPES.map((mime) => '.' + mime.split('/')[1])
       .join(', ')
       .toUpperCase()} up to ${maxFileSize} MB`,
 )
@@ -42,7 +43,7 @@ const handleUploadImage = () => {
       console.error(`${file.name} is not a valid image file.`)
       return
     }
-    if (!ACCEPT.includes(file.type)) {
+    if (!ACCEPTED_UPLOAD_IMAGE_MIME_TYPES.includes(file.type)) {
       console.error(`${file.name} is not acceptable.`)
       return
     }
@@ -138,7 +139,7 @@ const handleDeleteExistImage = (imageSrc: string) => {
     <input
       type="file"
       :multiple="multiple"
-      :accept="ACCEPT.join(', ')"
+      :accept="ACCEPTED_UPLOAD_IMAGE_MIME_TYPES.join(', ')"
       hidden
       ref="input"
       @change="handleUploadImage"
