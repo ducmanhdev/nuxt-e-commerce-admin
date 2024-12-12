@@ -39,7 +39,7 @@ export default defineNuxtConfig({
     preference: 'system',
   },
   dayjs: {
-    plugins: [],
+    plugins: ['isSameOrAfter'],
   },
   security: {
     headers: {
