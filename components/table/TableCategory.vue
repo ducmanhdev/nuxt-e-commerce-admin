@@ -169,29 +169,30 @@ const columns: TableColumn<Category>[] = [
   {
     accessorKey: 'actions',
     enableHiding: false,
-    header: () => h('div', { class: 'text-right' }, 'Actions'),
+    header: 'Actions',
     cell: ({ row }) => {
       return h(
-        'div',
-        { class: 'text-right' },
-        h(
-          UDropdownMenu,
-          {
-            content: {
-              align: 'end',
-            },
-            items: getActionItems(row),
+        UDropdownMenu,
+        {
+          content: {
+            align: 'end',
           },
-          () =>
-            h(UButton, {
-              icon: 'ion:ellipsis-vertical',
-              color: 'neutral',
-              variant: 'ghost',
-              class: 'ml-auto',
-            }),
-        ),
+          items: getActionItems(row),
+        },
+        () =>
+          h(UButton, {
+            icon: 'ion:ellipsis-vertical',
+            color: 'neutral',
+            variant: 'ghost',
+          }),
       )
     },
+    meta: {
+      class: {
+        th: 'text-center',
+        td: 'flex justify-center',
+      }
+    }
   },
 ]
 const columnVisibility = ref<VisibilityState>({})
