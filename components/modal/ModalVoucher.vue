@@ -53,12 +53,6 @@ watch(
   },
 )
 
-const date1 = dayjs('2024-12-12T07:35:34.459Z')
-const date2 = dayjs('2024-12-13T07:35:34.459Z')
-
-console.log(date1.isSameOrAfter(date2)) // false
-console.log(date2.isSameOrAfter(date1)) // true
-
 const toast = useCustomToast()
 const isSubmitLoading = ref(false)
 const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
@@ -96,7 +90,6 @@ const VOUCHER_DISCOUNT_TYPE_OPTIONS = Object.entries(VOUCHER_DISCOUNT_TYPES).map
   label: key,
   value: value,
 }))
-
 const VOUCHER_STATUS_OPTIONS = Object.entries(VOUCHER_STATUSES).map(([key, value]) => ({
   label: key,
   value: value,
