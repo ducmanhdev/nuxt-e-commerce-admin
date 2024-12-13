@@ -1,5 +1,11 @@
 <script setup lang="ts">
-import { DATE_TIME_FORMAT, ROWS_PER_PAGE_OPTIONS, VOUCHER_STATUSES, VOUCHER_DISCOUNT_TYPES } from '~/constants'
+import {
+  DATE_TIME_FORMAT,
+  ROWS_PER_PAGE_OPTIONS,
+  VOUCHER_STATUSES,
+  VOUCHER_DISCOUNT_TYPES,
+  DATE_FORMAT
+} from '~/constants'
 import { upperFirst } from 'scule'
 import type { Voucher } from '~/types'
 import { refDebounced } from '@vueuse/core'
@@ -179,12 +185,12 @@ const columns: TableColumn<Voucher>[] = [
   {
     accessorKey: 'startDate',
     header: ({ column }) => getHeader(column, 'Start date'),
-    cell: ({ row }) => dayjs(row.getValue('startDate')).format(DATE_TIME_FORMAT),
+    cell: ({ row }) => dayjs(row.getValue('startDate')).format(DATE_FORMAT),
   },
   {
     accessorKey: 'endDate',
     header: ({ column }) => getHeader(column, 'End date'),
-    cell: ({ row }) => dayjs(row.getValue('endDate')).format(DATE_TIME_FORMAT),
+    cell: ({ row }) => dayjs(row.getValue('endDate')).format(DATE_FORMAT),
   },
   {
     accessorKey: 'createdAt',
