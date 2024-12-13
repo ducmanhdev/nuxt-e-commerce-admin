@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { COMMON_STATUSES, DATE_TIME_FORMAT, ROWS_PER_PAGE_OPTIONS } from '~/constants'
+import { DATE_TIME_FORMAT, ROWS_PER_PAGE_OPTIONS, VOUCHER_STATUSES, VOUCHER_DISCOUNT_TYPES } from '~/constants'
 import { upperFirst } from 'scule'
 import type { Voucher } from '~/types'
 import { refDebounced } from '@vueuse/core'
 import type { TableColumn } from '#ui/components/Table.vue'
 import type { Column, Row, SortingState, VisibilityState } from '@tanstack/vue-table'
 import { LazyModalVoucher, LazyModalConfirm } from '#components'
-import { VOUCHER_STATUSES, VOUCHER_DISCOUNT_TYPES } from '~/constants'
 
 const UCheckbox = resolveComponent('UCheckbox')
 const UButton = resolveComponent('UButton')
