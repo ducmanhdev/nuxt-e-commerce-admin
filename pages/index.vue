@@ -12,7 +12,7 @@ const groups = computed(() => [
     id: 'stores',
     label: '',
     items: (storesStore.stores || []).map((store) => ({
-      icon: 'ion:ios-grid-view-outline',
+      icon: 'heroicons:arrows-pointing-out-solid',
       label: store.name,
       id: store.id,
       onSelect: async () => {
