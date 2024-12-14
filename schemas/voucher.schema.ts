@@ -8,15 +8,13 @@ export default z
   .object({
     code: z.string().min(1, 'Code is required'),
     discountType: z.nativeEnum(VOUCHER_DISCOUNT_TYPES, {
-      required_error: 'Discount type status is required',
-      invalid_type_error: 'Discount type status is not valid',
+      message: `Discount type is required and must be one of: ${Object.keys(VOUCHER_DISCOUNT_TYPES).join(', ')}`,
     }),
     discountValue: z.number().or(z.string()).pipe(z.coerce.number().positive('Discount value must be non-negative')),
     minOrderValue: z.number().or(z.string()).pipe(z.coerce.number().positive('Min order value must be non-negative')),
     maxDiscount: z.number().or(z.string()).optional().pipe(z.coerce.number()),
     status: z.nativeEnum(VOUCHER_STATUSES, {
-      required_error: 'Voucher status is required',
-      invalid_type_error: 'Voucher status is not valid',
+      message: `Status is required and must be one of: ${Object.keys(VOUCHER_STATUSES).join(', ')}`,
     }),
     usageLimit: z.number().or(z.string()).pipe(z.coerce.number().positive('Usage limit value must be non-negative')),
     startDate: z

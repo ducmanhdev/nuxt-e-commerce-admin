@@ -110,11 +110,11 @@ const VOUCHER_STATUS_OPTIONS = Object.entries(VOUCHER_STATUSES).map(([key, value
           <UInput v-model="state.code" />
         </UFormField>
         <UFormField label="Status" name="status" required>
-          <USelect v-model="state.status" :items="VOUCHER_STATUS_OPTIONS" />
+          <USelect v-model.number="state.status" :items="VOUCHER_STATUS_OPTIONS" />
         </UFormField>
         <div class="grid grid-cols-2 gap-2">
           <UFormField label="Discount type" name="discountType" required>
-            <USelect v-model="state.discountType" :items="VOUCHER_DISCOUNT_TYPE_OPTIONS" />
+            <USelect v-model.number="state.discountType" :items="VOUCHER_DISCOUNT_TYPE_OPTIONS" />
           </UFormField>
           <UFormField label="Discount value" name="discountValue" required>
             <UInputNumber
