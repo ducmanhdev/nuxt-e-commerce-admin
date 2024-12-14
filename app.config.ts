@@ -1,7 +1,7 @@
 export default defineAppConfig({
   ui: {
     colors: {
-      primary: 'rebeccaPurple' as any,
+      primary: 'primary' as any,
     },
     input: {
       slots: {
@@ -15,12 +15,12 @@ export default defineAppConfig({
     },
     select: {
       slots: {
-        base: ['w-full'],
+        base: 'w-full',
       },
     },
     selectMenu: {
       slots: {
-        base: ['w-full'],
+        base: 'w-full',
       },
     },
   },
