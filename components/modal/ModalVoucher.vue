@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { z } from 'zod'
-import dayjs from 'dayjs'
 import type { FormSubmitEvent } from '#ui/types'
 import schema from '~/schemas/voucher.schema'
 import { CURRENCY_FORMAT_OPTIONS, VOUCHER_DISCOUNT_TYPES, VOUCHER_STATUSES } from '~/constants'
 import { getLocalTimeZone } from '@internationalized/date'
 
+const dayjs = useDayjs()
 const modal = useModal()
 
 type SchemaInfer = z.infer<typeof schema>

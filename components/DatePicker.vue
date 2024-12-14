@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { DateValue } from '@internationalized/date'
 import { CalendarDate, DateFormatter, getLocalTimeZone } from '@internationalized/date'
-import dayjs from 'dayjs'
 
+const dayjs = useDayjs()
 const isOpen = ref(false)
 
 const df = new DateFormatter('en-US', {
