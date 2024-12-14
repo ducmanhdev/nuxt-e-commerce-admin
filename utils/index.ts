@@ -6,17 +6,21 @@
  * @param minimumFractionDigits - Minimum decimal places (default is 2).
  * @returns A string formatted as currency.
  */
-export const formatMoney = (
+export const formatCurrency = (
   amount: number,
   currency: string = 'USD',
   locale: string = 'en-US',
   minimumFractionDigits: number = 2,
-): string =>
-  new Intl.NumberFormat(locale, {
+): string => {
+  if (isNaN(amount)) {
+    return 'NaN'
+  }
+  return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency,
     minimumFractionDigits,
   }).format(amount)
+}
 
 
 /**
