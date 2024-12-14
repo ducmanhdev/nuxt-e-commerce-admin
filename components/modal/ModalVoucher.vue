@@ -3,7 +3,8 @@ import { z } from 'zod'
 import dayjs from 'dayjs'
 import type { FormSubmitEvent } from '#ui/types'
 import schema from '~/schemas/voucher.schema'
-import { VOUCHER_STATUSES, VOUCHER_DISCOUNT_TYPES, CURRENCY_FORMAT_OPTIONS } from '~/constants'
+import { CURRENCY_FORMAT_OPTIONS, VOUCHER_DISCOUNT_TYPES, VOUCHER_STATUSES } from '~/constants'
+import { getLocalTimeZone } from '@internationalized/date'
 
 const modal = useModal()
 
@@ -26,8 +27,8 @@ const DEFAULT_STATE: Partial<SchemaInfer> = {
   code: '',
   discountType: VOUCHER_DISCOUNT_TYPES.FIXED,
   discountValue: 0,
-  startDate: dayjs().add(1, 'day').toDate(),
-  endDate: dayjs().add(2, 'day').toDate(),
+  startDate: dayjs().toDate(),
+  endDate: dayjs().add(1, 'day').toDate(),
   maxDiscount: 0,
   minOrderValue: 0,
   status: VOUCHER_STATUSES.ACTIVE,
@@ -40,7 +41,12 @@ watch(
   [() => props.initialValues, () => attrs.open],
   ([newInitialValues, isOpen]) => {
     if (!isOpen) return
-    Object.assign(state.value, { ...DEFAULT_STATE, ...newInitialValues })
+    Object.assign(state.value, {
+      ...DEFAULT_STATE,
+      ...newInitialValues,
+      startDate: newInitialValues?.startDate ? dayjs(newInitialValues.startDate).toDate() : DEFAULT_STATE.startDate,
+      endDate: newInitialValues?.endDate ? dayjs(newInitialValues.endDate).toDate() : DEFAULT_STATE.endDate,
+    })
   },
   {
     immediate: true,
@@ -84,7 +90,6 @@ const VOUCHER_DISCOUNT_TYPE_OPTIONS = Object.entries(VOUCHER_DISCOUNT_TYPES).map
   label: key,
   value: value,
 }))
-
 const VOUCHER_STATUS_OPTIONS = Object.entries(VOUCHER_STATUSES).map(([key, value]) => ({
   label: key,
   value: value,
@@ -148,10 +153,16 @@ const VOUCHER_STATUS_OPTIONS = Object.entries(VOUCHER_STATUSES).map(([key, value
         </UFormField>
         <div class="grid grid-cols-2 gap-2">
           <UFormField label="Start date" name="startDate" required>
-            <DatePicker />
+            <DatePicker
+              v-model="state.startDate"
+              :is-date-disabled="(date) => date.toDate(getLocalTimeZone()) < dayjs().toDate()"
+            />
           </UFormField>
           <UFormField label="End date" name="endDate" required>
-            <DatePicker />
+            <DatePicker
+              v-model="state.endDate"
+              :is-date-disabled="(date) => date.toDate(getLocalTimeZone()) < dayjs(state.startDate).toDate()"
+            />
           </UFormField>
         </div>
         <div class="grid grid-cols-2 gap-2">

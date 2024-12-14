@@ -2,6 +2,8 @@ import { z } from 'zod'
 import dayjs from 'dayjs'
 import { VOUCHER_DISCOUNT_TYPES, VOUCHER_STATUSES } from '~/constants'
 
+const futureDate = dayjs().subtract(1, 'minute').toDate()
+
 export default z
   .object({
     code: z.string().min(1, 'Code is required'),
@@ -20,13 +22,16 @@ export default z
     startDate: z
       .date()
       .or(z.string())
-      .pipe(z.coerce.date().min(new Date(), { message: 'Start date must be later than the current date and time.' })),
+      .pipe(z.coerce.date().min(futureDate, { message: 'Start date must be later than the current date and time.' })),
     endDate: z.date().or(z.string()).pipe(z.coerce.date()),
   })
-  .refine((data) => dayjs(data.endDate).isAfter(dayjs(data.startDate)), {
-    message: 'End date must be greater than start date',
-    path: ['endDate'],
-  })
+  .refine(
+    (data) => dayjs(data.endDate).isAfter(dayjs(data.startDate)) || dayjs(data.endDate).isSame(dayjs(data.startDate)),
+    {
+      message: 'End date must be the same or greater than start date',
+      path: ['endDate'],
+    },
+  )
   .refine(
     (data) => {
       if (data.discountType === VOUCHER_DISCOUNT_TYPES.PERCENTAGE) {

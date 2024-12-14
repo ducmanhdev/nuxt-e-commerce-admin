@@ -1,12 +1,17 @@
 <script setup lang="ts">
-import { COMMON_STATUSES, DATE_TIME_FORMAT, ROWS_PER_PAGE_OPTIONS } from '~/constants'
+import {
+  DATE_TIME_FORMAT,
+  ROWS_PER_PAGE_OPTIONS,
+  VOUCHER_STATUSES,
+  VOUCHER_DISCOUNT_TYPES,
+  DATE_FORMAT
+} from '~/constants'
 import { upperFirst } from 'scule'
 import type { Voucher } from '~/types'
 import { refDebounced } from '@vueuse/core'
 import type { TableColumn } from '#ui/components/Table.vue'
 import type { Column, Row, SortingState, VisibilityState } from '@tanstack/vue-table'
 import { LazyModalVoucher, LazyModalConfirm } from '#components'
-import { VOUCHER_STATUSES, VOUCHER_DISCOUNT_TYPES } from '~/constants'
 
 const UCheckbox = resolveComponent('UCheckbox')
 const UButton = resolveComponent('UButton')
@@ -180,12 +185,12 @@ const columns: TableColumn<Voucher>[] = [
   {
     accessorKey: 'startDate',
     header: ({ column }) => getHeader(column, 'Start date'),
-    cell: ({ row }) => dayjs(row.getValue('startDate')).format(DATE_TIME_FORMAT),
+    cell: ({ row }) => dayjs(row.getValue('startDate')).format(DATE_FORMAT),
   },
   {
     accessorKey: 'endDate',
     header: ({ column }) => getHeader(column, 'End date'),
-    cell: ({ row }) => dayjs(row.getValue('endDate')).format(DATE_TIME_FORMAT),
+    cell: ({ row }) => dayjs(row.getValue('endDate')).format(DATE_FORMAT),
   },
   {
     accessorKey: 'createdAt',
@@ -200,29 +205,30 @@ const columns: TableColumn<Voucher>[] = [
   {
     accessorKey: 'actions',
     enableHiding: false,
-    header: () => h('div', { class: 'text-right' }, 'Actions'),
+    header: 'Actions',
     cell: ({ row }) => {
       return h(
-        'div',
-        { class: 'text-right' },
-        h(
-          UDropdownMenu,
-          {
-            content: {
-              align: 'end',
-            },
-            items: getActionItems(row),
+        UDropdownMenu,
+        {
+          content: {
+            align: 'end',
           },
-          () =>
-            h(UButton, {
-              icon: 'ion:ellipsis-vertical',
-              color: 'neutral',
-              variant: 'ghost',
-              class: 'ml-auto',
-            }),
-        ),
+          items: getActionItems(row),
+        },
+        () =>
+          h(UButton, {
+            icon: 'ion:ellipsis-vertical',
+            color: 'neutral',
+            variant: 'ghost',
+          }),
       )
     },
+    meta: {
+      class: {
+        th: 'text-center',
+        td: 'flex justify-center',
+      }
+    }
   },
 ]
 const columnVisibility = ref<VisibilityState>({})

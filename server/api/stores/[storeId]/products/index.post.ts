@@ -12,7 +12,7 @@ export default defineWrappedResponseHandler(async (event) => {
     },
   })
 
-  const { attributes, ...body } = await readValidatedBody(event, schema.parse)
+  const { attributes, variants, ...body } = await readValidatedBody(event, schema.parse)
 
   const data = await prisma.$transaction(async (tx) => {
     const createdProduct = await tx.product.create({
@@ -24,7 +24,7 @@ export default defineWrappedResponseHandler(async (event) => {
 
     if (attributes?.length) {
       for (const attr of attributes) {
-        let attribute = await tx.attribute.findFirst({
+        let attribute = await tx.productAttribute.findFirst({
           where: {
             name: attr.name,
             storeId: store.id,
@@ -32,7 +32,7 @@ export default defineWrappedResponseHandler(async (event) => {
         })
 
         if (!attribute) {
-          attribute = await tx.attribute.create({
+          attribute = await tx.productAttribute.create({
             data: {
               name: attr.name,
               storeId: store.id,
@@ -47,6 +47,52 @@ export default defineWrappedResponseHandler(async (event) => {
             value: attr.value,
           },
         })
+      }
+    }
+
+    if (variants?.length) {
+      for (const variant of variants) {
+        const { optionValues, ...variantData } = variant
+
+        const createdVariant = await tx.productVariant.create({
+          data: {
+            productId: createdProduct.id,
+            ...variantData,
+          },
+        })
+
+        for (const optionValue of optionValues) {
+          let variantOptionValue = await tx.variantOptionValue.findFirst({
+            where: {
+              value: optionValue.value,
+              storeId: store.id,
+            },
+          })
+
+          if (!variantOptionValue) {
+            const variantOption = await tx.variantOption.findFirstOrThrow({
+              where: {
+                name: optionValue.optionName,
+                storeId: store.id,
+              },
+            })
+
+            variantOptionValue = await tx.variantOptionValue.create({
+              data: {
+                optionId: variantOption.id,
+                storeId: store.id,
+                value: optionValue.value,
+              },
+            })
+          }
+
+          await tx.productVariantAttributeValue.create({
+            data: {
+              variantId: createdVariant.id,
+              optionValueId: variantOptionValue.id,
+            },
+          })
+        }
       }
     }
 

@@ -6,6 +6,19 @@ export const attributeValidator = z.object({
   value: z.string().min(1, 'Please enter product attribute value'),
 })
 
+export const variantOptionValueValidator = z.object({
+  optionName: z.string().min(1, 'Please enter variant option name'),
+  value: z.string().min(1, 'Please enter variant option value'),
+})
+
+export const variantValidator = z.object({
+  price: z.number().or(z.string()).pipe(z.coerce.number().positive('Please enter a valid price')),
+  stock: z.number().or(z.string()).pipe(z.coerce.number().positive('Please enter a valid stock quantity')),
+  sku: z.string().min(1, 'Please enter SKU'),
+  imageUrl: z.string().url().optional(),
+  optionValues: z.array(variantOptionValueValidator).min(1, 'Please provide at least one variant option value'),
+})
+
 export default z.object({
   name: z.string().min(1, 'Please enter product name'),
   description: z.string().min(1, 'Please enter product description'),
@@ -15,9 +28,7 @@ export default z.object({
       invalid_type_error: 'Product status is not valid',
     })
     .default(COMMON_STATUSES.VISIBLE),
-  // brandId: z.string().min(1, 'Please select product brand'),
   categoryId: z.string().min(1, 'Please select product category'),
   attributes: z.array(attributeValidator).optional(),
-  // status: z.number().or(z.string()).pipe(z.coerce.number().positive('Status is not valid')),
-  // images: z.array(z.string().url().min(1, 'Please add at least one image URL')),
+  variants: z.array(variantValidator).optional(),
 })
