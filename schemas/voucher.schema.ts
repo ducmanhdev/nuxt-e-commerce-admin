@@ -18,7 +18,7 @@ const voucherSchema = z
     maxDiscount: z.coerce.number().optional(),
     status: z.nativeEnum(VOUCHER_STATUSES, {
       message: `Status is required and must be one of: ${Object.keys(VOUCHER_STATUSES).join(', ')}`,
-    }),
+    }).default(VOUCHER_STATUSES.ACTIVE),
     usageLimit: z.coerce.number().positive('Usage limit value must be non-negative'),
     startDate: z.coerce.date().min(futureDate, { message: 'Start date must be later than the current date and time.' }),
     endDate: z.coerce.date({ message: 'End date is required' }),

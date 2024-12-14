@@ -31,7 +31,6 @@ const DEFAULT_STATE: Partial<SchemaInfer> = {
   endDate: dayjs().add(1, 'day').toDate(),
   maxDiscount: 0,
   minOrderValue: 0,
-  status: VOUCHER_STATUSES.ACTIVE,
   usageLimit: 0,
 }
 
@@ -90,10 +89,6 @@ const VOUCHER_DISCOUNT_TYPE_OPTIONS = Object.entries(VOUCHER_DISCOUNT_TYPES).map
   label: key,
   value: value,
 }))
-const VOUCHER_STATUS_OPTIONS = Object.entries(VOUCHER_STATUSES).map(([key, value]) => ({
-  label: key,
-  value: value,
-}))
 </script>
 
 <template>
@@ -108,9 +103,6 @@ const VOUCHER_STATUS_OPTIONS = Object.entries(VOUCHER_STATUSES).map(([key, value
       <UForm :schema="schema" :state="state" class="space-y-4" @submit="handleSubmit">
         <UFormField label="Code" name="code" required>
           <UInput v-model="state.code" />
-        </UFormField>
-        <UFormField label="Status" name="status" required>
-          <USelect v-model.number="state.status" :items="VOUCHER_STATUS_OPTIONS" />
         </UFormField>
         <div class="grid grid-cols-2 gap-2">
           <UFormField label="Discount type" name="discountType" required>

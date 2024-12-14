@@ -4,7 +4,7 @@ import {
   ROWS_PER_PAGE_OPTIONS,
   VOUCHER_STATUSES,
   VOUCHER_DISCOUNT_TYPES,
-  DATE_FORMAT
+  DATE_FORMAT,
 } from '~/constants'
 import { upperFirst } from 'scule'
 import type { Voucher } from '~/types'
@@ -13,6 +13,7 @@ import type { TableColumn } from '#ui/components/Table.vue'
 import type { Column, Row, SortingState, VisibilityState } from '@tanstack/vue-table'
 import { LazyModalVoucher, LazyModalConfirm } from '#components'
 
+const UIcon = resolveComponent('UIcon')
 const UCheckbox = resolveComponent('UCheckbox')
 const UButton = resolveComponent('UButton')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
@@ -147,7 +148,45 @@ const columns: TableColumn<Voucher>[] = [
         ariaLabel: 'Select row',
       }),
   },
-  { accessorKey: 'code', header: ({ column }) => getHeader(column, 'Code') },
+  {
+    accessorKey: 'code',
+    header: ({ column }) => getHeader(column, 'Code'),
+    cell: ({ row }) => {
+      const value = row.getValue<string>('code')
+      // const copyToClipboard = () => {
+      //   navigator.clipboard
+      //     .writeText(value)
+      //     .then(() => {
+      //       toast.success('Voucher code copied to clipboard')
+      //     })
+      //     .catch((err) => {
+      //       console.error('Failed to copy: ', err)
+      //       toast.error('Failed to copy voucher code')
+      //     })
+      // }
+      return h(
+        'div',
+        {
+          class: 'flex items-center gap-2',
+        },
+        [
+          h(UIcon, { name: 'heroicons:ticket-solid' }),
+          h('span', value),
+          // h(UButton, {
+          //   icon: 'heroicons:clipboard-document-check',
+          //   variant: 'ghost',
+          //   onClick: copyToClipboard,
+          //   ariaLabel: 'Copy voucher code',
+          // }),
+        ],
+      )
+    },
+    meta: {
+      class: {
+        td: 'font-bold text-primary',
+      },
+    },
+  },
   {
     accessorKey: 'discountType',
     header: ({ column }) => getHeader(column, 'Discount type'),
@@ -161,9 +200,27 @@ const columns: TableColumn<Voucher>[] = [
       return h(UBadge, { color, label, variant: 'subtle' })
     },
   },
-  { accessorKey: 'discountValue', header: ({ column }) => getHeader(column, 'Discount value') },
-  { accessorKey: 'minOrderValue', header: ({ column }) => getHeader(column, 'Min order value') },
-  { accessorKey: 'maxDiscount', header: ({ column }) => getHeader(column, 'Max order value') },
+  {
+    accessorKey: 'discountValue',
+    header: ({ column }) => getHeader(column, 'Discount value'),
+    cell: ({ row }) =>
+      row.getValue('discountType') === VOUCHER_DISCOUNT_TYPES.PERCENTAGE
+        ? `${row.getValue('discountValue')}%`
+        : formatCurrency(row.getValue('discountValue')),
+  },
+  {
+    accessorKey: 'minOrderValue',
+    header: ({ column }) => getHeader(column, 'Min order value'),
+    cell: ({ row }) => formatCurrency(row.getValue('minOrderValue')),
+  },
+  {
+    accessorKey: 'maxDiscount',
+    header: ({ column }) => getHeader(column, 'Max discount'),
+    cell: ({ row }) =>
+      row.getValue('discountType') === VOUCHER_DISCOUNT_TYPES.PERCENTAGE
+        ? formatCurrency(row.getValue('maxDiscount'))
+        : '-',
+  },
   {
     accessorKey: 'status',
     header: ({ column }) => getHeader(column, 'Status'),
@@ -179,7 +236,6 @@ const columns: TableColumn<Voucher>[] = [
       return h(UBadge, { color, label, variant: 'subtle' })
     },
   },
-
   { accessorKey: 'usageLimit', header: ({ column }) => getHeader(column, 'Usage limit') },
   { accessorKey: 'usedCount', header: ({ column }) => getHeader(column, 'Usage count') },
   {
@@ -227,11 +283,14 @@ const columns: TableColumn<Voucher>[] = [
       class: {
         th: 'text-center',
         td: 'flex justify-center',
-      }
-    }
+      },
+    },
   },
 ]
-const columnVisibility = ref<VisibilityState>({})
+const columnVisibility = ref<VisibilityState>({
+  createdAt: false,
+  updatedAt: false,
+})
 
 const search = ref('')
 const searchDebounced = refDebounced(search)
