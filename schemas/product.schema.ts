@@ -12,8 +12,8 @@ export const variantOptionValueValidator = z.object({
 })
 
 export const variantValidator = z.object({
-  price: z.number().or(z.string()).pipe(z.coerce.number().positive('Please enter a valid price')),
-  stock: z.number().or(z.string()).pipe(z.coerce.number().positive('Please enter a valid stock quantity')),
+  price: z.coerce.number().positive('Please enter a valid price'),
+  stock: z.coerce.number().positive('Please enter a valid stock quantity'),
   sku: z.string().min(1, 'Please enter SKU'),
   imageUrl: z.string().url().optional(),
   optionValues: z.array(variantOptionValueValidator).min(1, 'Please provide at least one variant option value'),
