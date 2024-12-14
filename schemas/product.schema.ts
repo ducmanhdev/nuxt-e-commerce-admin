@@ -24,8 +24,7 @@ export default z.object({
   description: z.string().min(1, 'Please enter product description'),
   status: z
     .nativeEnum(COMMON_STATUSES, {
-      required_error: 'Product status is required',
-      invalid_type_error: 'Product status is not valid',
+      message: `Status is required and must be one of: ${Object.keys(COMMON_STATUSES).join(', ')}`,
     })
     .default(COMMON_STATUSES.VISIBLE),
   categoryId: z.string().min(1, 'Please select product category'),
