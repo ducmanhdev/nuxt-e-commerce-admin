@@ -189,8 +189,8 @@ const columns: TableColumn<Category>[] = [
     },
     meta: {
       class: {
-        th: 'text-center',
-        td: 'flex justify-center',
+        th: 'text-right',
+        td: 'text-right',
       }
     }
   },

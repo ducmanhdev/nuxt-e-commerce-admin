@@ -191,8 +191,8 @@ const columns: TableColumn<Product>[] = [
     },
     meta: {
       class: {
-        th: 'text-center',
-        td: 'flex justify-center',
+        th: 'text-right',
+        td: 'text-right',
       }
     }
   },

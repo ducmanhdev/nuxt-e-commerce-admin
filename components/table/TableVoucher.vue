@@ -281,10 +281,10 @@ const columns: TableColumn<Voucher>[] = [
     },
     meta: {
       class: {
-        th: 'text-center',
-        td: 'flex justify-center',
-      },
-    },
+        th: 'text-right',
+        td: 'text-right',
+      }
+    }
   },
 ]
 const columnVisibility = ref<VisibilityState>({
