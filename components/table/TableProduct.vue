@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { COMMON_STATUSES, DATE_TIME_FORMAT, ROWS_PER_PAGE_OPTIONS } from '~/constants'
 import { upperFirst } from 'scule'
-import type { Attribute, Product, ProductAttributeValue } from '~/types'
+import type { Product } from '~/types'
 import { refDebounced } from '@vueuse/core'
 import type { TableColumn } from '#ui/components/Table.vue'
 import type { Column, Row, SortingState, VisibilityState } from '@tanstack/vue-table'

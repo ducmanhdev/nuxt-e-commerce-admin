@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { DATE_TIME_FORMAT, ROWS_PER_PAGE_OPTIONS } from '~/constants'
 import { upperFirst } from 'scule'
-import type { Category } from '~/types'
+import type { Brand } from '~/types'
 import { refDebounced } from '@vueuse/core'
 import type { TableColumn } from '#ui/components/Table.vue'
 import type { Column, Row, SortingState, VisibilityState } from '@tanstack/vue-table'
-import { LazyModalCategory, LazyModalConfirm } from '#components'
+import { LazyModalBrand, LazyModalConfirm } from '#components'
 
 const UCheckbox = resolveComponent('UCheckbox')
 const UButton = resolveComponent('UButton')
@@ -29,11 +29,11 @@ const handleDelete = ({ storeId, id }: { storeId: string; id: string }) => {
     message: 'Are you absolutely to delete this item?',
     onConfirm: async () => {
       try {
-        await $fetch(`/api/stores/${storeId}/categories/${id}`, {
+        await $fetch(`/api/stores/${storeId}/brands/${id}`, {
           method: 'DELETE',
         })
         toast.success('Deleted successfully')
-        await refreshNuxtData('categories')
+        await refreshNuxtData('brands')
       } catch (error: any) {
         console.log(error)
         toast.error(error.statusMessage || 'Something went wrong')
@@ -41,16 +41,16 @@ const handleDelete = ({ storeId, id }: { storeId: string; id: string }) => {
     },
   })
 }
-const getActionItems = (row: Row<Category>) => {
+const getActionItems = (row: Row<Brand>) => {
   return [
     [
       {
         label: 'Edit',
         icon: 'heroicons:pencil-square',
         onSelect: () =>
-          modal.open(LazyModalCategory, {
+          modal.open(LazyModalBrand, {
             storeId: row.original.storeId,
-            categoryId: row.original.id,
+            brandId: row.original.id,
             initialValues: { ...row.original },
           }),
       },
@@ -69,7 +69,7 @@ const getActionItems = (row: Row<Category>) => {
     ],
   ]
 }
-const getHeader = (column: Column<Category>, label: string) => {
+const getHeader = (column: Column<Brand>, label: string) => {
   const isEnableSort = column.getCanSort()
   if (!isEnableSort) return label
 
@@ -123,7 +123,7 @@ const getHeader = (column: Column<Category>, label: string) => {
       }),
   )
 }
-const columns: TableColumn<Category>[] = [
+const columns: TableColumn<Brand>[] = [
   {
     id: 'select',
     enableHiding: false,
@@ -216,11 +216,11 @@ const itemsPerPage = ref(10)
 const sortColumn = computed(() => sorting.value?.[0].id)
 const sortDirection = computed(() => (sorting.value?.[0].desc ? 'desc' : 'asc'))
 
-const { data: cachedCategories } = useNuxtData('categories')
-const { data, status } = await useFetch(() => `/api/stores/${storeId.value}/categories`, {
-  key: 'categories',
-  lazy: !!cachedCategories.value,
-  default: () => cachedCategories.value,
+const { data: cachedBrands } = useNuxtData('brands')
+const { data, status } = await useFetch(() => `/api/stores/${storeId.value}/brands`, {
+  key: 'brands',
+  lazy: !!cachedBrands.value,
+  default: () => cachedBrands.value,
   query: {
     search: searchDebounced,
     page: page,
@@ -231,7 +231,7 @@ const { data, status } = await useFetch(() => `/api/stores/${storeId.value}/cate
 })
 const isFetching = computed(() => status.value === 'pending')
 
-const rows = computed(() => data.value?.data as Category[])
+const rows = computed(() => data.value?.data as Brand[])
 const meta = computed(() => data.value.meta)
 </script>
 

@@ -12,21 +12,33 @@ datasource db {
 }
 
 model Store {
-  id                 String               @id @default(uuid())
-  name               String
-  userId             String
-  createdAt          DateTime             @default(now())
-  updatedAt          DateTime             @updatedAt
-  categories         Category[]
-  products           Product[]
-  orders             Order[]
-  attributes         ProductAttribute[]
-  voucher            Voucher[]
+  id                  String               @id @default(uuid())
+  name                String
+  userId              String
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  categories          Category[]
+  brands              Brand[]
+  products            Product[]
+  orders              Order[]
+  attributes          ProductAttribute[]
+  voucher             Voucher[]
   variantOptions      VariantOption[]
   variantOptionValues VariantOptionValue[]
 }
 
 model Category {
+  id        String    @id @default(uuid())
+  name      String
+  storeId   String
+  store     Store     @relation(fields: [storeId], references: [id])
+  imageUrl  String
+  products  Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Brand {
   id        String    @id @default(uuid())
   name      String
   storeId   String
@@ -45,6 +57,8 @@ model Product {
   store         Store                   @relation(fields: [storeId], references: [id])
   categoryId    String
   category      Category                @relation(fields: [categoryId], references: [id])
+  brandId       String
+  brand         Brand                   @relation(fields: [brandId], references: [id])
   status        Int
   orderItems    OrderItem[]
   newsDetails   NewsDetail[]
