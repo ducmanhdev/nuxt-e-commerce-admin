@@ -48,4 +48,7 @@ export default defineNuxtConfig({
       },
     },
   },
+  image: {
+    domains: [process.env.SUPABASE_URL!],
+  },
 })
