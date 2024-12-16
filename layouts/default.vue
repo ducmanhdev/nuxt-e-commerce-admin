@@ -72,8 +72,8 @@ const navigationItems = computed(() => {
       to: `/${storeId.value}/categories`,
     },
     {
-      label: 'Brand',
-      disabled: true,
+      label: 'Brands',
+      to: `/${storeId.value}/brands`,
     },
     {
       label: 'Products',
@@ -81,7 +81,7 @@ const navigationItems = computed(() => {
     },
     {
       label: 'News',
-      disabled: true,
+      to: `/${storeId.value}/news`,
     },
     {
       label: 'Banners',

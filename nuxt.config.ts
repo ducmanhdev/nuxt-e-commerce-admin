@@ -20,6 +20,7 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@nuxt/image',
     'nuxt-security',
+    'nuxt-tiptap-editor',
   ],
   css: ['~/assets/css/main.css'],
   supabase: {
@@ -47,5 +48,8 @@ export default defineNuxtConfig({
         'img-src': ["'self'", 'data:', 'blob:', process.env.SUPABASE_URL!],
       },
     },
+  },
+  tiptap: {
+    prefix: 'Tiptap',
   },
 })

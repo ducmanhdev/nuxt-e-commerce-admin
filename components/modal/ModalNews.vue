@@ -1,0 +1,105 @@
+<script setup lang="ts">
+import { z } from 'zod'
+import type { FormSubmitEvent } from '#ui/types'
+import schema from '~/schemas/news.schema'
+import TiptapEditor from '~/components/TiptapEditor.vue'
+
+const modal = useModal()
+
+type SchemaInfer = z.infer<typeof schema>
+
+type Props = {
+  title?: string
+  storeId: string
+  newsId?: string
+  initialValues?: SchemaInfer
+}
+const props = defineProps<Props>()
+
+const modalTitle = computed(() => props.title || (props.newsId ? 'Update news' : 'Create news'))
+const submitSuccessMessage = computed(() => (props.newsId ? 'Updated news successfully' : 'Created news successfully'))
+
+const DEFAULT_STATE: Partial<SchemaInfer> = {
+  title: '',
+  content: '',
+  imageUrl: '',
+}
+
+const state = ref({ ...DEFAULT_STATE })
+const attrs = useAttrs()
+watch(
+  [() => props.initialValues, () => attrs.open],
+  ([newInitialValues, isOpen]) => {
+    if (!isOpen) return
+    Object.assign(state.value, { ...DEFAULT_STATE, ...newInitialValues })
+  },
+  {
+    immediate: true,
+  },
+)
+
+const toast = useCustomToast()
+const isSubmitLoading = ref(false)
+const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
+  try {
+    isSubmitLoading.value = true
+
+    if (!props.storeId) {
+      console.error('Store ID is required')
+      return
+    }
+
+    if (props.newsId) {
+      await $fetch(`/api/stores/${props.storeId}/news/${props.newsId}`, {
+        method: 'PATCH',
+        body: event.data,
+      })
+    } else {
+      await $fetch(`/api/stores/${props.storeId}/news`, {
+        method: 'POST',
+        body: event.data,
+      })
+    }
+    toast.success(submitSuccessMessage.value)
+    refreshNuxtData('news')
+    await modal.close()
+  } catch (error: any) {
+    console.log(error)
+    toast.error(error.statusMessage || 'Something went wrong')
+  } finally {
+    isSubmitLoading.value = false
+  }
+}
+</script>
+
+<template>
+  <UModal
+    :title="modalTitle"
+    :prevent-close="isSubmitLoading"
+    :ui="{
+      content: 'sm:max-w-2xl',
+    }"
+  >
+    <template #body>
+      <UForm :schema="schema" :state="state" class="space-y-4" @submit="handleSubmit">
+        <UFormField label="Title" name="title" required>
+          <UInput v-model="state.title" />
+        </UFormField>
+        <UFormField label="Content" name="content" required>
+          <TiptapEditor v-model="state.content"/>
+        </UFormField>
+        <div class="grid grid-cols-2 gap-2">
+          <UButton
+            type="button"
+            block
+            :disabled="isSubmitLoading"
+            label="Cancel"
+            variant="soft"
+            @click="modal.close()"
+          />
+          <UButton type="submit" block :loading="isSubmitLoading" label="Submit" />
+        </div>
+      </UForm>
+    </template>
+  </UModal>
+</template>
