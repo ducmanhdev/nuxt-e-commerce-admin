@@ -25,6 +25,7 @@ model Store {
   voucher             Voucher[]
   variantOptions      VariantOption[]
   variantOptionValues VariantOptionValue[]
+  news                News[]
 }
 
 model Category {
@@ -138,9 +139,11 @@ model ProductVariantAttributeValue {
 
 model News {
   id        String       @id @default(uuid())
+  storeId   String
+  store     Store        @relation(fields: [storeId], references: [id])
   title     String
-  image     String?
-  content   String?
+  imageUrl  String
+  content   String
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
   details   NewsDetail[]
@@ -149,12 +152,11 @@ model News {
 model NewsDetail {
   id        String   @id @default(uuid())
   productId String
+  product   Product  @relation(fields: [productId], references: [id])
   newsId    String
+  news      News     @relation(fields: [newsId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  product Product @relation(fields: [productId], references: [id])
-  news    News    @relation(fields: [newsId], references: [id])
 }
 
 model Banner {
