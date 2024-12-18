@@ -66,7 +66,7 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
     }
 
     if (event.data.deletedImages?.length) {
-      $fetch(`/api/delete-images`, {
+      $fetch(`/api/images/delete`, {
         method: 'DELETE',
         body: {
           imageUrls: event.data.deletedImages,
@@ -79,7 +79,7 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
       const formData = new FormData()
       event.data.newImageFiles.forEach((file) => formData.append('files', file))
       formData.append('bucketName', bucketName)
-      const { data: uploadResponse } = await $fetch(`/api/upload-images`, {
+      const { data: uploadResponse } = await $fetch(`/api/images/upload`, {
         method: 'POST',
         body: formData,
       })
