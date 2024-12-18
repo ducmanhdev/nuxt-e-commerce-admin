@@ -226,7 +226,7 @@ const { data, status } = await useFetch(() => `/api/stores/${storeId.value}/prod
   default: () => cachedProducts.value,
   query: {
     search: searchDebounced,
-    page: page + 't',
+    page: page,
     limit: itemsPerPage,
     sort: sortColumn,
     order: sortDirection,
