@@ -31,8 +31,11 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="p-4 border border-transparent dark:border-[var(--ui-border)] rounded">
-    <div class="flex flex-wrap gap-2 mb-4" v-if="editor">
+  <div class="border border-transparent dark:border-[var(--ui-border)] rounded">
+    <div
+      class="flex flex-wrap gap-2 p-2.5 border-b border-transparent dark:border-[var(--ui-border)] rounded"
+      v-if="editor"
+    >
       <UButton
         @click="editor.chain().focus().toggleBold().run()"
         :disabled="!editor.can().chain().focus().toggleBold().run()"
@@ -71,7 +74,6 @@ onBeforeUnmount(() => {
         variant="outline"
         size="sm"
       />
-      <!--      <UButton @click="editor.chain().focus().clearNodes().run()" icon="ri:delete-bin" variant="outline" size="sm" />-->
       <UButton
         @click="editor.chain().focus().setParagraph().run()"
         :class="{ 'bg-primary text-black hover:bg-primary hover:text-black': editor.isActive('paragraph') }"
@@ -170,9 +172,6 @@ onBeforeUnmount(() => {
         size="sm"
       />
     </div>
-    <TiptapEditorContent
-      class="p-4 border border-transparent dark:border-[var(--ui-border)] rounded"
-      :editor="editor"
-    />
+    <TiptapEditorContent class="p-2.5" :editor="editor" />
   </div>
 </template>
