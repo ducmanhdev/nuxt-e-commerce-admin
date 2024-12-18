@@ -33,7 +33,7 @@ const submitSuccessMessage = computed(() =>
   props.categoryId ? 'Updated category successfully' : 'Created category successfully',
 )
 
-const DEFAULT_STATE: Partial<SchemaInfer> = {
+const DEFAULT_STATE: SchemaInfer = {
   name: '',
   imageUrl: '',
   newImageFiles: [],

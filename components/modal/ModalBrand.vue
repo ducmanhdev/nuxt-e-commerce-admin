@@ -33,7 +33,7 @@ const submitSuccessMessage = computed(() =>
   props.brandId ? 'Updated brand successfully' : 'Created brand successfully',
 )
 
-const DEFAULT_STATE: Partial<SchemaInfer> = {
+const DEFAULT_STATE: SchemaInfer = {
   name: '',
   imageUrl: '',
   newImageFiles: [],

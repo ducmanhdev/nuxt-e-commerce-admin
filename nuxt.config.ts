@@ -55,4 +55,10 @@ export default defineNuxtConfig({
   tiptap: {
     prefix: 'Tiptap',
   },
+  fonts: {
+    experimental: {
+      processCSSVariables: true,
+    },
+    provider: 'google'
+  }
 })

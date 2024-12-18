@@ -17,44 +17,10 @@ const editor = useEditor({
   onUpdate: () => {
     modelValue.value = editor.value?.getHTML() || ''
   },
-  extensions: [
-    TiptapStarterKit.configure({
-      heading: {
-        levels: [1, 2, 3, 4, 5, 6],
-        HTMLAttributes: {
-          class: 'font-bold [h1]:text-2xl [h2]:text-xl [h3]:text-lg [h4]:text-base [h5]:text-sm [h6]:text-xs',
-        },
-      },
-      paragraph: {
-        HTMLAttributes: {
-          class: 'text-base',
-        },
-      },
-      blockquote: {
-        HTMLAttributes: {
-          class: 'border-l-4 border-primary dark:border-primary-dark pl-4 py-1',
-        },
-      },
-      code: {
-        HTMLAttributes: {
-          class: 'bg-gray-100 dark:bg-gray-800 p-2 rounded',
-        },
-      },
-      codeBlock: {
-        HTMLAttributes: {
-          class: 'bg-gray-100 dark:bg-gray-800 p-4 rounded',
-        },
-      },
-      bulletList: {
-        HTMLAttributes: {
-          class: 'list-disc ml-4',
-        },
-      },
-    }),
-  ],
+  extensions: [TiptapStarterKit],
   editorProps: {
     attributes: {
-      class: 'prose prose-sm sm:prose-base lg:prose-lg xl:prose-2xl focus:outline-none',
+      class: 'prose dark:prose-invert prose-sm sm:prose-base focus:outline-none',
     },
   },
 })
@@ -105,7 +71,7 @@ onBeforeUnmount(() => {
         variant="outline"
         size="sm"
       />
-<!--      <UButton @click="editor.chain().focus().clearNodes().run()" icon="ri:delete-bin" variant="outline" size="sm" />-->
+      <!--      <UButton @click="editor.chain().focus().clearNodes().run()" icon="ri:delete-bin" variant="outline" size="sm" />-->
       <UButton
         @click="editor.chain().focus().setParagraph().run()"
         :class="{ 'bg-primary text-black hover:bg-primary hover:text-black': editor.isActive('paragraph') }"

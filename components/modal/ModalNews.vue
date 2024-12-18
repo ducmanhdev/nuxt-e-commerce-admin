@@ -19,7 +19,7 @@ const props = defineProps<Props>()
 const modalTitle = computed(() => props.title || (props.newsId ? 'Update news' : 'Create news'))
 const submitSuccessMessage = computed(() => (props.newsId ? 'Updated news successfully' : 'Created news successfully'))
 
-const DEFAULT_STATE: Partial<SchemaInfer> = {
+const DEFAULT_STATE: SchemaInfer = {
   title: '',
   content: '',
   imageUrl: '',

@@ -2,7 +2,7 @@
 import { z } from 'zod'
 import type { FormSubmitEvent } from '#ui/types'
 import schema, { attributeValidator } from '~/schemas/product.schema'
-import type { Category, Attribute } from '~/types'
+import type { Attribute, Category } from '~/types'
 
 const modal = useModal()
 

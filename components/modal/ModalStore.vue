@@ -18,7 +18,7 @@ const submitSuccessMessage = computed(() =>
   props.storeId ? 'Updated store successfully' : 'Created store successfully',
 )
 
-const DEFAULT_STATE: Partial<SchemaInfer> = {
+const DEFAULT_STATE: SchemaInfer = {
   name: '',
 }
 

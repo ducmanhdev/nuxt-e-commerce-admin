@@ -23,7 +23,7 @@ const submitSuccessMessage = computed(() =>
   props.voucherId ? 'Updated voucher successfully' : 'Created voucher successfully',
 )
 
-const DEFAULT_STATE: Partial<SchemaInfer> = {
+const DEFAULT_STATE: SchemaInfer = {
   code: '',
   discountType: VOUCHER_DISCOUNT_TYPES.FIXED,
   discountValue: 0,
