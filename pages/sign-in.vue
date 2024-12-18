@@ -9,8 +9,18 @@ useHead({
 
 definePageMeta({
   layout: false,
-  middleware: ['guest-only'],
 })
+
+const user = useSupabaseUser()
+watch(
+  user,
+  () => {
+    if (user.value) {
+      return navigateTo('/')
+    }
+  },
+  { immediate: true },
+)
 
 const schema = z.object({
   email: z
