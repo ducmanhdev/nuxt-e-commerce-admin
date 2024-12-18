@@ -228,6 +228,9 @@ const { data, status } = await useFetch(() => `/api/stores/${storeId.value}/cate
     sort: sortColumn,
     order: sortDirection,
   },
+  onResponseError({ response }) {
+    toast.error(response._data?.statusMessage)
+  },
 })
 const isFetching = computed(() => status.value === 'pending')
 

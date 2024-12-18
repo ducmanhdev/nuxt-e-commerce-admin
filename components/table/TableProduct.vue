@@ -193,8 +193,8 @@ const columns: TableColumn<Product>[] = [
       class: {
         th: 'text-right',
         td: 'text-right',
-      }
-    }
+      },
+    },
   },
 ]
 const columnVisibility = ref<VisibilityState>({})
@@ -226,10 +226,13 @@ const { data, status } = await useFetch(() => `/api/stores/${storeId.value}/prod
   default: () => cachedProducts.value,
   query: {
     search: searchDebounced,
-    page: page,
+    page: page + 't',
     limit: itemsPerPage,
     sort: sortColumn,
     order: sortDirection,
+  },
+  onResponseError({ response }) {
+    toast.error(response._data?.statusMessage)
   },
 })
 const isFetching = computed(() => status.value === 'pending')
