@@ -235,7 +235,7 @@ const { data, status } = await useFetch(() => `/api/stores/${storeId.value}/prod
 const isFetching = computed(() => status.value === 'pending')
 
 const rows = computed(() => data.value?.data as Product[])
-const meta = computed(() => data.value.meta)
+const meta = computed(() => data.value?.meta)
 </script>
 
 <template>

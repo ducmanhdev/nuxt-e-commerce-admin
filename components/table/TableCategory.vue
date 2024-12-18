@@ -232,7 +232,7 @@ const { data, status } = await useFetch(() => `/api/stores/${storeId.value}/cate
 const isFetching = computed(() => status.value === 'pending')
 
 const rows = computed(() => data.value?.data as Category[])
-const meta = computed(() => data.value.meta)
+const meta = computed(() => data.value?.meta)
 </script>
 
 <template>
