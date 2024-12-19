@@ -15,8 +15,8 @@ importers:
         specifier: 3.0.0-alpha.10
         version: 3.0.0-alpha.10(@babel/parser@7.26.3)(change-case@5.4.4)(embla-carousel@8.5.1)(ioredis@5.4.1)(magicast@0.3.5)(radix-vue@1.9.11(vue@3.5.13(typescript@5.7.2)))(rollup@4.28.1)(typescript@5.7.2)(vite@5.4.11(@types/node@22.10.2)(lightningcss@1.28.2)(terser@5.37.0))(vue@3.5.13(typescript@5.7.2))
       '@nuxtjs/supabase':
-        specifier: ^1.4.4
-        version: 1.4.4
+        specifier: ^1.4.5
+        version: 1.4.5
       '@pinia/nuxt':
         specifier: ^0.9.0
         version: 0.9.0(magicast@0.3.5)(pinia@2.3.0(typescript@5.7.2)(vue@3.5.13(typescript@5.7.2)))(rollup@4.28.1)
@@ -851,8 +851,8 @@ packages:
   '@nuxtjs/color-mode@3.5.2':
     resolution: {integrity: sha512-cC6RfgZh3guHBMLLjrBB2Uti5eUoGM9KyauOaYS9ETmxNWBMTvpgjvSiSJp1OFljIXPIqVTJ3xtJpSNZiO3ZaA==}
 
-  '@nuxtjs/supabase@1.4.4':
-    resolution: {integrity: sha512-GyGZr/lLyk0mWrPYqUGR/N3C7y7hqMPWew8muPhD2NhwigJv46NjvtGxhvZxKWyyOCluIH5GuoQk7Hd1xhkkCA==}
+  '@nuxtjs/supabase@1.4.5':
+    resolution: {integrity: sha512-qd71Kdz4ZXR2FT6DSCAKH0mZkeJRmikf7XYgfYD9n91MbO+JY+OLHcYkuKZRE8Ir5FehZs8txGf6LjeuTSfzBA==}
 
   '@parcel/watcher-android-arm64@2.5.0':
     resolution: {integrity: sha512-qlX4eS28bUcQCdribHkg/herLe+0A9RyYC+mm2PXpncit8z5b3nSqGVzMNR3CmtAOgRutiZ02eIJJgP/b1iEFQ==}
@@ -1178,8 +1178,8 @@ packages:
     peerDependencies:
       eslint: '>=8.40.0'
 
-  '@supabase/auth-js@2.67.1':
-    resolution: {integrity: sha512-1SRZG9VkLFz4rtiyEc1l49tMq9jTYu4wJt3pMQEWi7yshZFIBdVH1o5sshk1plQd5LY6GcrPIpCydM2gGDxchA==}
+  '@supabase/auth-js@2.67.3':
+    resolution: {integrity: sha512-NJDaW8yXs49xMvWVOkSIr8j46jf+tYHV0wHhrwOaLLMZSFO4g6kKAf+MfzQ2RaD06OCUkUHIzctLAxjTgEVpzw==}
 
   '@supabase/functions-js@2.4.3':
     resolution: {integrity: sha512-sOLXy+mWRyu4LLv1onYydq+10mNRQ4rzqQxNhbrKLTLTcdcmS9hbWif0bGz/NavmiQfPs4ZcmQJp4WqOXlR4AQ==}
@@ -1202,8 +1202,8 @@ packages:
   '@supabase/storage-js@2.7.1':
     resolution: {integrity: sha512-asYHcyDR1fKqrMpytAS1zjyEfvxuOIp1CIXX7ji4lHHcJKqyk+sLl/Vxgm4sN6u8zvuUtae9e4kDxQP2qrwWBA==}
 
-  '@supabase/supabase-js@2.47.8':
-    resolution: {integrity: sha512-2GjK8/PrGJYDVBcjqGyM2irBLMQXvvkJLbS8VFPlym2uuNz+pPMnwLbNf5njkknUTy3PamjgIRoADpuPPPA6oA==}
+  '@supabase/supabase-js@2.47.9':
+    resolution: {integrity: sha512-4hLBkr1pb7G7BbwW5U5C0xGX5VEOPhHMeFoxOvHjKNkl+KpAblR8bygL7hXFbkff7BrxyeRj9XfgYxXOcPLSDA==}
 
   '@swc/helpers@0.5.15':
     resolution: {integrity: sha512-JQ5TuMi45Owi4/BIMAJBoSQoOJu12oOk/gADqlcUL9JEdHB8vyjUSsxqeNXnmXHjYKMi2WcYtezGEEhqUI/E2g==}
@@ -6008,10 +6008,10 @@ snapshots:
       - rollup
       - supports-color
 
-  '@nuxtjs/supabase@1.4.4':
+  '@nuxtjs/supabase@1.4.5':
     dependencies:
-      '@supabase/ssr': 0.5.2(@supabase/supabase-js@2.47.8)
-      '@supabase/supabase-js': 2.47.8
+      '@supabase/ssr': 0.5.2(@supabase/supabase-js@2.47.9)
+      '@supabase/supabase-js': 2.47.9
       defu: 6.1.4
       pathe: 1.1.2
     transitivePeerDependencies:
@@ -6304,7 +6304,7 @@ snapshots:
       - supports-color
       - typescript
 
-  '@supabase/auth-js@2.67.1':
+  '@supabase/auth-js@2.67.3':
     dependencies:
       '@supabase/node-fetch': 2.6.15
 
@@ -6330,9 +6330,9 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@supabase/ssr@0.5.2(@supabase/supabase-js@2.47.8)':
+  '@supabase/ssr@0.5.2(@supabase/supabase-js@2.47.9)':
     dependencies:
-      '@supabase/supabase-js': 2.47.8
+      '@supabase/supabase-js': 2.47.9
       '@types/cookie': 0.6.0
       cookie: 0.7.2
 
@@ -6340,9 +6340,9 @@ snapshots:
     dependencies:
       '@supabase/node-fetch': 2.6.15
 
-  '@supabase/supabase-js@2.47.8':
+  '@supabase/supabase-js@2.47.9':
     dependencies:
-      '@supabase/auth-js': 2.67.1
+      '@supabase/auth-js': 2.67.3
       '@supabase/functions-js': 2.4.3
       '@supabase/node-fetch': 2.6.15
       '@supabase/postgrest-js': 1.17.7
