@@ -3,7 +3,6 @@ import type { z } from 'zod'
 import type { FormSubmitEvent } from '#ui/types'
 import schema, { attributeValidator } from '~/schemas/product.schema'
 import type { Category, ProductAttribute } from '~/types'
-import type { H3Error } from 'h3'
 
 const modal = useModal()
 
@@ -71,9 +70,9 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
     toast.success(submitSuccessMessage.value)
     refreshNuxtData('products')
     await modal.close()
-  } catch (error: unknown) {
-    const nuxtError = error as H3Error
-    toast.error(nuxtError?.statusMessage || nuxtError?.message || 'An error occurred')
+  } catch (error) {
+    console.log(error)
+    toast.error(error)
   } finally {
     isSubmitLoading.value = false
   }

@@ -1,4 +1,5 @@
 import type { Toast } from '#ui/composables/useToast'
+import { FetchError } from 'ofetch'
 
 export function useCustomToast() {
   const toast = useToast()
@@ -13,12 +14,21 @@ export function useCustomToast() {
     })
   }
 
-  const error = (arg: string | Options) => {
+  const error = (arg: string | Options | unknown) => {
+    const finalRest: Options =
+      typeof arg === 'string'
+        ? { description: arg }
+        : arg instanceof FetchError
+          ? { description: arg.statusMessage || arg.message || 'An error occurred' }
+          : arg instanceof Error
+            ? { description: arg.message || 'An error occurred' }
+            : (arg as Options)
+
     toast.add({
       title: 'Error',
       color: 'error',
       icon: 'heroicons:x-circle',
-      ...(typeof arg === 'string' ? { description: arg } : arg),
+      ...finalRest,
     })
   }
 

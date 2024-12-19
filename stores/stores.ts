@@ -13,9 +13,9 @@ export const useStoresStore = defineStore('stores', {
         const response = await $fetch('/api/stores')
         this.stores = response.data as any
       } catch (error) {
-        console.log('[FETCH_STORES_ERROR]', error)
         const toast = useCustomToast()
-        toast.error('Fetch stores error')
+        console.log(error)
+        toast.error(error)
       } finally {
         this.isFetchingStores = false
       }

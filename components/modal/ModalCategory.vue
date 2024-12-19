@@ -85,15 +85,13 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
       })
       const { data, error } = uploadResponse[0]
       if (error) {
-        toast.error(error.message)
-        return
+        throw error
       }
       event.data.imageUrl = data!
     }
 
     if (!event.data.imageUrl) {
-      toast.error('Image URL is required')
-      return
+      throw new Error('Image URL is required')
     }
 
     const payload = {
@@ -113,9 +111,8 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
     toast.success(submitSuccessMessage.value)
     refreshNuxtData('categories')
     await modal.close()
-  } catch (error: any) {
-    console.log(error)
-    toast.error(error.statusMessage || 'Something went wrong')
+  } catch (error) {
+    toast.error(error)
   } finally {
     isSubmitLoading.value = false
   }

@@ -41,9 +41,9 @@ const handleDelete = ({ storeId, id }: { storeId: string; id: string }) => {
         })
         toast.success('Deleted successfully')
         await refreshNuxtData('vouchers')
-      } catch (error: any) {
+      } catch (error) {
         console.log(error)
-        toast.error(error.statusMessage || 'Something went wrong')
+        toast.error(error)
       }
     },
   })

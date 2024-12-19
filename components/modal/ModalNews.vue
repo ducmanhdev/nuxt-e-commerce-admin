@@ -61,9 +61,9 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
     toast.success(submitSuccessMessage.value)
     refreshNuxtData('news')
     await modal.close()
-  } catch (error: any) {
+  } catch (error) {
     console.log(error)
-    toast.error(error.statusMessage || 'Something went wrong')
+    toast.error(error)
   } finally {
     isSubmitLoading.value = false
   }

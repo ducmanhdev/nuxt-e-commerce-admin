@@ -75,9 +75,9 @@ const handleDelete = () => {
         storesStore.fetchStores()
         await modal.close()
         await navigateTo('/')
-      } catch (error: any) {
+      } catch (error) {
         console.log(error)
-        toast.error(error.statusMessage || 'Something went wrong')
+        toast.error(error)
       } finally {
         isDeleteLoading.value = false
       }
