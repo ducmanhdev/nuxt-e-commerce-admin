@@ -6,7 +6,7 @@ export default defineWrappedResponseHandler(async (event) => {
   const storeId = getRouterParam(event, 'storeId')
 
   const queries = await getValidatedQuery(event, schema.parse)
-  return await prisma.attribute.paginate(queries, {
+  return await prisma.productAttribute.paginate(queries, {
     storeId: storeId,
     store: {
       userId: user.id,

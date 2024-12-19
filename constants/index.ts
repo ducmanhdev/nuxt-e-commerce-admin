@@ -17,7 +17,7 @@ export const COMMON_STATUSES = {
   ARCHIVED: 2,
 } as const
 
-const FEEDBACK_STARTS = {
+export const FEEDBACK_STARTS = {
   ONE: 0,
   TWO: 1,
   THREE: 2,
@@ -37,12 +37,12 @@ export const VOUCHER_STATUSES = {
   REVOKED: 3,
 } as const
 
-const PAYMENT_TYPES = {
+export const PAYMENT_TYPES = {
   CREDIT_CARD: 0,
   CASH: 1,
 }
 
-const ORDER_STATUSES = {
+export const ORDER_STATUSES = {
   PENDING: 0, // Order is created but not yet processed
   CONFIRMED: 1, // Order is confirmed and payment is successful
   CANCELED: 2, // Order is canceled by the user or admin

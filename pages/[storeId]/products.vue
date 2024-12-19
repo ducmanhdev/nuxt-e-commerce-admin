@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {LazyModalProduct} from "#components";
+import { LazyModalProduct } from '#components'
 
 useHead({
   title: 'Products',

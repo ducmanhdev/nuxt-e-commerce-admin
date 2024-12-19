@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { z } from 'zod'
+import type { z } from 'zod'
 import type { FormSubmitEvent } from '#ui/types'
 import schema from '~/schemas/news.schema'
 import TiptapEditor from '~/components/TiptapEditor.vue'
@@ -86,7 +86,7 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
           <UInput v-model="state.title" />
         </UFormField>
         <UFormField label="Content" name="content" required>
-          <TiptapEditor v-model="state.content"/>
+          <TiptapEditor v-model="state.content" />
         </UFormField>
         <div class="grid grid-cols-2 gap-2">
           <UButton

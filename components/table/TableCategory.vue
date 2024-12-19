@@ -190,8 +190,8 @@ const columns: TableColumn<Category>[] = [
       class: {
         th: 'text-right',
         td: 'text-right',
-      }
-    }
+      },
+    },
   },
 ]
 const columnVisibility = ref<VisibilityState>({})

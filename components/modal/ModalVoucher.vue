@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { z } from 'zod'
+import type { z } from 'zod'
 import type { FormSubmitEvent } from '#ui/types'
 import schema from '~/schemas/voucher.schema'
 import { CURRENCY_FORMAT_OPTIONS, VOUCHER_DISCOUNT_TYPES } from '~/constants'

@@ -1,4 +1,5 @@
-import { createError, EventHandler, EventHandlerRequest, H3Error } from 'h3'
+import type { EventHandler, EventHandlerRequest } from 'h3'
+import { createError, H3Error } from 'h3'
 import { Prisma } from '@prisma/client'
 
 export const defineWrappedResponseHandler = <T extends EventHandlerRequest, D>(
@@ -19,20 +20,22 @@ export const defineWrappedResponseHandler = <T extends EventHandlerRequest, D>(
       }
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         switch (e.code) {
-          case 'P2002':
+          case 'P2002': {
             const targetFields = e.meta?.target
             throw createError({
               statusCode: 400,
               statusMessage: 'A record with this unique field already exists.',
               data: { fields: targetFields },
             })
-          case 'P2003':
+          }
+          case 'P2003': {
             const relatedTable = (e.meta?.field_name as string)?.split('_')[0] || 'unknown'
             throw createError({
               statusCode: 400,
               statusMessage: 'Cannot perform this action due to a related record constraint.',
               data: { relatedTable },
             })
+          }
           case 'P2025':
             throw createError({
               statusCode: 404,

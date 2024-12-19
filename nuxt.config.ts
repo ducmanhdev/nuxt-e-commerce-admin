@@ -59,6 +59,6 @@ export default defineNuxtConfig({
     experimental: {
       processCSSVariables: true,
     },
-    provider: 'google'
-  }
+    provider: 'google',
+  },
 })

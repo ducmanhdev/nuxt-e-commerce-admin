@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client'
-import { z } from 'zod'
-import schema from '~/schemas/query.schema'
+import type { z } from 'zod'
+import type schema from '~/schemas/query.schema'
 
 type Query = Partial<z.output<typeof schema>>
 type PaginationMeta = {

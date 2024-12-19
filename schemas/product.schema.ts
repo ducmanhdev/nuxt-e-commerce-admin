@@ -28,6 +28,7 @@ export default z.object({
     })
     .default(COMMON_STATUSES.VISIBLE),
   categoryId: z.string().min(1, 'Please select product category'),
+  brandId: z.string().min(1, 'Please select product brand'),
   attributes: z.array(attributeValidator).optional(),
   variants: z.array(variantValidator).optional(),
 })

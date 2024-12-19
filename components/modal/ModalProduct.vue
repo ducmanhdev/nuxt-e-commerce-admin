@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { z } from 'zod'
+import type { z } from 'zod'
 import type { FormSubmitEvent } from '#ui/types'
 import schema, { attributeValidator } from '~/schemas/product.schema'
 import type { Attribute, Category } from '~/types'
@@ -185,7 +185,7 @@ const {
           </UFormField>
         </UForm>
 
-        <UButton type="button" icon="heroicons:plus" label="Add attribute" @click="handleAddAttribute" block />
+        <UButton type="button" icon="heroicons:plus" label="Add attribute" block @click="handleAddAttribute" />
 
         <div class="grid grid-cols-2 gap-2">
           <UButton

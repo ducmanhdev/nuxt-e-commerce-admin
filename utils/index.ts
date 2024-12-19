@@ -22,7 +22,6 @@ export const formatCurrency = (
   }).format(amount)
 }
 
-
 /**
  * Converts bytes to megabytes.
  * @param bytes - The number of bytes to convert.

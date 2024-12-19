@@ -16,7 +16,7 @@ const groups = computed(() => [
       label: store.name,
       id: store.id,
       onSelect: async () => {
-        await navigateTo(store.id);
+        await navigateTo(store.id)
       },
     })),
   },

@@ -191,8 +191,8 @@ const columns: TableColumn<News>[] = [
       class: {
         th: 'text-center',
         td: 'flex justify-center',
-      }
-    }
+      },
+    },
   },
 ]
 const columnVisibility = ref<VisibilityState>({})

@@ -16,7 +16,7 @@ export default defineWrappedResponseHandler(async (event) => {
     },
   })
 
-  const { attributes, ...body } = await readValidatedBody(event, schema.parse)
+  const { attributes, variants, ...body } = await readValidatedBody(event, schema.parse)
 
   const data = await prisma.$transaction(async (tx) => {
     const updatedProduct = await tx.product.update({
@@ -30,7 +30,7 @@ export default defineWrappedResponseHandler(async (event) => {
 
     if (attributes?.length) {
       for (const attr of attributes) {
-        let attribute = await tx.attribute.findFirst({
+        let attribute = await tx.productAttribute.findFirst({
           where: {
             name: attr.name,
             storeId: storeId,
@@ -38,7 +38,7 @@ export default defineWrappedResponseHandler(async (event) => {
         })
 
         if (!attribute) {
-          attribute = await tx.attribute.create({
+          attribute = await tx.productAttribute.create({
             data: {
               name: attr.name,
               storeId: storeId,
