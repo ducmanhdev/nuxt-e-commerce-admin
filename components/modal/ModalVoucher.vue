@@ -63,17 +63,15 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
       return
     }
 
-    if (props.voucherId) {
-      await $fetch(`/api/stores/${props.storeId}/vouchers/${props.voucherId}`, {
-        method: 'PATCH',
-        body: event.data,
-      })
-    } else {
-      await $fetch(`/api/stores/${props.storeId}/vouchers`, {
-        method: 'POST',
-        body: event.data,
-      })
-    }
+    const endpoint = props.voucherId
+      ? `/api/stores/${props.storeId}/vouchers/${props.voucherId}`
+      : `/api/stores/${props.storeId}/vouchers`
+    const method = props.voucherId ? 'PATCH' : 'POST'
+    await $fetch(endpoint, {
+      method,
+      body: event.data,
+    })
+
     toast.success(submitSuccessMessage.value)
     refreshNuxtData('vouchers')
     await modal.close()

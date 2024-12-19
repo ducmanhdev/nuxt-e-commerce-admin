@@ -2,7 +2,8 @@
 import type { z } from 'zod'
 import type { FormSubmitEvent } from '#ui/types'
 import schema, { attributeValidator } from '~/schemas/product.schema'
-import type { Attribute, Category } from '~/types'
+import type { Category, ProductAttribute } from '~/types'
+import type { H3Error } from 'h3'
 
 const modal = useModal()
 
@@ -11,14 +12,14 @@ type SchemaInfer = z.infer<typeof schema>
 type Props = {
   title?: string
   storeId: string
-  categoryId?: string
+  productId?: string
   initialValues?: SchemaInfer
 }
 const props = defineProps<Props>()
 
-const modalTitle = computed(() => props.title || (props.categoryId ? 'Update product' : 'Create product'))
+const modalTitle = computed(() => props.title || (props.productId ? 'Update product' : 'Create product'))
 const submitSuccessMessage = computed(() =>
-  props.categoryId ? 'Updated product successfully' : 'Created product successfully',
+  props.productId ? 'Updated product successfully' : 'Created product successfully',
 )
 
 const DEFAULT_ATTRIBUTE = {
@@ -58,23 +59,21 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
       return
     }
 
-    if (props.categoryId) {
-      await $fetch(`/api/stores/${props.storeId}/products/${props.categoryId}`, {
-        method: 'PATCH',
-        body: event.data,
-      })
-    } else {
-      await $fetch(`/api/stores/${props.storeId}/products`, {
-        method: 'POST',
-        body: event.data,
-      })
-    }
+    const endpoint = props.productId
+      ? `/api/stores/${props.storeId}/products/${props.productId}`
+      : `/api/stores/${props.storeId}/products`
+    const method = props.productId ? 'PATCH' : 'POST'
+    await $fetch(endpoint, {
+      method,
+      body: event.data,
+    })
+
     toast.success(submitSuccessMessage.value)
     refreshNuxtData('products')
     await modal.close()
-  } catch (error: any) {
-    console.log(error)
-    toast.error(error.statusMessage || 'Something went wrong')
+  } catch (error: unknown) {
+    const nuxtError = error as H3Error
+    toast.error(nuxtError?.statusMessage || nuxtError?.message || 'An error occurred')
   } finally {
     isSubmitLoading.value = false
   }
@@ -88,9 +87,8 @@ const handleDeleteAttribute = (index: number) => {
   state.value.attributes?.splice(index, 1)
 }
 
-const items = ref(['Attribute 1', 'Attribute 2', 'Attribute 3', 'Attribute 4', 'Attribute 5'])
 const onCreate = (item: string) => {
-  items.value.push(item)
+  attributeOptions.value = [...(attributeOptions.value || []), item]
 }
 
 const useCategoryOptions = () => {
@@ -122,7 +120,7 @@ const useAttributeOptions = () => {
   const { data, status } = useLazyFetch(`/api/stores/${props.storeId}/attributes`, {
     params: { search: searchTermDebounced },
     transform: ({ data }) => {
-      return data?.map((item) => (item as unknown as Attribute).name) || []
+      return data?.map((item) => (item as unknown as ProductAttribute).name) || []
     },
   })
 
@@ -174,7 +172,7 @@ const {
               ignore-filter
               :items="attributeOptions || []"
               :loading="getAttributeOptionsStatus === 'pending'"
-              @create="(_, item) => onCreate(item)"
+              @create="onCreate"
             />
           </UFormField>
           <UFormField :label="!index ? 'Value' : undefined" name="value">

@@ -101,17 +101,15 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
       imageUrl: event.data.imageUrl,
     }
 
-    if (props.categoryId) {
-      await $fetch(`/api/stores/${props.storeId}/categories/${props.categoryId}`, {
-        method: 'PATCH',
-        body: payload,
-      })
-    } else {
-      await $fetch(`/api/stores/${props.storeId}/categories`, {
-        method: 'POST',
-        body: payload,
-      })
-    }
+    const endpoint = props.categoryId
+      ? `/api/stores/${props.storeId}/categories/${props.categoryId}`
+      : `/api/stores/${props.storeId}/categories`
+    const method = props.categoryId ? 'PATCH' : 'POST'
+    await $fetch(endpoint, {
+      method,
+      body: payload,
+    })
+
     toast.success(submitSuccessMessage.value)
     refreshNuxtData('categories')
     await modal.close()

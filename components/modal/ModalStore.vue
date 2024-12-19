@@ -2,7 +2,6 @@
 import type { z } from 'zod'
 import type { FormSubmitEvent } from '#ui/types'
 import schema from '~/schemas/store.schema'
-import { LazyModalConfirm } from '#components'
 
 type SchemaInfer = z.infer<typeof schema>
 
@@ -42,17 +41,14 @@ const isSubmitLoading = ref(false)
 const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
   try {
     isSubmitLoading.value = true
-    if (props.storeId) {
-      await $fetch(`/api/stores/${props.storeId}`, {
-        method: 'PATCH',
-        body: event.data,
-      })
-    } else {
-      await $fetch('/api/stores', {
-        method: 'POST',
-        body: event.data,
-      })
-    }
+
+    const endpoint = props.storeId ? `/api/stores/${props.storeId}` : `/api/stores`
+    const method = props.storeId ? 'PATCH' : 'POST'
+    await $fetch(endpoint, {
+      method,
+      body: event.data,
+    })
+
     toast.success(submitSuccessMessage.value)
     storesStore.fetchStores()
     await modal.close()
