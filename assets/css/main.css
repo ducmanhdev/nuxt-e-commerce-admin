@@ -1,0 +1,28 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@plugin "@tailwindcss/typography";
+
+@theme {
+    --font-sans: 'Space Grotesk', sans-serif;
+
+    /*--color-*: initial;*/
+    --color-primary: #bc93ed;
+    --color-primary-50: #faf6fe;
+    --color-primary-100: #f2ebfc;
+    --color-primary-200: #e7dafa;
+    --color-primary-300: #d5bdf5;
+    --color-primary-400: #bc93ed;
+    --color-primary-500: #a16ae2;
+    --color-primary-600: #8b4ad3;
+    --color-primary-700: #7638b8;
+    --color-primary-800: #663399;
+    --color-primary-900: #522a79;
+    --color-primary-950: #371358;
+
+    --container-full: 100%;
+}
+
+:root {
+    --ui-container: var(--container-full);
+}
