@@ -1,6 +1,7 @@
 import type { EventHandler, EventHandlerRequest } from 'h3'
 import { createError, H3Error } from 'h3'
 import { Prisma } from '@prisma/client'
+import { ZodError } from 'zod'
 
 export const defineWrappedResponseHandler = <T extends EventHandlerRequest, D>(
   handler: EventHandler<T, D>,
@@ -13,10 +14,18 @@ export const defineWrappedResponseHandler = <T extends EventHandlerRequest, D>(
       const isDev = config.environment !== 'production'
       if (isDev) {
         console.error(e)
-        throw e
+        // throw e
       }
       if (e instanceof H3Error) {
         throw e
+      }
+      if (e instanceof ZodError) {
+        console.log('e.instanceof(ZodError)', e)
+        throw createError({
+          statusCode: 400,
+          statusMessage: 'Validation failed.',
+          data: { issues: e.issues },
+        })
       }
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         switch (e.code) {

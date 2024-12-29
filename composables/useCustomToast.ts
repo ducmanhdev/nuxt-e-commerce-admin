@@ -15,14 +15,19 @@ export function useCustomToast() {
   }
 
   const error = (arg: string | Options | unknown) => {
-    const finalRest: Options =
-      typeof arg === 'string'
-        ? { description: arg }
-        : arg instanceof FetchError
-          ? { description: arg.statusMessage || arg.message || 'An error occurred' }
-          : arg instanceof Error
-            ? { description: arg.message || 'An error occurred' }
-            : (arg as Options)
+    let finalRest: Options
+
+    if (typeof arg === 'string') {
+      finalRest = { description: arg }
+    } else if (arg instanceof FetchError) {
+      const description =
+        arg.data?.data?.issues?.[0]?.message || arg.statusMessage || arg.message || 'An error occurred'
+      finalRest = { description }
+    } else if (arg instanceof Error) {
+      finalRest = { description: arg.message || 'An error occurred' }
+    } else {
+      finalRest = arg as Options
+    }
 
     toast.add({
       title: 'Error',
