@@ -1,0 +1,21 @@
+model News {
+  id        String       @id @default(uuid())
+  storeId   String
+  store     Store        @relation(fields: [storeId], references: [id])
+  title     String
+  imageUrl  String
+  content   String
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  details   NewsDetail[]
+}
+
+model NewsDetail {
+  id        String   @id @default(uuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  newsId    String
+  news      News     @relation(fields: [newsId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

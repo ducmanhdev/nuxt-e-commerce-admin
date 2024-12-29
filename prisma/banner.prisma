@@ -1,0 +1,19 @@
+model Banner {
+  id        String         @id @default(uuid())
+  name      String
+  imageUrl  String
+  status    Int
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  details   BannerDetail[]
+}
+
+model BannerDetail {
+  id        String   @id @default(uuid())
+  productId String
+  bannerId  String
+  product   Product  @relation(fields: [productId], references: [id])
+  banner    Banner   @relation(fields: [bannerId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
