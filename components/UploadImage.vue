@@ -26,7 +26,7 @@ const uploadDescription = computed(
   () =>
     `${ACCEPTED_UPLOAD_IMAGE_MIME_TYPES.map((mime) => '.' + mime.split('/')[1])
       .join(', ')
-      .toUpperCase()} up to ${maxFileSize} MB`,
+      .toUpperCase()} up to ${bytesToMB(maxFileSize)} MB`,
 )
 
 const inputRef = useTemplateRef('input')
@@ -86,7 +86,7 @@ const handleDeleteExistImage = (imageSrc: string) => {
   <div
     class="p-2 grid gap-2 border border-dashed rounded hover:border-primary transition cursor-pointer"
     :class="{
-      'min-h-64': !isContainsImages,
+      'min-h-56': !isContainsImages,
       'grid-cols-3': multiple,
     }"
     @click="inputRef?.click()"
