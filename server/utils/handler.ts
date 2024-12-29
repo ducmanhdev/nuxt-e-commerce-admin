@@ -12,7 +12,7 @@ export const defineWrappedResponseHandler = <T extends EventHandlerRequest, D>(
       const config = useRuntimeConfig(event)
       const isDev = config.environment !== 'production'
       if (isDev) {
-        console.error(error)
+        console.error(e)
         throw e
       }
       if (e instanceof H3Error) {
