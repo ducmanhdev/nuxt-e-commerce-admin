@@ -65,48 +65,35 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
       return
     }
 
-    if (event.data.deletedImages?.length) {
-      $fetch(`/api/images/delete`, {
+    const { deletedImages, newImageFiles, imageUrl, name } = event.data
+
+    if (deletedImages?.length) {
+      await $fetch('/api/images/delete', {
         method: 'DELETE',
-        body: {
-          imageUrls: event.data.deletedImages,
-          bucketName,
-        },
+        body: { imageUrls: deletedImages, bucketName },
       })
     }
 
-    if (event.data.newImageFiles?.length) {
+    if (newImageFiles?.length) {
       const formData = new FormData()
-      event.data.newImageFiles.forEach((file) => formData.append('files', file))
+      newImageFiles.forEach((file) => formData.append('files', file))
       formData.append('bucketName', bucketName)
-      const { data: uploadResponse } = await $fetch(`/api/images/upload`, {
+      const { data } = await $fetch('/api/images/upload', {
         method: 'POST',
         body: formData,
       })
-      const { data, error } = uploadResponse[0]
-      if (error) {
-        throw error
-      }
-      event.data.imageUrl = data!
+      event.data.imageUrl = data[0]
     }
 
-    if (!event.data.imageUrl) {
-      throw new Error('Image URL is required')
-    }
+    if (!imageUrl) throw new Error('Image URL is required')
 
-    const payload = {
-      name: event.data.name,
-      imageUrl: event.data.imageUrl,
-    }
-
+    const payload = { name, imageUrl }
     const endpoint = props.brandId
       ? `/api/stores/${props.storeId}/brands/${props.brandId}`
       : `/api/stores/${props.storeId}/brands`
     const method = props.brandId ? 'PATCH' : 'POST'
-    await $fetch(endpoint, {
-      method,
-      body: payload,
-    })
+
+    await $fetch(endpoint, { method, body: payload })
 
     toast.success(submitSuccessMessage.value)
     refreshNuxtData('brands')
