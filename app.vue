@@ -1,12 +1,15 @@
+<script setup lang="ts">
+const storesStore = useStoresStore()
+storesStore.fetchStores()
+</script>
+
 <template>
   <div>
     <NuxtLoadingIndicator />
     <NuxtRouteAnnouncer />
 
     <UApp>
-      <NuxtLayout>
-        <NuxtPage />
-      </NuxtLayout>
+      <NuxtPage />
     </UApp>
   </div>
 </template>

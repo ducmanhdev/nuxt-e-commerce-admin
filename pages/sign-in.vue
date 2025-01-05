@@ -7,20 +7,10 @@ useHead({
   title: 'Sign In',
 })
 
-definePageMeta({
-  layout: false,
-})
-
 const user = useSupabaseUser()
-watch(
-  user,
-  () => {
-    if (user.value) {
-      return navigateTo('/')
-    }
-  },
-  { immediate: true },
-)
+watchEffect(() => {
+  if (user.value) return navigateTo('/')
+})
 
 const schema = z.object({
   email: z
@@ -66,7 +56,7 @@ const onSubmit = async (event: FormSubmitEvent<OutputSchema>) => {
 </script>
 
 <template>
-  <div class="h-screen flex justify-center items-center">
+  <div class="min-h-svh flex justify-center items-center">
     <UCard class="w-full max-w-[500px]">
       <template #header>Sign In</template>
       <div class="space-y-4">

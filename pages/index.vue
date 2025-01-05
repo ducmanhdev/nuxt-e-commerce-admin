@@ -26,7 +26,7 @@ const modal = useModal()
 </script>
 
 <template>
-  <div class="py-4 h-full">
+  <div class="py-4">
     <UContainer>
       <UCard class="w-[900px] max-w-full mx-auto">
         <template #header>

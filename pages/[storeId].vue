@@ -1,6 +1,29 @@
 <script setup lang="ts">
 import { LazyModalConfirm } from '#components'
 
+definePageMeta({
+  middleware: (to) => {
+    if (to.name !== 'storeId') return
+    return navigateTo({
+      name: 'storeId-overview',
+      params: to.params,
+    })
+  },
+})
+
+const route = useRoute()
+const storeId = computed(() => route.params.storeId as string)
+const { data } = useLazyFetch(() => `/api/stores/${storeId.value}`)
+const store = computed(() => data.value?.data)
+watch(store, (newStore) => {
+  if (newStore) return
+  throw createError({
+    statusCode: 404,
+    message: 'Store not found',
+    fatal: true,
+  })
+})
+
 const toast = useCustomToast()
 const modal = useModal()
 const supabase = useSupabaseClient()
@@ -41,15 +64,13 @@ const userDropdownItems = computed(() => {
 
 const { isDark, handleToggleMode } = useThemeMode()
 
-const route = useRoute()
-const storeId = computed(() => route.params.storeId as string)
 const navigationItems = computed(() => {
   return [
     [
       {
         icon: 'heroicons:chart-pie',
         label: 'Overview',
-        to: `/${storeId.value}`,
+        to: `/${storeId.value}/overview`,
       },
       {
         icon: 'heroicons:tag',
@@ -112,6 +133,7 @@ const navigationItems = computed(() => {
         <UTooltip text="Return home">
           <UButton icon="heroicons:home-20-solid" to="/" class="mr-4" />
         </UTooltip>
+        <h1 class="text-lg font-semibold">{{ store?.name }}</h1>
         <div class="flex items-center gap-2 ml-auto">
           <UChip inset :show="false">
             <UButton icon="heroicons:bell-solid" variant="ghost" color="neutral" />
@@ -156,7 +178,7 @@ const navigationItems = computed(() => {
         />
       </aside>
       <div class="p-4 max-h-full overflow-y-auto">
-        <slot />
+        <NuxtPage :store="store" />
       </div>
     </main>
   </div>

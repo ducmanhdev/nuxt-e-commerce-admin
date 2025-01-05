@@ -17,14 +17,12 @@ const handeShowCreateModal = () => {
 </script>
 
 <template>
-  <section class="py-4">
-    <UContainer>
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-bold">Brands</h2>
-        <UButton leading-icon="heroicons:plus" label="Create" @click="handeShowCreateModal" />
-      </div>
+  <section>
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-xl font-bold">Brands</h2>
+      <UButton leading-icon="heroicons:plus" label="Create" @click="handeShowCreateModal" />
+    </div>
 
-      <TableCategory :store-id="storeId" />
-    </UContainer>
+    <TableCategory :store-id="storeId" />
   </section>
 </template>
