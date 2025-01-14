@@ -8,8 +8,8 @@ export default defineWrappedResponseHandler(async (event) => {
   const store = await prisma.store.findFirstOrThrow({
     where: {
       id: storeId,
-      userId: user.id,
-    },
+      userId: user.id
+    }
   })
 
   const { attributes, variants, ...body } = await readValidatedBody(event, schema.parse)
@@ -18,8 +18,8 @@ export default defineWrappedResponseHandler(async (event) => {
     const createdProduct = await tx.product.create({
       data: {
         storeId: store.id,
-        ...body,
-      },
+        ...body
+      }
     })
 
     if (attributes?.length) {
@@ -27,16 +27,16 @@ export default defineWrappedResponseHandler(async (event) => {
         let attribute = await tx.productAttribute.findFirst({
           where: {
             name: attr.name,
-            storeId: store.id,
-          },
+            storeId: store.id
+          }
         })
 
         if (!attribute) {
           attribute = await tx.productAttribute.create({
             data: {
               name: attr.name,
-              storeId: store.id,
-            },
+              storeId: store.id
+            }
           })
         }
 
@@ -44,8 +44,8 @@ export default defineWrappedResponseHandler(async (event) => {
           data: {
             productId: createdProduct.id,
             attributeId: attribute.id,
-            value: attr.value,
-          },
+            value: attr.value
+          }
         })
       }
     }
@@ -57,40 +57,40 @@ export default defineWrappedResponseHandler(async (event) => {
         const createdVariant = await tx.productVariant.create({
           data: {
             productId: createdProduct.id,
-            ...variantData,
-          },
+            ...variantData
+          }
         })
 
         for (const optionValue of optionValues) {
           let variantOptionValue = await tx.variantOptionValue.findFirst({
             where: {
               value: optionValue.value,
-              storeId: store.id,
-            },
+              storeId: store.id
+            }
           })
 
           if (!variantOptionValue) {
             const variantOption = await tx.variantOption.findFirstOrThrow({
               where: {
                 name: optionValue.optionName,
-                storeId: store.id,
-              },
+                storeId: store.id
+              }
             })
 
             variantOptionValue = await tx.variantOptionValue.create({
               data: {
                 optionId: variantOption.id,
                 storeId: store.id,
-                value: optionValue.value,
-              },
+                value: optionValue.value
+              }
             })
           }
 
           await tx.productVariantAttributeValue.create({
             data: {
               variantId: createdVariant.id,
-              optionValueId: variantOptionValue.id,
-            },
+              optionValueId: variantOptionValue.id
+            }
           })
         }
       }
@@ -100,6 +100,6 @@ export default defineWrappedResponseHandler(async (event) => {
   })
 
   return {
-    data,
+    data
   }
 })

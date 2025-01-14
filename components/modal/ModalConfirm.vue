@@ -10,7 +10,7 @@ const {
   onConfirm = () => {
     const modal = useModal()
     modal.close()
-  },
+  }
 } = defineProps<Props>()
 
 const onCancel = () => {

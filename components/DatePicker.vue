@@ -6,7 +6,7 @@ const dayjs = useDayjs()
 const isOpen = ref(false)
 
 const df = new DateFormatter('en-US', {
-  dateStyle: 'medium',
+  dateStyle: 'medium'
 })
 
 const props = withDefaults(
@@ -15,11 +15,11 @@ const props = withDefaults(
     isDateDisabled?: (date: DateValue) => boolean
     isDateUnavailable?: (date: DateValue) => boolean
   }>(),
-  { range: false },
+  { range: false }
 )
 
 const model = defineModel({
-  required: true,
+  required: true
 })
 
 type ModelForRange = {
@@ -33,7 +33,7 @@ const parsedModel = computed({
       const { start, end } = model.value as { start: Date; end: Date }
       return {
         start: new CalendarDate(dayjs(start).year(), dayjs(start).month() + 1, dayjs(start).date()),
-        end: new CalendarDate(dayjs(end).year(), dayjs(end).month() + 1, dayjs(end).date()),
+        end: new CalendarDate(dayjs(end).year(), dayjs(end).month() + 1, dayjs(end).date())
       }
     } else {
       const date = model.value as Date
@@ -44,13 +44,13 @@ const parsedModel = computed({
     if (props.range) {
       model.value = {
         start: (value as ModelForRange).start.toDate(getLocalTimeZone()),
-        end: (value as ModelForRange).end.toDate(getLocalTimeZone()),
+        end: (value as ModelForRange).end.toDate(getLocalTimeZone())
       }
     } else {
       model.value = (value as ModelForSingle).toDate(getLocalTimeZone())
     }
     isOpen.value = false
-  },
+  }
 })
 
 const formattedDate = computed(() => {
@@ -69,7 +69,7 @@ const formattedDate = computed(() => {
 
 <template>
   <UPopover v-model:open="isOpen">
-    <UButton color="neutral" variant="outline" icon="heroicons:calendar" block class="justify-start">
+    <UButton color="neutral" variant="outline" icon="lucide:calendar" block class="justify-start">
       {{ formattedDate }}
     </UButton>
 

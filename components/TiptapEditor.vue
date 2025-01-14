@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 const modelValue = defineModel<string>({
-  required: true,
+  required: true
 })
 
 watch(modelValue, (newModelValue) => {
@@ -20,9 +20,9 @@ const editor = useEditor({
   extensions: [TiptapStarterKit],
   editorProps: {
     attributes: {
-      class: 'prose dark:prose-invert prose-sm sm:prose-base focus:outline-none',
-    },
-  },
+      class: 'prose dark:prose-invert prose-sm sm:prose-base focus:outline-none'
+    }
+  }
 })
 
 onBeforeUnmount(() => {
@@ -39,7 +39,7 @@ onBeforeUnmount(() => {
       <UButton
         :disabled="!editor.can().chain().focus().toggleBold().run()"
         :class="{ 'bg-primary text-black hover:bg-primary hover:text-black': editor.isActive('bold') }"
-        icon="ri:bold"
+        icon="lucide:bold"
         variant="outline"
         size="sm"
         @click="editor.chain().focus().toggleBold().run()"
@@ -47,7 +47,7 @@ onBeforeUnmount(() => {
       <UButton
         :disabled="!editor.can().chain().focus().toggleItalic().run()"
         :class="{ 'bg-primary text-black hover:bg-primary hover:text-black': editor.isActive('italic') }"
-        icon="ri:italic"
+        icon="lucide:italic"
         variant="outline"
         size="sm"
         @click="editor.chain().focus().toggleItalic().run()"
@@ -55,7 +55,7 @@ onBeforeUnmount(() => {
       <UButton
         :disabled="!editor.can().chain().focus().toggleStrike().run()"
         :class="{ 'bg-primary text-black hover:bg-primary hover:text-black': editor.isActive('strike') }"
-        icon="ri:strikethrough"
+        icon="lucide:strikethrough"
         variant="outline"
         size="sm"
         @click="editor.chain().focus().toggleStrike().run()"
@@ -63,110 +63,110 @@ onBeforeUnmount(() => {
       <UButton
         :disabled="!editor.can().chain().focus().toggleCode().run()"
         :class="{ 'bg-primary text-black hover:bg-primary hover:text-black': editor.isActive('code') }"
-        icon="ri:code-view"
+        icon="lucide:code"
         variant="outline"
         size="sm"
         @click="editor.chain().focus().toggleCode().run()"
       />
       <UButton
-        icon="ri:format-clear"
+        icon="lucide:remove-formatting"
         variant="outline"
         size="sm"
         @click="editor.chain().focus().unsetAllMarks().run()"
       />
       <UButton
         :class="{ 'bg-primary text-black hover:bg-primary hover:text-black': editor.isActive('paragraph') }"
-        icon="ri:paragraph"
+        icon="lucide:text"
         variant="outline"
         size="sm"
         @click="editor.chain().focus().setParagraph().run()"
       />
       <UButton
         :class="{ 'bg-primary text-black hover:bg-primary hover:text-black': editor.isActive('heading', { level: 1 }) }"
-        icon="ri:h-1"
+        icon="lucide:heading-1"
         variant="outline"
         size="sm"
         @click="editor.chain().focus().toggleHeading({ level: 1 }).run()"
       />
       <UButton
         :class="{ 'bg-primary text-black hover:bg-primary hover:text-black': editor.isActive('heading', { level: 2 }) }"
-        icon="ri:h-2"
+        icon="lucide:heading-2"
         variant="outline"
         size="sm"
         @click="editor.chain().focus().toggleHeading({ level: 2 }).run()"
       />
       <UButton
         :class="{ 'bg-primary text-black hover:bg-primary hover:text-black': editor.isActive('heading', { level: 3 }) }"
-        icon="ri:h-3"
+        icon="lucide:heading-3"
         variant="outline"
         size="sm"
         @click="editor.chain().focus().toggleHeading({ level: 3 }).run()"
       />
       <UButton
         :class="{ 'bg-primary text-black hover:bg-primary hover:text-black': editor.isActive('heading', { level: 4 }) }"
-        icon="ri:h-4"
+        icon="lucide:heading-4"
         variant="outline"
         size="sm"
         @click="editor.chain().focus().toggleHeading({ level: 4 }).run()"
       />
       <UButton
         :class="{ 'bg-primary text-black hover:bg-primary hover:text-black': editor.isActive('heading', { level: 5 }) }"
-        icon="ri:h-5"
+        icon="lucide:heading-5"
         variant="outline"
         size="sm"
         @click="editor.chain().focus().toggleHeading({ level: 5 }).run()"
       />
       <UButton
         :class="{ 'bg-primary text-black hover:bg-primary hover:text-black': editor.isActive('heading', { level: 6 }) }"
-        icon="ri:h-6"
+        icon="lucide:heading-6"
         variant="outline"
         size="sm"
         @click="editor.chain().focus().toggleHeading({ level: 6 }).run()"
       />
       <UButton
         :class="{ 'bg-primary text-black hover:bg-primary hover:text-black': editor.isActive('bulletList') }"
-        icon="ri:list-unordered"
+        icon="lucide:list"
         variant="outline"
         size="sm"
         @click="editor.chain().focus().toggleBulletList().run()"
       />
       <UButton
         :class="{ 'bg-primary text-black hover:bg-primary hover:text-black': editor.isActive('orderedList') }"
-        icon="ri:list-ordered"
+        icon="lucide:list-ordered"
         variant="outline"
         size="sm"
         @click="editor.chain().focus().toggleOrderedList().run()"
       />
       <UButton
         :class="{ 'bg-primary text-black hover:bg-primary hover:text-black': editor.isActive('codeBlock') }"
-        icon="ri:code-block"
+        icon="lucide:square-code"
         variant="outline"
         size="sm"
         @click="editor.chain().focus().toggleCodeBlock().run()"
       />
       <UButton
         :class="{ 'bg-primary text-black hover:bg-primary hover:text-black': editor.isActive('blockquote') }"
-        icon="ri:double-quotes-l"
+        icon="lucide:quote"
         variant="outline"
         size="sm"
         @click="editor.chain().focus().toggleBlockquote().run()"
       />
       <UButton
-        icon="ri:separator"
+        icon="lucide:separator-horizontal"
         variant="outline"
         size="sm"
         @click="editor.chain().focus().setHorizontalRule().run()"
       />
       <UButton
         :disabled="!editor.can().chain().focus().undo().run()"
-        icon="ri:arrow-go-back-line"
+        icon="lucide:undo"
         variant="outline"
         size="sm"
         @click="editor.chain().focus().undo().run()"
       />
       <UButton
         :disabled="!editor.can().chain().focus().redo().run()"
-        icon="ri:arrow-go-forward-line"
+        icon="lucide:redo"
         variant="outline"
         size="sm"
         @click="editor.chain().focus().redo().run()"

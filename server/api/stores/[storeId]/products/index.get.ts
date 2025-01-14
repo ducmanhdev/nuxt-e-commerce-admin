@@ -11,21 +11,21 @@ export default defineWrappedResponseHandler(async (event) => {
     {
       storeId: storeId,
       store: {
-        userId: user.id,
+        userId: user.id
       },
       name: {
         contains: queries.search || '',
-        mode: 'insensitive',
-      },
+        mode: 'insensitive'
+      }
     },
     {
       include: {
         category: {
           select: {
-            name: true,
-          },
-        },
-      },
-    },
+            name: true
+          }
+        }
+      }
+    }
   )
 })

@@ -9,11 +9,11 @@ export default defineWrappedResponseHandler(async (event) => {
   return await prisma.news.paginate(queries, {
     storeId: storeId,
     store: {
-      userId: user.id,
+      userId: user.id
     },
     title: {
       contains: queries.search || '',
-      mode: 'insensitive',
-    },
+      mode: 'insensitive'
+    }
   })
 })

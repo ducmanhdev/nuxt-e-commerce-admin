@@ -11,12 +11,12 @@ const validationSchema = schema
     z.object({
       imageUrl: z.string().optional(),
       newImageFiles: z.instanceof(File).array().optional(),
-      deletedImages: z.string().array().optional(),
-    }),
+      deletedImages: z.string().array().optional()
+    })
   )
   .refine((data) => data.imageUrl || data.newImageFiles?.length, {
     message: 'Image must not be empty',
-    path: ['imageUrl'],
+    path: ['imageUrl']
   })
 
 type SchemaInfer = z.infer<typeof validationSchema>
@@ -35,7 +35,7 @@ const submitSuccessMessage = computed(() => (props.newsId ? 'Updated news succes
 const DEFAULT_STATE: SchemaInfer = {
   title: '',
   content: '',
-  imageUrl: '',
+  imageUrl: ''
 }
 
 const state = ref({ ...DEFAULT_STATE })
@@ -47,8 +47,8 @@ watch(
     Object.assign(state.value, { ...DEFAULT_STATE, ...newInitialValues })
   },
   {
-    immediate: true,
-  },
+    immediate: true
+  }
 )
 
 const toast = useCustomToast()
@@ -63,12 +63,12 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
       return
     }
 
-    const { deletedImages, newImageFiles, imageUrl } = event.data
+    const { deletedImages, newImageFiles } = event.data
 
     if (deletedImages?.length) {
       await $fetch('/api/images/delete', {
         method: 'DELETE',
-        body: { imageUrls: deletedImages, bucketName },
+        body: { imageUrls: deletedImages, bucketName }
       })
     }
 
@@ -78,19 +78,26 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
       formData.append('bucketName', bucketName)
       const { data } = await $fetch('/api/images/upload', {
         method: 'POST',
-        body: formData,
+        body: formData
       })
       event.data.imageUrl = data[0]
     }
 
-    if (!imageUrl) throw new Error('Image URL is required')
+    if (!event.data.imageUrl) throw new Error('Image URL is required')
 
     const endpoint = props.newsId
       ? `/api/stores/${props.storeId}/news/${props.newsId}`
       : `/api/stores/${props.storeId}/news`
     const method = props.newsId ? 'PATCH' : 'POST'
 
-    await $fetch(endpoint, { method, body: event.data })
+    await $fetch(endpoint, {
+      method,
+      body: {
+        title: event.data.title,
+        content: event.data.content,
+        imageUrl: event.data.imageUrl
+      }
+    })
 
     toast.success(submitSuccessMessage.value)
     refreshNuxtData('news')
@@ -109,7 +116,7 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
     :title="modalTitle"
     :prevent-close="isSubmitLoading"
     :ui="{
-      content: 'sm:max-w-2xl',
+      content: 'sm:max-w-2xl'
     }"
   >
     <template #body>

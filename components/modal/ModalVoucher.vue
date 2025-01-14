@@ -20,7 +20,7 @@ const props = defineProps<Props>()
 
 const modalTitle = computed(() => props.title || (props.voucherId ? 'Update voucher' : 'Create voucher'))
 const submitSuccessMessage = computed(() =>
-  props.voucherId ? 'Updated voucher successfully' : 'Created voucher successfully',
+  props.voucherId ? 'Updated voucher successfully' : 'Created voucher successfully'
 )
 
 const DEFAULT_STATE: SchemaInfer = {
@@ -31,7 +31,7 @@ const DEFAULT_STATE: SchemaInfer = {
   endDate: dayjs().add(1, 'day').toDate(),
   maxDiscount: 0,
   minOrderValue: 0,
-  usageLimit: 0,
+  usageLimit: 0
 }
 
 const state = ref({ ...DEFAULT_STATE })
@@ -44,12 +44,12 @@ watch(
       ...DEFAULT_STATE,
       ...newInitialValues,
       startDate: newInitialValues?.startDate ? dayjs(newInitialValues.startDate).toDate() : DEFAULT_STATE.startDate,
-      endDate: newInitialValues?.endDate ? dayjs(newInitialValues.endDate).toDate() : DEFAULT_STATE.endDate,
+      endDate: newInitialValues?.endDate ? dayjs(newInitialValues.endDate).toDate() : DEFAULT_STATE.endDate
     })
   },
   {
-    immediate: true,
-  },
+    immediate: true
+  }
 )
 
 const toast = useCustomToast()
@@ -69,7 +69,7 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
     const method = props.voucherId ? 'PATCH' : 'POST'
     await $fetch(endpoint, {
       method,
-      body: event.data,
+      body: event.data
     })
 
     toast.success(submitSuccessMessage.value)
@@ -85,7 +85,7 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
 
 const VOUCHER_DISCOUNT_TYPE_OPTIONS = Object.entries(VOUCHER_DISCOUNT_TYPES).map(([key, value]) => ({
   label: key,
-  value: value,
+  value: value
 }))
 </script>
 
@@ -94,7 +94,7 @@ const VOUCHER_DISCOUNT_TYPE_OPTIONS = Object.entries(VOUCHER_DISCOUNT_TYPES).map
     :title="modalTitle"
     :prevent-close="isSubmitLoading"
     :ui="{
-      content: 'sm:max-w-2xl',
+      content: 'sm:max-w-2xl'
     }"
   >
     <template #body>

@@ -1,185 +1,108 @@
 <script setup lang="ts">
-import { LazyModalConfirm } from '#components'
-
 definePageMeta({
   middleware: (to) => {
     if (to.name !== 'storeId') return
     return navigateTo({
       name: 'storeId-overview',
-      params: to.params,
+      params: to.params
     })
-  },
+  }
 })
 
 const route = useRoute()
 const storeId = computed(() => route.params.storeId as string)
-const { data } = useLazyFetch(() => `/api/stores/${storeId.value}`)
-const store = computed(() => data.value?.data)
-watch(store, (newStore) => {
-  if (newStore) return
-  throw createError({
-    statusCode: 404,
-    message: 'Store not found',
-    fatal: true,
-  })
-})
-
-const toast = useCustomToast()
-const modal = useModal()
-const supabase = useSupabaseClient()
-const handleSignOut = async () => {
-  modal.open(LazyModalConfirm, {
-    description: 'Are you to logout?',
-    onConfirm: async () => {
-      const { error } = await supabase.auth.signOut()
-      if (error) {
-        console.error('[SIGN_OUT_ERROR]', error)
-        toast.error(`Failed to sign out: ${error.message}`)
-        return
+await useFetch(() => `/api/stores/${storeId.value}`, {
+  key: `store`,
+  transform: (data) => data.data,
+  onResponse: ({ response }) => {
+    useHead({
+      titleTemplate: (titleChunk) => {
+        return titleChunk ? `${response._data.data?.name} - ${titleChunk}` : `${response._data.data?.name}`
       }
-      await navigateTo('/sign-in')
-    },
-  })
-}
-
-const user = useSupabaseUser()
-const userDropdownItems = computed(() => {
-  return [
-    [
-      {
-        label: 'Profile',
-        icon: 'heroicons:user-circle',
-      },
-    ],
-    [
-      {
-        label: 'Sign Out',
-        icon: 'heroicons:arrow-right-start-on-rectangle',
-        color: 'error' as const,
-        onSelect: handleSignOut,
-      },
-    ],
-  ]
+    })
+  },
+  onResponseError: ({ response }) => {
+    console.error('[FETCH_STORE_ERROR]', response.statusText)
+    showError({
+      statusCode: response.status,
+      statusMessage: response.statusText
+    })
+  }
 })
-
-const { isDark, handleToggleMode } = useThemeMode()
 
 const navigationItems = computed(() => {
   return [
     [
       {
-        icon: 'heroicons:chart-pie',
+        icon: 'lucide:chart-no-axes-combined',
         label: 'Overview',
-        to: `/${storeId.value}/overview`,
+        to: `/${storeId.value}/overview`
       },
       {
-        icon: 'heroicons:tag',
+        icon: 'lucide:tags',
         label: 'Categories',
-        to: `/${storeId.value}/categories`,
+        to: `/${storeId.value}/categories`
       },
       {
-        icon: 'heroicons:swatch',
+        icon: 'lucide:swatch-book',
         label: 'Brands',
-        to: `/${storeId.value}/brands`,
+        to: `/${storeId.value}/brands`
       },
       {
-        icon: 'heroicons:cube',
+        icon: 'lucide:cuboid',
         label: 'Products',
-        to: `/${storeId.value}/products`,
+        to: `/${storeId.value}/products`
       },
       {
-        icon: 'heroicons:newspaper',
+        icon: 'lucide:newspaper',
         label: 'News',
-        to: `/${storeId.value}/news`,
+        to: `/${storeId.value}/news`
       },
       {
-        icon: 'heroicons:photo',
+        icon: 'lucide:images',
         label: 'Banners',
-        disabled: true,
+        disabled: true
       },
       {
-        icon: 'heroicons:ticket',
+        icon: 'lucide:tickets',
         label: 'Vouchers',
-        to: `/${storeId.value}/vouchers`,
+        to: `/${storeId.value}/vouchers`
       },
       {
-        icon: 'heroicons:shopping-cart',
+        icon: 'lucide:shopping-cart',
         label: 'Orders',
-        disabled: true,
-      },
+        disabled: true
+      }
     ],
     [
       {
-        icon: 'heroicons:cog',
+        icon: 'lucide:settings',
         label: 'Settings',
-        disabled: true,
+        disabled: true
       },
       {
-        icon: 'heroicons:question-mark-circle',
+        icon: 'lucide:message-circle-question',
         label: 'Help',
-        disabled: true,
-      },
-    ],
+        disabled: true
+      }
+    ]
   ]
 })
 </script>
 
 <template>
-  <div class="grid h-svh grid-rows-[auto_1fr] overflow-hidden">
-    <header
-      class="py-4 shadow border-b border-transparent dark:border-[var(--ui-border)] text-[var(--ui-text)] bg-[var(--ui-bg)] sticky top-0 z-50"
-    >
-      <UContainer class="flex items-center">
-        <UTooltip text="Return home">
-          <UButton icon="heroicons:home-20-solid" to="/" class="mr-4" />
-        </UTooltip>
-        <h1 class="text-lg font-semibold">{{ store?.name }}</h1>
-        <div class="flex items-center gap-2 ml-auto">
-          <UChip inset :show="false">
-            <UButton icon="heroicons:bell-solid" variant="ghost" color="neutral" />
-          </UChip>
-          <UTooltip text="Toggle dark mode">
-            <UButton
-              :icon="isDark ? 'heroicons:moon-solid' : 'heroicons:sun-solid'"
-              variant="ghost"
-              color="neutral"
-              @click="handleToggleMode()"
-            />
-          </UTooltip>
-          <UTooltip text="Select app">
-            <UButton icon="heroicons:squares-2x2-16-solid" variant="ghost" color="neutral" to="/" />
-          </UTooltip>
-          <UDropdownMenu :items="userDropdownItems" :popper="{ placement: 'bottom-start' }">
-            <UButton
-              :avatar="{
-                src: user?.user_metadata?.avatar_url,
-                alt: user?.user_metadata?.name,
-                icon: 'heroicons:user',
-                size: 'sm',
-              }"
-              variant="ghost"
-              color="neutral"
-              :ui="{
-                base: 'p-0',
-              }"
-            />
-          </UDropdownMenu>
-        </div>
-      </UContainer>
-    </header>
-    <main class="grid grid-cols-[250px_1fr]">
-      <aside class="border-r border-[var(--ui-border)] p-4">
-        <UNavigationMenu
-          orientation="vertical"
-          :items="navigationItems"
-          :ui="{
-            link: 'py-2',
-          }"
-        />
-      </aside>
-      <div class="p-4 max-h-full overflow-y-auto">
-        <NuxtPage :store="store" />
-      </div>
-    </main>
+  <div class="h-full grid grid-cols-[250px_1fr]">
+    <aside class="border-r border-[var(--ui-border)] p-4">
+      <UNavigationMenu
+        orientation="vertical"
+        :items="navigationItems"
+        :ui="{
+          link: 'py-2'
+        }"
+      />
+    </aside>
+    <div class="p-4 overflow-y-auto">
+      <NuxtPage />
+    </div>
   </div>
 </template>

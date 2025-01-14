@@ -6,10 +6,10 @@ export default defineWrappedResponseHandler(async (event) => {
   const store = await prisma.store.findFirstOrThrow({
     where: {
       id: storeId,
-      userId: user.id,
-    },
+      userId: user.id
+    }
   })
   return {
-    data: store,
+    data: store
   }
 })

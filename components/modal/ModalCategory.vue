@@ -10,12 +10,12 @@ const validationSchema = schema
     z.object({
       imageUrl: z.string().optional(),
       newImageFiles: z.instanceof(File).array().optional(),
-      deletedImages: z.string().array().optional(),
-    }),
+      deletedImages: z.string().array().optional()
+    })
   )
   .refine((data) => data.imageUrl || data.newImageFiles?.length, {
     message: 'Image must not be empty',
-    path: ['imageUrl'],
+    path: ['imageUrl']
   })
 
 type SchemaInfer = z.infer<typeof validationSchema>
@@ -30,14 +30,14 @@ const props = defineProps<Props>()
 
 const modalTitle = computed(() => props.title || (props.categoryId ? 'Update category' : 'Create category'))
 const submitSuccessMessage = computed(() =>
-  props.categoryId ? 'Updated category successfully' : 'Created category successfully',
+  props.categoryId ? 'Updated category successfully' : 'Created category successfully'
 )
 
 const DEFAULT_STATE: SchemaInfer = {
   name: '',
   imageUrl: '',
   newImageFiles: [],
-  deletedImages: [],
+  deletedImages: []
 }
 
 const state = ref({ ...DEFAULT_STATE })
@@ -49,8 +49,8 @@ watch(
     Object.assign(state.value, { ...DEFAULT_STATE, ...newInitialValues })
   },
   {
-    immediate: true,
-  },
+    immediate: true
+  }
 )
 
 const toast = useCustomToast()
@@ -65,12 +65,12 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
       return
     }
 
-    const { deletedImages, newImageFiles, imageUrl, name } = event.data
+    const { deletedImages, newImageFiles, name } = event.data
 
     if (deletedImages?.length) {
       await $fetch('/api/images/delete', {
         method: 'DELETE',
-        body: { imageUrls: deletedImages, bucketName },
+        body: { imageUrls: deletedImages, bucketName }
       })
     }
 
@@ -80,14 +80,14 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
       formData.append('bucketName', bucketName)
       const { data } = await $fetch('/api/images/upload', {
         method: 'POST',
-        body: formData,
+        body: formData
       })
       event.data.imageUrl = data[0]
     }
 
-    if (!imageUrl) throw new Error('Image URL is required')
+    if (!event.data.imageUrl) throw new Error('Image URL is required')
 
-    const payload = { name, imageUrl }
+    const payload = { name, imageUrl: event.data.imageUrl }
     const endpoint = props.categoryId
       ? `/api/stores/${props.storeId}/categories/${props.categoryId}`
       : `/api/stores/${props.storeId}/categories`

@@ -8,19 +8,19 @@ export default defineWrappedResponseHandler(async (event) => {
   const store = await prisma.store.findFirstOrThrow({
     where: {
       id: storeId,
-      userId: user.id,
-    },
+      userId: user.id
+    }
   })
 
   const body = await readValidatedBody(event, schema.parse)
   const data = await prisma.brand.create({
     data: {
       storeId: store.id,
-      ...body,
-    },
+      ...body
+    }
   })
 
   return {
-    data,
+    data
   }
 })

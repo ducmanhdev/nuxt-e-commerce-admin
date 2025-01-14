@@ -9,15 +9,15 @@ export default defineWrappedResponseHandler(async (event) => {
       id: brandId,
       storeId: storeId,
       store: {
-        userId: user.id,
-      },
-    },
+        userId: user.id
+      }
+    }
   })
 
   await prisma.brand.delete({
     where: {
-      id: brand.id,
-    },
+      id: brand.id
+    }
   })
 
   setResponseStatus(event, 204)

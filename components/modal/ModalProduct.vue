@@ -18,19 +18,19 @@ const props = defineProps<Props>()
 
 const modalTitle = computed(() => props.title || (props.productId ? 'Update product' : 'Create product'))
 const submitSuccessMessage = computed(() =>
-  props.productId ? 'Updated product successfully' : 'Created product successfully',
+  props.productId ? 'Updated product successfully' : 'Created product successfully'
 )
 
 const DEFAULT_ATTRIBUTE = {
   name: '',
-  value: '',
+  value: ''
 }
 
 const DEFAULT_STATE: Partial<SchemaInfer> = {
   name: '',
   description: '',
   categoryId: '',
-  attributes: [{ ...DEFAULT_ATTRIBUTE }],
+  attributes: [{ ...DEFAULT_ATTRIBUTE }]
 }
 
 const state = ref({ ...DEFAULT_STATE })
@@ -43,8 +43,8 @@ watch(
     state.value.attributes = [{ ...DEFAULT_ATTRIBUTE }]
   },
   {
-    immediate: true,
-  },
+    immediate: true
+  }
 )
 
 const toast = useCustomToast()
@@ -64,7 +64,7 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
     const method = props.productId ? 'PATCH' : 'POST'
     await $fetch(endpoint, {
       method,
-      body: event.data,
+      body: event.data
     })
 
     toast.success(submitSuccessMessage.value)
@@ -99,16 +99,16 @@ const useCategoryOptions = () => {
       return (
         data?.map((item) => ({
           label: (item as unknown as Category).name,
-          value: (item as unknown as Category).id,
+          value: (item as unknown as Category).id
         })) || []
       )
-    },
+    }
   })
 
   return {
     searchTerm,
     data,
-    status,
+    status
   }
 }
 const { searchTerm: categorySearchTerm, data: categoryOptions, status: getCategoryOptionsStatus } = useCategoryOptions()
@@ -120,19 +120,19 @@ const useAttributeOptions = () => {
     params: { search: searchTermDebounced },
     transform: ({ data }) => {
       return data?.map((item) => (item as unknown as ProductAttribute).name) || []
-    },
+    }
   })
 
   return {
     searchTerm,
     data,
-    status,
+    status
   }
 }
 const {
   searchTerm: attributeSearchTerm,
   data: attributeOptions,
-  status: getAttributeOptionsStatus,
+  status: getAttributeOptionsStatus
 } = useAttributeOptions()
 </script>
 
@@ -178,11 +178,11 @@ const {
             <UInput v-model="attribute.value" />
           </UFormField>
           <UFormField :label="!index ? '&nbsp;' : undefined">
-            <UButton type="button" icon="heroicons:trash" color="error" @click="handleDeleteAttribute(index)" />
+            <UButton type="button" icon="lucide:trash" color="error" @click="handleDeleteAttribute(index)" />
           </UFormField>
         </UForm>
 
-        <UButton type="button" icon="heroicons:plus" label="Add attribute" block @click="handleAddAttribute" />
+        <UButton type="button" icon="lucide:plus" label="Add attribute" block @click="handleAddAttribute" />
 
         <div class="grid grid-cols-2 gap-2">
           <UButton

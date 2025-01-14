@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
   } catch {
     throw createError({
       statusCode: 401,
-      statusMessage: 'Unauthorized',
+      statusMessage: 'Unauthorized'
     })
   }
 })

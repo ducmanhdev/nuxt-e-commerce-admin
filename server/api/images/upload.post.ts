@@ -16,21 +16,21 @@ export default defineWrappedResponseHandler(async (event) => {
         .refine(
           (file) => file.type.startsWith('image/'),
           (file) => ({
-            message: `${file.name} is not a valid image file.`,
-          }),
+            message: `${file.name} is not a valid image file.`
+          })
         )
         .refine(
           (file) => ACCEPTED_UPLOAD_IMAGE_MIME_TYPES.includes(file.type),
           (file) => ({
-            message: `${file.name} is not an acceptable image type.`,
-          }),
+            message: `${file.name} is not an acceptable image type.`
+          })
         )
         .refine(
           (file) => file.size <= MAX_UPLOAD_IMAGE_FILE_SIZE_IN_BYTES,
           (file) => ({
-            message: `${file.name} exceeds the maximum file size limit of ${bytesToMB(MAX_UPLOAD_IMAGE_FILE_SIZE_IN_BYTES)} MB.`,
-          }),
-        ),
+            message: `${file.name} exceeds the maximum file size limit of ${bytesToMB(MAX_UPLOAD_IMAGE_FILE_SIZE_IN_BYTES)} MB.`
+          })
+        )
     )
     .nonempty('At least one file must be provided.')
 

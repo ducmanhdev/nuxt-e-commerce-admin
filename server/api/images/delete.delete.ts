@@ -10,9 +10,9 @@ export default defineWrappedResponseHandler(async (event) => {
       .array(z.string())
       .nonempty('At least one file must be provided.')
       .refine((urls) => urls.every((url) => url.startsWith(supabaseUrl)), {
-        message: `Each file URL must start with ${supabaseUrl}.`,
+        message: `Each file URL must start with ${supabaseUrl}.`
       }),
-    bucketName: z.string().min(1, 'Bucket name cannot be empty.'),
+    bucketName: z.string().min(1, 'Bucket name cannot be empty.')
   })
 
   const supabase = await serverSupabaseClient(event)
@@ -24,7 +24,7 @@ export default defineWrappedResponseHandler(async (event) => {
   if (error) {
     throw createError({
       status: 500,
-      statusMessage: `Error removing files: ${error.message}`,
+      statusMessage: `Error removing files: ${error.message}`
     })
   }
   return { data }

@@ -2,7 +2,7 @@
 import { LazyModalCategory } from '#components'
 
 useHead({
-  title: 'Categories',
+  title: 'Categories'
 })
 
 const route = useRoute()
@@ -11,7 +11,7 @@ const storeId = computed(() => route.params.storeId as string)
 const modal = useModal()
 const handeShowCreateModal = () => {
   modal.open(LazyModalCategory, {
-    storeId: storeId.value,
+    storeId: storeId.value
   })
 }
 </script>
@@ -20,7 +20,7 @@ const handeShowCreateModal = () => {
   <section>
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-xl font-bold">Categories</h2>
-      <UButton leading-icon="heroicons:plus" label="Create" @click="handeShowCreateModal" />
+      <UButton leading-icon="lucide:plus" label="Create" @click="handeShowCreateModal" />
     </div>
 
     <TableCategory :store-id="storeId" />

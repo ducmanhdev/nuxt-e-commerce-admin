@@ -14,11 +14,11 @@ const props = defineProps<Props>()
 
 const modalTitle = computed(() => props.title || (props.storeId ? 'Update store' : 'Create store'))
 const submitSuccessMessage = computed(() =>
-  props.storeId ? 'Updated store successfully' : 'Created store successfully',
+  props.storeId ? 'Updated store successfully' : 'Created store successfully'
 )
 
 const DEFAULT_STATE: SchemaInfer = {
-  name: '',
+  name: ''
 }
 
 const state = ref({ ...DEFAULT_STATE })
@@ -30,13 +30,12 @@ watch(
     Object.assign(state.value, { ...DEFAULT_STATE, ...newInitialValues })
   },
   {
-    immediate: true,
-  },
+    immediate: true
+  }
 )
 
 const toast = useCustomToast()
 const modal = useModal()
-const storesStore = useStoresStore()
 const isSubmitLoading = ref(false)
 const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
   try {
@@ -46,11 +45,12 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
     const method = props.storeId ? 'PATCH' : 'POST'
     await $fetch(endpoint, {
       method,
-      body: event.data,
+      body: event.data
     })
 
     toast.success(submitSuccessMessage.value)
-    storesStore.fetchStores()
+    refreshNuxtData('stores')
+    refreshNuxtData('store')
     await modal.close()
   } catch (error) {
     console.error(error)

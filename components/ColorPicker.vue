@@ -16,9 +16,11 @@ const model = defineModel<string>()
     padding: 4px;
     min-height: 32px;
   }
+
   input[type='color']::-webkit-color-swatch-wrapper {
     padding: 0;
   }
+
   input[type='color']::-webkit-color-swatch {
     border: none;
     border-radius: 4px;

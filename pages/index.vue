@@ -1,25 +1,24 @@
 <script setup lang="ts">
 import { LazyModalStore } from '#components'
+import type { Store } from '~/types'
 
 useHead({
-  title: 'Home',
+  title: 'Home'
 })
 
-const storesStore = useStoresStore()
-
+const { data: cachedStores } = useNuxtData<Store[]>('stores')
 const groups = computed(() => [
   {
     id: 'stores',
     label: '',
-    items: (storesStore.stores || []).map((store) => ({
-      icon: 'heroicons:arrows-pointing-out-solid',
-      label: store.name,
+    items: (cachedStores.value || []).map((store, index) => ({
+      label: `${index + 1}. ${store.name}`,
       id: store.id,
       onSelect: async () => {
         await navigateTo(store.id)
-      },
-    })),
-  },
+      }
+    }))
+  }
 ])
 
 const modal = useModal()
@@ -33,14 +32,14 @@ const modal = useModal()
           <div class="flex items-center justify-between gap-4">
             <p>Select store</p>
             <UTooltip text="Create new store">
-              <UButton leading-icon="heroicons:plus" @click="modal.open(LazyModalStore)" />
+              <UButton leading-icon="lucide:plus" @click="modal.open(LazyModalStore)" />
             </UTooltip>
           </div>
         </template>
-        <UCommandPalette nullable :loading="storesStore.isFetchingStores" :autoselect="false" :groups="groups">
+        <UCommandPalette nullable :autoselect="false" :groups="groups">
           <template #empty>
             <div class="text-center space-y-4 p-6">
-              <UIcon name="heroicons:magnifying-glass-20-solid" class="size-10" />
+              <UIcon name="lucide:search" class="size-10" />
               <p>We couldn't find any items.</p>
             </div>
           </template>

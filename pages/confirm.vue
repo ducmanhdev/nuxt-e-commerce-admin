@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  layout: false
+})
+
 const user = useSupabaseUser()
 watchEffect(() => {
   if (user.value) return navigateTo('/')

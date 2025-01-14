@@ -9,11 +9,11 @@ export default defineWrappedResponseHandler(async (event) => {
   return await prisma.voucher.paginate(queries, {
     storeId: storeId,
     store: {
-      userId: user.id,
+      userId: user.id
     },
     code: {
       contains: queries.search || '',
-      mode: 'insensitive',
-    },
+      mode: 'insensitive'
+    }
   })
 })

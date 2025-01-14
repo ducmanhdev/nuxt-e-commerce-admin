@@ -6,5 +6,5 @@ export type {
   ProductAttribute,
   ProductAttributeValue,
   News,
-  Brand,
+  Brand
 } from '@prisma/client'

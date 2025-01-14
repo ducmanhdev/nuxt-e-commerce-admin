@@ -30,7 +30,7 @@ const handleDelete = ({ storeId, id }: { storeId: string; id: string }) => {
     onConfirm: async () => {
       try {
         await $fetch(`/api/stores/${storeId}/products/${id}`, {
-          method: 'DELETE',
+          method: 'DELETE'
         })
         toast.success('Deleted successfully')
         refreshNuxtData('products')
@@ -38,7 +38,7 @@ const handleDelete = ({ storeId, id }: { storeId: string; id: string }) => {
         console.error(error)
         toast.error(error)
       }
-    },
+    }
   })
 }
 const getActionItems = (row: Row<Product>) => {
@@ -46,27 +46,27 @@ const getActionItems = (row: Row<Product>) => {
     [
       {
         label: 'Edit',
-        icon: 'heroicons:pencil-square',
+        icon: 'lucide:pencil-line',
         onSelect: () =>
           modal.open(LazyModalProduct, {
             storeId: row.original.storeId,
             productId: row.original.id,
-            initialValues: { ...row.original },
-          }),
-      },
+            initialValues: { ...row.original }
+          })
+      }
     ],
     [
       {
         label: 'Delete',
-        icon: 'heroicons:trash',
+        icon: 'lucide:trash',
         color: 'error',
         onSelect: () =>
           handleDelete({
             storeId: row.original.storeId,
-            id: row.original.id,
-          }),
-      },
-    ],
+            id: row.original.id
+          })
+      }
+    ]
   ]
 }
 const getHeader = (column: Column<Product>, label: string) => {
@@ -78,13 +78,13 @@ const getHeader = (column: Column<Product>, label: string) => {
     UDropdownMenu,
     {
       content: {
-        align: 'start',
+        align: 'start'
       },
       items: [
         {
           label: 'Asc',
           type: 'checkbox',
-          icon: 'i-lucide-arrow-up-narrow-wide',
+          icon: 'lucide:arrow-up-narrow-wide',
           checked: isSorted === 'asc',
           onSelect: () => {
             if (isSorted === 'asc') {
@@ -92,11 +92,11 @@ const getHeader = (column: Column<Product>, label: string) => {
             } else {
               column.toggleSorting(false)
             }
-          },
+          }
         },
         {
           label: 'Desc',
-          icon: 'i-lucide-arrow-down-wide-narrow',
+          icon: 'lucide:arrow-up-wide-narrow',
           type: 'checkbox',
           checked: isSorted === 'desc',
           onSelect: () => {
@@ -105,9 +105,9 @@ const getHeader = (column: Column<Product>, label: string) => {
             } else {
               column.toggleSorting(true)
             }
-          },
-        },
-      ],
+          }
+        }
+      ]
     },
     () =>
       h(UButton, {
@@ -116,11 +116,11 @@ const getHeader = (column: Column<Product>, label: string) => {
         label,
         icon: isSorted
           ? isSorted === 'asc'
-            ? 'i-lucide-arrow-up-narrow-wide'
-            : 'i-lucide-arrow-down-wide-narrow'
-          : 'i-lucide-arrow-up-down',
-        class: '-mx-2.5 data-[state=open]:bg-[var(--ui-bg-elevated)]',
-      }),
+            ? 'lucide:arrow-up-narrow-wide'
+            : 'lucide:arrow-up-wide-narrow'
+          : 'lucide:arrow-up-down',
+        class: '-mx-2.5 data-[state=open]:bg-[var(--ui-bg-elevated)]'
+      })
   )
 }
 const columns: TableColumn<Product>[] = [
@@ -132,14 +132,14 @@ const columns: TableColumn<Product>[] = [
         modelValue: table.getIsAllPageRowsSelected(),
         indeterminate: table.getIsSomePageRowsSelected(),
         'onUpdate:modelValue': (value: boolean) => table.toggleAllPageRowsSelected(value),
-        ariaLabel: 'Select all',
+        ariaLabel: 'Select all'
       }),
     cell: ({ row }) =>
       h(UCheckbox, {
         modelValue: row.getIsSelected(),
         'onUpdate:modelValue': (value: boolean) => row.toggleSelected(value),
-        ariaLabel: 'Select row',
-      }),
+        ariaLabel: 'Select row'
+      })
   },
   { accessorKey: 'name', header: ({ column }) => getHeader(column, 'Name') },
   { accessorKey: 'description', header: ({ column }) => getHeader(column, 'Description') },
@@ -151,22 +151,22 @@ const columns: TableColumn<Product>[] = [
       const color = {
         [COMMON_STATUSES.VISIBLE]: 'primary' as const,
         [COMMON_STATUSES.ARCHIVED]: 'secondary' as const,
-        [COMMON_STATUSES.HIDDEN]: 'error' as const,
+        [COMMON_STATUSES.HIDDEN]: 'error' as const
       }[value as string]
       const label = Object.entries(COMMON_STATUSES).find(([_, _value]) => _value === value)?.[0]
       return h(UBadge, { color, label, variant: 'subtle' })
-    },
+    }
   },
   { accessorKey: 'category.name', header: ({ column }) => getHeader(column, 'Category') },
   {
     accessorKey: 'createdAt',
     header: ({ column }) => getHeader(column, 'Created at'),
-    cell: ({ row }) => dayjs(row.getValue('createdAt')).format(DATE_TIME_FORMAT),
+    cell: ({ row }) => dayjs(row.getValue('createdAt')).format(DATE_TIME_FORMAT)
   },
   {
     accessorKey: 'updatedAt',
     header: ({ column }) => getHeader(column, 'Updated at'),
-    cell: ({ row }) => dayjs(row.getValue('updatedAt')).format(DATE_TIME_FORMAT),
+    cell: ({ row }) => dayjs(row.getValue('updatedAt')).format(DATE_TIME_FORMAT)
   },
   {
     accessorKey: 'actions',
@@ -177,25 +177,25 @@ const columns: TableColumn<Product>[] = [
         UDropdownMenu,
         {
           content: {
-            align: 'end',
+            align: 'end'
           },
-          items: getActionItems(row),
+          items: getActionItems(row)
         },
         () =>
           h(UButton, {
             icon: 'ion:ellipsis-vertical',
             color: 'neutral',
-            variant: 'ghost',
-          }),
+            variant: 'ghost'
+          })
       )
     },
     meta: {
       class: {
         th: 'text-right',
-        td: 'text-right',
-      },
-    },
-  },
+        td: 'text-right'
+      }
+    }
+  }
 ]
 const columnVisibility = ref<VisibilityState>({})
 
@@ -211,8 +211,8 @@ const handleResetFilters = () => {
 const sorting = ref<SortingState>([
   {
     id: 'createdAt',
-    desc: true,
-  },
+    desc: true
+  }
 ])
 const page = ref(1)
 const itemsPerPage = ref(10)
@@ -229,11 +229,11 @@ const { data, status } = await useFetch(() => `/api/stores/${storeId.value}/prod
     page: page,
     limit: itemsPerPage,
     sort: sortColumn,
-    order: sortDirection,
+    order: sortDirection
   },
   onResponseError({ response }) {
     toast.error(response._data?.statusMessage)
-  },
+  }
 })
 const isFetching = computed(() => status.value === 'pending')
 
@@ -245,17 +245,12 @@ const meta = computed(() => data.value?.meta)
   <UCard>
     <template #header>
       <div class="flex items-center justify-between gap-4">
-        <UInput
-          v-model="search"
-          leading-icon="heroicons:magnifying-glass-20-solid"
-          placeholder="Search..."
-          class="max-w-sm"
-        >
+        <UInput v-model="search" leading-icon="lucide:search" placeholder="Search..." class="max-w-sm">
           <template v-if="search?.length" #trailing>
             <UButton
               color="neutral"
               variant="link"
-              icon="heroicons:x-mark-20-solid"
+              icon="lucide:circle-x"
               aria-label="Clear input"
               @click="search = ''"
             />
@@ -276,7 +271,7 @@ const meta = computed(() => data.value?.meta)
                   },
                   onSelect(e?: Event) {
                     e?.preventDefault()
-                  },
+                  }
                 }))
             "
             :content="{ align: 'end' }"
@@ -284,7 +279,7 @@ const meta = computed(() => data.value?.meta)
             <UButton label="Columns" color="neutral" variant="outline" trailing-icon="ion:chevron-down" />
           </UDropdownMenu>
           <UButton
-            leading-icon="i-heroicons-funnel"
+            leading-icon="lucide:filter-x"
             color="neutral"
             :disabled="isDisableResetButton"
             label="Reset"

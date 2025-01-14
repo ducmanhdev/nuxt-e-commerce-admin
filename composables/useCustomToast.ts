@@ -9,8 +9,8 @@ export function useCustomToast() {
     toast.add({
       title: 'Success',
       color: 'success',
-      icon: 'heroicons:check-circle',
-      ...(typeof arg === 'string' ? { description: arg } : arg),
+      icon: 'lucide:circle-check',
+      ...(typeof arg === 'string' ? { description: arg } : arg)
     })
   }
 
@@ -32,14 +32,14 @@ export function useCustomToast() {
     toast.add({
       title: 'Error',
       color: 'error',
-      icon: 'heroicons:x-circle',
-      ...finalRest,
+      icon: 'lucide:circle-x',
+      ...finalRest
     })
   }
 
   return {
     ...toast,
     success,
-    error,
+    error
   }
 }

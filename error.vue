@@ -2,7 +2,8 @@
 import type { NuxtError } from '#app'
 
 defineProps({
-  error: Object as () => NuxtError,
+  // eslint-disable-next-line vue/require-default-prop
+  error: Object as () => NuxtError
 })
 
 const handleError = () => clearError({ redirect: '/' })
@@ -18,7 +19,7 @@ const handleError = () => clearError({ redirect: '/' })
         <p class="text-xl my-3 text-gray-900 dark:text-gray-300">
           {{ error?.statusMessage || 'Oops! It seems something went wrong.' }}
         </p>
-        <UButton leading-icon="heroicons:arrow-left" label="Go Back Home" @click="handleError" />
+        <UButton leading-icon="lucide:arrow-left" label="Go Back Home" @click="handleError" />
       </UContainer>
     </div>
   </div>

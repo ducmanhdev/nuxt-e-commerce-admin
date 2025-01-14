@@ -10,7 +10,7 @@ export const formatCurrency = (
   amount: number,
   currency: string = 'USD',
   locale: string = 'en-US',
-  minimumFractionDigits: number = 2,
+  minimumFractionDigits: number = 2
 ): string => {
   if (isNaN(amount)) {
     return 'NaN'
@@ -18,7 +18,7 @@ export const formatCurrency = (
   return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency,
-    minimumFractionDigits,
+    minimumFractionDigits
   }).format(amount)
 }
 

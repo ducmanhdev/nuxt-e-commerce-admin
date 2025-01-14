@@ -3,12 +3,12 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   ssr: false,
   devtools: {
-    enabled: true,
+    enabled: true
   },
   runtimeConfig: {
     public: {
-      baseUrl: process.env.BASE_URL || 'http://localhost:3000',
-    },
+      baseUrl: process.env.BASE_URL || 'http://localhost:3000'
+    }
   },
   modules: [
     '@nuxtjs/supabase',
@@ -20,7 +20,7 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@nuxt/image',
     'nuxt-security',
-    'nuxt-tiptap-editor',
+    'nuxt-tiptap-editor'
   ],
   css: ['~/assets/css/main.css'],
   supabase: {
@@ -30,35 +30,35 @@ export default defineNuxtConfig({
       callback: '/confirm',
       include: undefined,
       exclude: ['/sign-up'],
-      cookieRedirect: false,
-    },
+      cookieRedirect: false
+    }
   },
   prisma: {
-    autoSetupPrisma: true,
+    autoSetupPrisma: true
   },
   colorMode: {
-    preference: 'system',
+    preference: 'system'
   },
   dayjs: {
-    plugins: ['isSameOrAfter'],
+    plugins: ['isSameOrAfter']
   },
   security: {
     headers: {
       contentSecurityPolicy: {
-        'img-src': ["'self'", 'data:', 'blob:', process.env.SUPABASE_URL!],
-      },
-    },
+        'img-src': ["'self'", 'data:', 'blob:', process.env.SUPABASE_URL!]
+      }
+    }
   },
   image: {
-    domains: [process.env.SUPABASE_URL!],
+    domains: [process.env.SUPABASE_URL!]
   },
   tiptap: {
-    prefix: 'Tiptap',
+    prefix: 'Tiptap'
   },
   fonts: {
     experimental: {
-      processCSSVariables: true,
+      processCSSVariables: true
     },
-    provider: 'google',
-  },
+    provider: 'google'
+  }
 })

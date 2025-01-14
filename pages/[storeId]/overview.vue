@@ -11,9 +11,11 @@ import {
   PointElement,
   Title,
   Tooltip,
+  Filler
 } from 'chart.js'
 import { Bar, Line } from 'vue-chartjs'
 import { LazyModalConfirm, LazyModalStore } from '#components'
+import type { Store } from '~/types'
 
 ChartJS.register(
   Title,
@@ -26,37 +28,24 @@ ChartJS.register(
   PointElement,
   LineElement,
   Colors,
+  Filler
 )
 
 useHead({
-  title: 'Overview',
+  title: 'Overview'
 })
 
 const route = useRoute()
 const storeId = computed(() => route.params.storeId as string)
-
-const { data } = await useFetch(() => `/api/stores/${storeId.value}`, {
-  key: `store-${storeId.value}`,
-})
-const store = computed(() => data.value?.data)
-watchEffect(() => {
-  if (!store.value) {
-    throw createError({
-      statusCode: 404,
-      statusMessage: 'Store not found',
-      fatal: true,
-    })
-  }
-})
+const { data: cachedStore } = useNuxtData<Store>(`store`)
 
 const modal = useModal()
-const storesStore = useStoresStore()
 const handleShowEditModal = () => {
   modal.open(LazyModalStore, {
-    storeId: store.value?.id,
+    storeId: cachedStore.value?.id,
     initialValues: {
-      name: store.value?.name,
-    },
+      name: cachedStore.value?.name
+    }
   })
 }
 
@@ -69,10 +58,10 @@ const handleDelete = () => {
       try {
         isDeleteLoading.value = true
         await $fetch(`/api/stores/${storeId.value}`, {
-          method: 'DELETE',
+          method: 'DELETE'
         })
         toast.success('Deleted successfully')
-        await storesStore.fetchStores()
+        await refreshNuxtData('stores')
         await navigateTo('/')
       } catch (error) {
         console.error(error)
@@ -80,28 +69,28 @@ const handleDelete = () => {
       } finally {
         isDeleteLoading.value = false
       }
-    },
+    }
   })
 }
 
 const chartOptions = {
   responsive: true,
-  maintainAspectRatio: true,
+  maintainAspectRatio: true
 }
 const chartBarData = {
   labels: ['T-Shirt', 'Jeans', 'Sneakers', 'Handbag', 'Cap', 'T-Shirt', 'Jeans', 'Sneakers', 'Handbag', 'Cap'],
   datasets: [
     {
       label: 'Previous month',
-      data: [120, 85, 300, 150, 90, 120, 85, 300, 150, 90],
+      data: [120, 85, 300, 150, 90, 120, 85, 300, 150, 90]
       // backgroundColor: 'rgb(75, 192, 192)',
     },
     {
       label: 'This month',
-      data: [120, 85, 300, 150, 90, 120, 85, 300, 150, 90],
+      data: [120, 85, 300, 150, 90, 120, 85, 300, 150, 90]
       // backgroundColor: 'rgba(75, 192, 192, 0.2)',
-    },
-  ],
+    }
+  ]
 }
 const chartLineData = {
   labels: ['January', 'February', 'March', 'April', 'May', 'June'],
@@ -111,9 +100,9 @@ const chartLineData = {
       data: [5000, 7000, 6000, 8000, 9000, 10000],
       borderColor: 'rgb(75, 192, 192)',
       backgroundColor: 'rgba(75, 192, 192, 0.2)',
-      fill: true,
-    },
-  ],
+      fill: true
+    }
+  ]
 }
 </script>
 
@@ -122,9 +111,9 @@ const chartLineData = {
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-xl font-bold">Overview</h2>
       <div class="flex gap-2">
-        <UButton leading-icon="heroicons:pencil-square" label="Edit" @click="handleShowEditModal" />
+        <UButton leading-icon="lucide:pencil-line" label="Edit" @click="handleShowEditModal" />
         <UButton
-          leading-icon="heroicons:trash"
+          leading-icon="lucide:trash"
           label="Delete"
           color="error"
           :loading="isDeleteLoading"

@@ -8,11 +8,11 @@ export default defineWrappedResponseHandler(async (event) => {
   const data = await prisma.store.create({
     data: {
       userId: user.id,
-      ...body,
-    },
+      ...body
+    }
   })
 
   return {
-    data,
+    data
   }
 })

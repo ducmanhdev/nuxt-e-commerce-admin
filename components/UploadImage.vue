@@ -26,7 +26,7 @@ const uploadDescription = computed(
   () =>
     `${ACCEPTED_UPLOAD_IMAGE_MIME_TYPES.map((mime) => '.' + mime.split('/')[1])
       .join(', ')
-      .toUpperCase()} up to ${bytesToMB(maxFileSize)} MB`,
+      .toUpperCase()} up to ${bytesToMB(maxFileSize)} MB`
 )
 
 const inputRef = useTemplateRef('input')
@@ -87,12 +87,12 @@ const handleDeleteExistImage = (imageSrc: string) => {
     class="p-2 grid gap-2 border border-dashed rounded hover:border-primary transition cursor-pointer"
     :class="{
       'min-h-56': !isContainsImages,
-      'grid-cols-3': multiple,
+      'grid-cols-3': multiple
     }"
     @click="inputRef?.click()"
   >
     <div v-if="!isContainsImages" class="space-y-2 col-span-full flex flex-col justify-center items-center">
-      <UIcon name="heroicons:arrow-up-tray" class="size-7" />
+      <UIcon name="lucide:upload" class="size-7" />
       <p class="text-gray-500">Click to upload {{ multiple ? 'images' : 'an image' }} here</p>
       <p class="text-xs text-gray-400">{{ uploadDescription }}</p>
     </div>
@@ -100,7 +100,7 @@ const handleDeleteExistImage = (imageSrc: string) => {
       <div v-for="image in existingImages" :key="image" class="relative aspect-square rounded overflow-hidden">
         <img :src="image" alt="" class="absolute top-0 left-0 w-full h-full object-cover" />
         <UButton
-          icon="heroicons:x-circle"
+          icon="lucide:circle-x"
           square
           color="error"
           variant="ghost"
@@ -112,7 +112,7 @@ const handleDeleteExistImage = (imageSrc: string) => {
       <div v-for="(image, index) in previewImages" :key="image" class="relative aspect-square rounded overflow-hidden">
         <img :src="image" alt="" class="absolute top-0 left-0 w-full h-full object-cover" />
         <UButton
-          icon="heroicons:x-circle"
+          icon="lucide:circle-x"
           square
           color="error"
           variant="ghost"
@@ -125,7 +125,7 @@ const handleDeleteExistImage = (imageSrc: string) => {
         v-if="multiple"
         class="relative aspect-square grid place-content-center bg-black/10 dark:bg-white/10 rounded overflow-hidden"
       >
-        <UIcon name="heroicons:plus" class="size-7" />
+        <UIcon name="lucide:plus" class="size-7" />
       </div>
     </template>
 
