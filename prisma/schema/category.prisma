@@ -2,7 +2,7 @@ model Category {
   id        String    @id @default(uuid())
   name      String
   storeId   String
-  store     Store     @relation(fields: [storeId], references: [id])
+  store     Store     @relation(fields: [storeId], references: [id], onDelete: Cascade)
   imageUrl  String
   products  Product[]
   createdAt DateTime  @default(now())

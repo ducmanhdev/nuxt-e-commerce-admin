@@ -2,15 +2,25 @@
 import { ACCEPTED_UPLOAD_IMAGE_MIME_TYPES, MAX_UPLOAD_IMAGE_FILE_SIZE_IN_BYTES } from '~/constants'
 
 type Props = {
+  existing?: string[]
   multiple?: boolean
   maxFileSize?: number
 }
-const { multiple = false, maxFileSize = MAX_UPLOAD_IMAGE_FILE_SIZE_IN_BYTES } = defineProps<Props>()
 
-const images = defineModel<(File | string)[]>({
-  default: []
-})
-const isContainsImages = computed(() => images.value.length > 0)
+const { existing = [], multiple = false, maxFileSize = MAX_UPLOAD_IMAGE_FILE_SIZE_IN_BYTES } = defineProps<Props>()
+
+type Emit = {
+  (e: 'update:existing', images: string[]): void
+  (e: 'update:deleted', images: string[]): void
+  (e: 'update:new', images: File[]): void
+}
+const emit = defineEmits<Emit>()
+
+const existingImages = ref<string[]>([...existing])
+const deletedExistingImages = ref<string[]>([])
+const newImages = ref<File[]>([])
+
+const isContainsImages = computed(() => previewImages.value.length || existingImages.value.length)
 
 const uploadDescription = computed(
   () =>
@@ -34,29 +44,51 @@ const handleUploadImage = () => {
       console.error(`${file.name} exceeds ${maxFileSize} MB.`)
       return
     }
-    images.value = multiple ? [...images.value, file] : [file]
+    if (multiple) {
+      newImages.value.push(file)
+    } else {
+      if (existingImages.value.length) {
+        handleDeleteExistImage(existingImages.value[0])
+      }
+      newImages.value = [file]
+    }
+    emit('update:new', newImages.value)
   })
 }
 
 const previewImages = ref<string[]>([])
+
+const cleanUpImages = () => {
+  previewImages.value.forEach((image) => URL.revokeObjectURL(image))
+}
+
 watchEffect((onCleanup) => {
-  previewImages.value = images.value.map((item) => {
-    if (typeof item === 'string') return item
-    const url = URL.createObjectURL(item)
-    onCleanup(() => URL.revokeObjectURL(url))
-    return url
-  })
+  previewImages.value = newImages.value.map((file) => URL.createObjectURL(file))
+  onCleanup(cleanUpImages)
 })
 
-const handleDeleteImage = (index: number) => {
-  images.value = images.value.filter((_, i) => i !== index)
+onBeforeUnmount(cleanUpImages)
+
+const handleDeleteNewImage = (index: number) => {
+  newImages.value.splice(index, 1)
+  emit('update:new', newImages.value)
+}
+
+const handleDeleteExistImage = (imageSrc: string) => {
+  deletedExistingImages.value.push(imageSrc)
+  existingImages.value = existingImages.value.filter((image) => image !== imageSrc)
+  emit('update:deleted', deletedExistingImages.value)
+  emit('update:existing', existingImages.value)
 }
 </script>
 
 <template>
   <div
     class="p-2 grid gap-2 border border-dashed rounded hover:border-primary transition cursor-pointer"
-    :class="{ 'min-h-56': !isContainsImages, 'grid-cols-3': multiple }"
+    :class="{
+      'min-h-56': !isContainsImages,
+      'grid-cols-3': multiple
+    }"
     @click="inputRef?.click()"
   >
     <div v-if="!isContainsImages" class="space-y-2 col-span-full flex flex-col justify-center items-center">
@@ -65,8 +97,20 @@ const handleDeleteImage = (index: number) => {
       <p class="text-xs text-gray-400">{{ uploadDescription }}</p>
     </div>
     <template v-else>
+      <div v-for="image in existingImages" :key="image" class="relative aspect-square rounded overflow-hidden">
+        <img :src="image" alt="" class="absolute top-0 left-0 w-full h-full object-cover" />
+        <UButton
+          icon="lucide:circle-x"
+          square
+          color="error"
+          variant="ghost"
+          class="absolute top-0 right-0 z-2"
+          size="sm"
+          @click.stop="handleDeleteExistImage(image)"
+        />
+      </div>
       <div v-for="(image, index) in previewImages" :key="image" class="relative aspect-square rounded overflow-hidden">
-        <NuxtImg :src="image" fit="contain" class="absolute top-0 left-0 w-full h-full object-cover" />
+        <img :src="image" alt="" class="absolute top-0 left-0 w-full h-full object-cover" />
         <UButton
           icon="lucide:circle-x"
           square
@@ -74,7 +118,7 @@ const handleDeleteImage = (index: number) => {
           variant="ghost"
           class="absolute top-0 right-0 z-2"
           :padded="false"
-          @click.stop="handleDeleteImage(index)"
+          @click.stop="handleDeleteNewImage(index)"
         />
       </div>
       <div

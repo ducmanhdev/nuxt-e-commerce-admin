@@ -12,8 +12,8 @@ model BannerDetail {
   id        String   @id @default(uuid())
   productId String
   bannerId  String
-  product   Product  @relation(fields: [productId], references: [id])
-  banner    Banner   @relation(fields: [bannerId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  banner    Banner   @relation(fields: [bannerId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

@@ -1,24 +1,17 @@
 <script setup lang="ts">
 import { z } from 'zod'
 import type { FormSubmitEvent } from '#ui/types'
-import schema from '~/schemas/category.schema'
+import _schema from '~/schemas/category.schema'
 
 const modal = useModal()
 
-const validationSchema = schema
-  .merge(
-    z.object({
-      imageUrl: z.string().optional(),
-      newImageFiles: z.instanceof(File).array().optional(),
-      deletedImages: z.string().array().optional()
-    })
-  )
-  .refine((data) => data.imageUrl || data.newImageFiles?.length, {
-    message: 'Image must not be empty',
-    path: ['imageUrl']
+const schema = _schema.merge(
+  z.object({
+    imageUrl: z.union([z.string(), z.instanceof(File)])
   })
+)
 
-type SchemaInfer = z.infer<typeof validationSchema>
+type SchemaInfer = z.infer<typeof schema>
 
 type Props = {
   title?: string
@@ -35,9 +28,7 @@ const submitSuccessMessage = computed(() =>
 
 const DEFAULT_STATE: SchemaInfer = {
   name: '',
-  imageUrl: '',
-  newImageFiles: [],
-  deletedImages: []
+  imageUrl: ''
 }
 
 const state = ref({ ...DEFAULT_STATE })
@@ -59,24 +50,9 @@ const bucketName = 'categories'
 const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
   try {
     isSubmitLoading.value = true
-
-    if (!props.storeId) {
-      console.error('Store ID is required')
-      return
-    }
-
-    const { deletedImages, newImageFiles, name } = event.data
-
-    if (deletedImages?.length) {
-      await $fetch('/api/images/delete', {
-        method: 'DELETE',
-        body: { imageUrls: deletedImages, bucketName }
-      })
-    }
-
-    if (newImageFiles?.length) {
+    if (event.data.imageUrl instanceof File) {
       const formData = new FormData()
-      newImageFiles.forEach((file) => formData.append('files', file))
+      formData.append('files', event.data.imageUrl)
       formData.append('bucketName', bucketName)
       const { data } = await $fetch('/api/images/upload', {
         method: 'POST',
@@ -85,16 +61,11 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
       event.data.imageUrl = data[0]
     }
 
-    if (!event.data.imageUrl) throw new Error('Image URL is required')
-
-    const payload = { name, imageUrl: event.data.imageUrl }
     const endpoint = props.categoryId
       ? `/api/stores/${props.storeId}/categories/${props.categoryId}`
       : `/api/stores/${props.storeId}/categories`
     const method = props.categoryId ? 'PATCH' : 'POST'
-
-    await $fetch(endpoint, { method, body: payload })
-
+    await $fetch(endpoint, { method, body: event.data })
     toast.success(submitSuccessMessage.value)
     refreshNuxtData('categories')
     await modal.close()
@@ -107,18 +78,16 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
 </script>
 
 <template>
-  <UModal :title="modalTitle" :prevent-close="isSubmitLoading">
+  <UModal :title="modalTitle" :dismissible="!isSubmitLoading" :close="!isSubmitLoading">
     <template #body>
-      <UForm :schema="validationSchema" :state="state" class="space-y-4" @submit="handleSubmit">
+      <UForm :schema="schema" :state="state" class="space-y-4" @submit="handleSubmit">
         <UFormField label="Name" name="name" required>
           <UInput v-model="state.name" />
         </UFormField>
         <UFormField label="Image" name="imageUrl" required>
           <UploadImage
-            :existing="state.imageUrl ? [state.imageUrl] : []"
-            @update:existing="(images) => (state.imageUrl = images[0])"
-            @update:deleted="(images) => (state.deletedImages = images)"
-            @update:new="(files) => (state.newImageFiles = files)"
+            :model-value="state.imageUrl ? [state.imageUrl] : []"
+            @update:model-value="(newValue) => (state.imageUrl = newValue[0])"
           />
         </UFormField>
         <div class="grid grid-cols-2 gap-2">

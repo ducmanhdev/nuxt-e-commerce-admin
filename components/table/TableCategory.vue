@@ -7,7 +7,6 @@ import type { TableColumn } from '#ui/components/Table.vue'
 import type { Column, Row, SortingState, VisibilityState } from '@tanstack/vue-table'
 import { LazyModalCategory, LazyModalConfirm } from '#components'
 
-const UCheckbox = resolveComponent('UCheckbox')
 const UButton = resolveComponent('UButton')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
 const NuxtImg = resolveComponent('NuxtImg')
@@ -18,10 +17,7 @@ type Props = {
 const props = defineProps<Props>()
 const dayjs = useDayjs()
 const storeId = toRef(props, 'storeId')
-
 const table = useTemplateRef('table')
-const rowSelection = ref({})
-
 const toast = useCustomToast()
 const modal = useModal()
 const handleDelete = ({ storeId, id }: { storeId: string; id: string }) => {
@@ -124,23 +120,6 @@ const getHeader = (column: Column<Category>, label: string) => {
   )
 }
 const columns: TableColumn<Category>[] = [
-  {
-    id: 'select',
-    enableHiding: false,
-    header: ({ table }) =>
-      h(UCheckbox, {
-        modelValue: table.getIsAllPageRowsSelected(),
-        indeterminate: table.getIsSomePageRowsSelected(),
-        'onUpdate:modelValue': (value: boolean) => table.toggleAllPageRowsSelected(value),
-        ariaLabel: 'Select all'
-      }),
-    cell: ({ row }) =>
-      h(UCheckbox, {
-        modelValue: row.getIsSelected(),
-        'onUpdate:modelValue': (value: boolean) => row.toggleSelected(value),
-        ariaLabel: 'Select row'
-      })
-  },
   { accessorKey: 'name', header: ({ column }) => getHeader(column, 'Name') },
   {
     accessorKey: 'imageUrl',
@@ -151,7 +130,8 @@ const columns: TableColumn<Category>[] = [
         placeholder: 'blur',
         width: 80,
         height: 80,
-        quality: 80
+        quality: 80,
+        fit: 'contain'
       })
     }
   },
@@ -180,7 +160,7 @@ const columns: TableColumn<Category>[] = [
         },
         () =>
           h(UButton, {
-            icon: 'ion:ellipsis-vertical',
+            icon: 'lucide:ellipsis-vertical',
             color: 'neutral',
             variant: 'ghost'
           })
@@ -233,7 +213,6 @@ const { data, status } = await useFetch(() => `/api/stores/${storeId.value}/cate
   }
 })
 const isFetching = computed(() => status.value === 'pending')
-
 const rows = computed(() => data.value?.data as Category[])
 const meta = computed(() => data.value?.meta)
 </script>
@@ -273,7 +252,7 @@ const meta = computed(() => data.value?.meta)
             "
             :content="{ align: 'end' }"
           >
-            <UButton label="Columns" color="neutral" variant="outline" trailing-icon="ion:chevron-down" />
+            <UButton label="Columns" color="neutral" variant="outline" trailing-icon="lucide:chevron-down" />
           </UDropdownMenu>
           <UButton
             leading-icon="lucide:filter-x"
@@ -288,7 +267,6 @@ const meta = computed(() => data.value?.meta)
     <UTable
       ref="table"
       v-model:column-visibility="columnVisibility"
-      v-model:row-selection="rowSelection"
       v-model:sorting="sorting"
       :data="rows"
       :columns="columns"

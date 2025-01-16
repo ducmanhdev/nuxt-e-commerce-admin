@@ -92,7 +92,8 @@ const VOUCHER_DISCOUNT_TYPE_OPTIONS = Object.entries(VOUCHER_DISCOUNT_TYPES).map
 <template>
   <UModal
     :title="modalTitle"
-    :prevent-close="isSubmitLoading"
+    :dismissible="!isSubmitLoading"
+    :close="!isSubmitLoading"
     :ui="{
       content: 'sm:max-w-2xl'
     }"

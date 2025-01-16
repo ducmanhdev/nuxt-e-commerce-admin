@@ -46,7 +46,7 @@ const navigationItems = computed(() => {
       {
         icon: 'lucide:swatch-book',
         label: 'Brands',
-        to: `/${storeId.value}/brands`
+        disabled: true
       },
       {
         icon: 'lucide:cuboid',

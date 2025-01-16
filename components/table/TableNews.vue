@@ -181,7 +181,7 @@ const columns: TableColumn<News>[] = [
         },
         () =>
           h(UButton, {
-            icon: 'ion:ellipsis-vertical',
+            icon: 'lucide:ellipsis-vertical',
             color: 'neutral',
             variant: 'ghost'
           })
@@ -274,7 +274,7 @@ const meta = computed(() => data.value?.meta)
             "
             :content="{ align: 'end' }"
           >
-            <UButton label="Columns" color="neutral" variant="outline" trailing-icon="ion:chevron-down" />
+            <UButton label="Columns" color="neutral" variant="outline" trailing-icon="lucide:chevron-down" />
           </UDropdownMenu>
           <UButton
             leading-icon="lucide:filter-x"

@@ -114,7 +114,8 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
 <template>
   <UModal
     :title="modalTitle"
-    :prevent-close="isSubmitLoading"
+    :dismissible="!isSubmitLoading"
+    :close="!isSubmitLoading"
     :ui="{
       content: 'sm:max-w-2xl'
     }"

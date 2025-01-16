@@ -62,7 +62,7 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
 </script>
 
 <template>
-  <UModal :title="modalTitle" :prevent-close="isSubmitLoading">
+  <UModal :title="modalTitle" :dismissible="!isSubmitLoading" :close="!isSubmitLoading">
     <template #body>
       <UForm :schema="schema" :state="state" class="space-y-4" @submit="handleSubmit">
         <UFormField label="Name" name="name" required>

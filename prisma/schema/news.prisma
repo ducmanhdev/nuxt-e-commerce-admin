@@ -1,7 +1,7 @@
 model News {
   id        String       @id @default(uuid())
   storeId   String
-  store     Store        @relation(fields: [storeId], references: [id])
+  store     Store        @relation(fields: [storeId], references: [id], onDelete: Cascade)
   title     String
   imageUrl  String
   content   String
@@ -13,9 +13,9 @@ model News {
 model NewsDetail {
   id        String   @id @default(uuid())
   productId String
-  product   Product  @relation(fields: [productId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   newsId    String
-  news      News     @relation(fields: [newsId], references: [id])
+  news      News     @relation(fields: [newsId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

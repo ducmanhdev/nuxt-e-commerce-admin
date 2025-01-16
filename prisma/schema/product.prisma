@@ -3,11 +3,11 @@ model Product {
   name          String
   description   String
   storeId       String
-  store         Store                   @relation(fields: [storeId], references: [id])
+  store         Store                   @relation(fields: [storeId], references: [id], onDelete: Cascade)
   categoryId    String
-  category      Category                @relation(fields: [categoryId], references: [id])
+  category      Category                @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   brandId       String
-  brand         Brand                   @relation(fields: [brandId], references: [id])
+  brand         Brand                   @relation(fields: [brandId], references: [id], onDelete: Cascade)
   status        Int
   orderItems    OrderItem[]
   newsDetails   NewsDetail[]
@@ -22,7 +22,7 @@ model ProductAttribute {
   id        String                  @id @default(uuid())
   name      String
   storeId   String
-  store     Store                   @relation(fields: [storeId], references: [id])
+  store     Store                   @relation(fields: [storeId], references: [id], onDelete: Cascade)
   values    ProductAttributeValue[]
   createdAt DateTime                @default(now())
   updatedAt DateTime                @updatedAt
@@ -57,7 +57,7 @@ model VariantOption {
   id        String               @id @default(uuid())
   name      String
   storeId   String
-  store     Store                @relation(fields: [storeId], references: [id])
+  store     Store                @relation(fields: [storeId], references: [id], onDelete: Cascade)
   values    VariantOptionValue[]
   createdAt DateTime             @default(now())
   updatedAt DateTime             @updatedAt
@@ -68,7 +68,7 @@ model VariantOptionValue {
   optionId               String
   option                 VariantOption                  @relation(fields: [optionId], references: [id], onDelete: Cascade)
   storeId                String
-  store                  Store                          @relation(fields: [storeId], references: [id])
+  store                  Store                          @relation(fields: [storeId], references: [id], onDelete: Cascade)
   value                  String
   createdAt              DateTime                       @default(now())
   updatedAt              DateTime                       @updatedAt

@@ -1,7 +1,7 @@
 model Voucher {
   id            String   @id @default(uuid())
   storeId       String
-  store         Store    @relation(fields: [storeId], references: [id])
+  store         Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
   code          String   @unique
   discountType  Int
   discountValue Decimal
