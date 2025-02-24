@@ -16,7 +16,7 @@ const handleSignOut = async () => {
         toast.error(error)
         return
       }
-      await navigateTo('/sign-in')
+      await navigateTo('/login')
     }
   })
 }

@@ -4,10 +4,10 @@ await useFetch('/api/stores', {
   transform: (data) => data.data,
   onResponseError: ({ response }) => {
     console.log('[FETCH_STORES_ERROR]', response.statusText)
-    showError({
-      statusCode: response.status,
-      statusMessage: response.statusText
-    })
+    // showError({
+    //   statusCode: response.status,
+    //   statusMessage: response.statusText
+    // })
   }
 })
 </script>
