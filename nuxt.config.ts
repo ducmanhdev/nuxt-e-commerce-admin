@@ -1,7 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
-  ssr: false,
   devtools: {
     enabled: true
   },
@@ -24,12 +23,10 @@ export default defineNuxtConfig({
   ],
   css: ['~/assets/css/main.css'],
   supabase: {
-    redirect: true,
+    redirect: false,
     redirectOptions: {
-      login: '/login',
+      login: '/sign-in',
       callback: '/confirm',
-      include: undefined,
-      exclude: ['/sign-up'],
       cookieRedirect: false
     }
   },

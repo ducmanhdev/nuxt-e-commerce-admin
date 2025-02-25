@@ -57,6 +57,21 @@ const onSubmit = async (event: FormSubmitEvent<OutputSchema>) => {
   isSubmitLoading.value = false
   await navigateTo('/')
 }
+
+const handleSignInOAuth = async (provider: 'google' | 'facebook') => {
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider
+  })
+  if (error) {
+    console.error('[LOGIN_ERROR]', error)
+    toast.error(
+      error.code === 'invalid_credentials'
+        ? 'Wrong email or password. Please try again!'
+        : error.message || 'Something went wrong, please try again!'
+    )
+  }
+  await navigateTo('/')
+}
 </script>
 
 <template>
@@ -72,6 +87,26 @@ const onSubmit = async (event: FormSubmitEvent<OutputSchema>) => {
             <UInput v-model="state.password" type="password" />
           </UFormField>
           <UButton type="submit" block :loading="isSubmitLoading">Submit</UButton>
+          <p class="text-end">
+            <NuxtLink class="text-primary font-medium" to="/forgot-password">Forgot password?</NuxtLink>
+          </p>
+          <USeparator>OR</USeparator>
+          <UButton icon="ion:logo-google" color="neutral" block variant="outline" @click="handleSignInOAuth('google')">
+            Sign in with Google
+          </UButton>
+          <UButton
+            icon="ion:logo-facebook"
+            color="neutral"
+            block
+            variant="outline"
+            @click="handleSignInOAuth('facebook')"
+          >
+            Sign in with Facebook
+          </UButton>
+          <p class="mt-6 text-sm text-center">
+            Don't have an account?
+            <NuxtLink to="/(auth)/sign-up" class="underline">Sign up</NuxtLink>
+          </p>
         </UForm>
       </div>
     </UCard>

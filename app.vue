@@ -1,13 +1,7 @@
 <script setup lang="ts">
-await useFetch('/api/stores', {
-  key: 'stores',
-  transform: (data) => data.data,
-  onResponseError: ({ response }) => {
-    console.log('[FETCH_STORES_ERROR]', response.statusText)
-    // showError({
-    //   statusCode: response.status,
-    //   statusMessage: response.statusText
-    // })
+useHead({
+  titleTemplate: (titleChunk) => {
+    return titleChunk ? `Shop.CO - ${titleChunk}` : 'Shop.CO'
   }
 })
 </script>
