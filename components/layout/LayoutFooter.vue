@@ -5,19 +5,19 @@ const footerMenuGroups = [
     children: [
       {
         label: 'About',
-        to: '/about'
+        to: '/'
       },
       {
         label: 'Features',
-        to: '/features'
+        to: '/'
       },
       {
         label: 'Work',
-        to: '/work'
+        to: '/'
       },
       {
         label: 'Career',
-        to: '/career'
+        to: '/'
       }
     ]
   },
@@ -26,19 +26,19 @@ const footerMenuGroups = [
     children: [
       {
         label: 'Customer Support',
-        to: '/customer-support'
+        to: '/'
       },
       {
         label: 'Delivery Details',
-        to: '/delivery-details'
+        to: '/'
       },
       {
         label: 'Terms & Conditions',
-        to: '/terms-and-conditions'
+        to: '/'
       },
       {
         label: 'Privacy Policy',
-        to: '/privacy-policy'
+        to: '/'
       }
     ]
   },
@@ -47,19 +47,19 @@ const footerMenuGroups = [
     children: [
       {
         label: 'Account',
-        to: '/account'
+        to: '/'
       },
       {
         label: 'Manage Deliveries',
-        to: '/manage-deliveries'
+        to: '/'
       },
       {
         label: 'Orders',
-        to: '/orders'
+        to: '/'
       },
       {
         label: 'Payments',
-        to: '/payments'
+        to: '/'
       }
     ]
   },
@@ -68,19 +68,19 @@ const footerMenuGroups = [
     children: [
       {
         label: 'Free eBooks',
-        to: '/free-ebooks'
+        to: '/'
       },
       {
         label: 'Development Tutorials',
-        to: '/development-tutorials'
+        to: '/'
       },
       {
         label: 'How to - Blog',
-        to: '/how-to-blog'
+        to: '/'
       },
       {
         label: 'Youtube Playlist',
-        to: '/youtube-playlist'
+        to: '/'
       }
     ]
   }

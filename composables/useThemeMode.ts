@@ -11,6 +11,7 @@ export const useThemeMode = () => {
   const handleToggleMode = () => (isDark.value = !isDark.value)
 
   return {
+    colorMode,
     isDark,
     handleToggleMode
   }

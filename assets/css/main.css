@@ -26,9 +26,9 @@
     padding-bottom: --spacing(10);
 }
 
-.section-title {
+.section__title {
     text-align: center;
-    margin-bottom: 10px;
+    margin-bottom: --spacing(6);
     font-size: var(--text-4xl);
     font-weight: var(--font-weight-bold);
     text-transform: uppercase;
