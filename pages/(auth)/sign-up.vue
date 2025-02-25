@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '#ui/types'
 import { z } from 'zod'
-import { useCustomToast } from '~/composables/useCustomToast'
 
 definePageMeta({
   layout: false

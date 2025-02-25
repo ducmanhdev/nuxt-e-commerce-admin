@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '#ui/types'
 import { z } from 'zod'
-import { useCustomToast } from '~/composables/useCustomToast'
 
 definePageMeta({
   layout: false
@@ -88,7 +87,7 @@ const handleSignInOAuth = async (provider: 'google' | 'facebook') => {
           </UFormField>
           <UButton type="submit" block :loading="isSubmitLoading">Submit</UButton>
           <p class="text-end">
-            <NuxtLink class="text-primary font-medium" to="/forgot-password">Forgot password?</NuxtLink>
+            <NuxtLink class="text-primary font-medium text-sm" to="/forgot-password">Forgot password?</NuxtLink>
           </p>
           <USeparator>OR</USeparator>
           <UButton icon="ion:logo-google" color="neutral" block variant="outline" @click="handleSignInOAuth('google')">
@@ -105,7 +104,7 @@ const handleSignInOAuth = async (provider: 'google' | 'facebook') => {
           </UButton>
           <p class="mt-6 text-sm text-center">
             Don't have an account?
-            <NuxtLink to="/(auth)/sign-up" class="underline">Sign up</NuxtLink>
+            <NuxtLink to="/sign-up" class="underline">Sign up</NuxtLink>
           </p>
         </UForm>
       </div>
