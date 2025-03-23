@@ -57,5 +57,11 @@ export default defineNuxtConfig({
       processCSSVariables: true
     },
     provider: 'google'
+  },
+  eslint: {
+    config: {
+      standalone: false,
+      stylistic: true
+    }
   }
 })

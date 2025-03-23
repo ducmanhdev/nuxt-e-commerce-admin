@@ -1,9 +1,11 @@
-// @ts-check
+import antfu from '@antfu/eslint-config'
 import withNuxt from './.nuxt/eslint.config.mjs'
-import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
 
-export default withNuxt(eslintPluginPrettierRecommended).override('nuxt/typescript/rules', {
-  rules: {
-    '@typescript-eslint/unified-signatures': 'off'
-  }
-})
+export default withNuxt(
+  antfu({
+    stylistic: {
+      indent: 2,
+      quotes: 'single'
+    }
+  })
+)
