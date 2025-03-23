@@ -2,7 +2,7 @@
 import { LazyModalVoucher } from '#components'
 
 useHead({
-  title: 'Vouchers'
+  title: 'Vouchers',
 })
 
 const route = useRoute()
@@ -13,8 +13,8 @@ const modalVoucher = overlay.create(LazyModalVoucher)
 const handeShowCreateModal = () => {
   modalVoucher.open({
     props: {
-      storeId: storeId.value
-    }
+      storeId: storeId.value,
+    },
   })
 }
 </script>

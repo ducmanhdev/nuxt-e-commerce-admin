@@ -1,22 +1,22 @@
 <script setup lang="ts">
 import { ACCEPTED_UPLOAD_IMAGE_MIME_TYPES, MAX_UPLOAD_IMAGE_FILE_SIZE_IN_BYTES } from '~/constants'
 
-type Props = {
+interface Props {
   multiple?: boolean
   maxFileSize?: number
 }
 const { multiple = false, maxFileSize = MAX_UPLOAD_IMAGE_FILE_SIZE_IN_BYTES } = defineProps<Props>()
 
 const images = defineModel<(File | string)[]>({
-  default: []
+  default: [],
 })
 const isContainsImages = computed(() => images.value.length > 0)
 
 const uploadDescription = computed(
   () =>
-    `${ACCEPTED_UPLOAD_IMAGE_MIME_TYPES.map((mime) => '.' + mime.split('/')[1])
+    `${ACCEPTED_UPLOAD_IMAGE_MIME_TYPES.map(mime => `.${mime.split('/')[1]}`)
       .join(', ')
-      .toUpperCase()} up to ${bytesToMB(maxFileSize)} MB`
+      .toUpperCase()} up to ${bytesToMB(maxFileSize)} MB`,
 )
 
 const inputRef = useTemplateRef('input')
@@ -41,7 +41,8 @@ const handleUploadImage = () => {
 const previewImages = ref<string[]>([])
 watchEffect((onCleanup) => {
   previewImages.value = images.value.map((item) => {
-    if (typeof item === 'string') return item
+    if (typeof item === 'string')
+      return item
     const url = URL.createObjectURL(item)
     onCleanup(() => URL.revokeObjectURL(url))
     return url
@@ -92,7 +93,7 @@ const handleDeleteImage = (index: number) => {
       :accept="ACCEPTED_UPLOAD_IMAGE_MIME_TYPES.join(', ')"
       hidden
       @change="handleUploadImage"
-    />
+    >
   </div>
 </template>
 

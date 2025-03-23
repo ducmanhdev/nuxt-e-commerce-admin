@@ -1,15 +1,16 @@
 import type { EventHandler, EventHandlerRequest } from 'h3'
-import { createError, H3Error } from 'h3'
 import { Prisma } from '@prisma/client'
+import { createError, H3Error } from 'h3'
 import { ZodError } from 'zod'
 
 export const defineWrappedResponseHandler = <T extends EventHandlerRequest, D>(
-  handler: EventHandler<T, D>
+  handler: EventHandler<T, D>,
 ): EventHandler<T, D> =>
   defineEventHandler<T>(async (event) => {
     try {
       return await handler(event)
-    } catch (e: unknown) {
+    }
+    catch (e: unknown) {
       const config = useRuntimeConfig(event)
       const isDev = config.environment !== 'production'
       if (isDev) {
@@ -20,11 +21,10 @@ export const defineWrappedResponseHandler = <T extends EventHandlerRequest, D>(
         throw e
       }
       if (e instanceof ZodError) {
-        console.log('e.instanceof(ZodError)', e)
         throw createError({
           statusCode: 400,
           statusMessage: 'Validation failed.',
-          data: { issues: e.issues }
+          data: { issues: e.issues },
         })
       }
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
@@ -34,7 +34,7 @@ export const defineWrappedResponseHandler = <T extends EventHandlerRequest, D>(
             throw createError({
               statusCode: 400,
               statusMessage: 'A record with this unique field already exists.',
-              data: { fields: targetFields }
+              data: { fields: targetFields },
             })
           }
           case 'P2003': {
@@ -42,31 +42,31 @@ export const defineWrappedResponseHandler = <T extends EventHandlerRequest, D>(
             throw createError({
               statusCode: 400,
               statusMessage: 'Cannot perform this action due to a related record constraint.',
-              data: { relatedTable }
+              data: { relatedTable },
             })
           }
           case 'P2025':
             throw createError({
               statusCode: 404,
-              statusMessage: 'The record you are trying to access does not exist or has been deleted.'
+              statusMessage: 'The record you are trying to access does not exist or has been deleted.',
             })
           case 'P2000':
             throw createError({
               statusCode: 400,
               statusMessage: 'The value provided is too long for the field.',
-              data: { details: e.meta }
+              data: { details: e.meta },
             })
           case 'P2004':
             throw createError({
               statusCode: 400,
               statusMessage: 'A database constraint was violated.',
-              data: { details: e.meta }
+              data: { details: e.meta },
             })
           default:
             throw createError({
               statusCode: 500,
               statusMessage: 'An unexpected error occurred with the database.',
-              data: { code: e.code }
+              data: { code: e.code },
             })
         }
       }
@@ -74,33 +74,33 @@ export const defineWrappedResponseHandler = <T extends EventHandlerRequest, D>(
         throw createError({
           statusCode: 422,
           statusMessage: 'Validation failed. Please check your input.',
-          data: { details: e.message }
+          data: { details: e.message },
         })
       }
       if (e instanceof Prisma.PrismaClientRustPanicError) {
         throw createError({
           statusCode: 500,
-          statusMessage: 'A critical error occurred with the database. Please try again later.'
+          statusMessage: 'A critical error occurred with the database. Please try again later.',
         })
       }
       if (e instanceof Prisma.PrismaClientInitializationError) {
         throw createError({
           statusCode: 500,
           statusMessage: 'Failed to initialize the database. Please try again later.',
-          data: { details: e.message }
+          data: { details: e.message },
         })
       }
       if (e instanceof Prisma.PrismaClientUnknownRequestError) {
         throw createError({
           statusCode: 500,
           statusMessage: 'An unknown error occurred with the database. Please try again later.',
-          data: { details: e.message }
+          data: { details: e.message },
         })
       }
       throw createError({
         statusCode: 500,
         statusMessage: 'An unknown error occurred. Please try again later.',
-        data: { details: (e as Error).message || e }
+        data: { details: (e as Error).message || e },
       })
     }
   })

@@ -5,92 +5,92 @@ const footerMenuGroups = [
     children: [
       {
         label: 'About',
-        to: '/'
+        to: '/',
       },
       {
         label: 'Features',
-        to: '/'
+        to: '/',
       },
       {
         label: 'Work',
-        to: '/'
+        to: '/',
       },
       {
         label: 'Career',
-        to: '/'
-      }
-    ]
+        to: '/',
+      },
+    ],
   },
   {
     label: 'Help',
     children: [
       {
         label: 'Customer Support',
-        to: '/'
+        to: '/',
       },
       {
         label: 'Delivery Details',
-        to: '/'
+        to: '/',
       },
       {
         label: 'Terms & Conditions',
-        to: '/'
+        to: '/',
       },
       {
         label: 'Privacy Policy',
-        to: '/'
-      }
-    ]
+        to: '/',
+      },
+    ],
   },
   {
     label: 'FAQ',
     children: [
       {
         label: 'Account',
-        to: '/'
+        to: '/',
       },
       {
         label: 'Manage Deliveries',
-        to: '/'
+        to: '/',
       },
       {
         label: 'Orders',
-        to: '/'
+        to: '/',
       },
       {
         label: 'Payments',
-        to: '/'
-      }
-    ]
+        to: '/',
+      },
+    ],
   },
   {
     label: 'Resources',
     children: [
       {
         label: 'Free eBooks',
-        to: '/'
+        to: '/',
       },
       {
         label: 'Development Tutorials',
-        to: '/'
+        to: '/',
       },
       {
         label: 'How to - Blog',
-        to: '/'
+        to: '/',
       },
       {
         label: 'Youtube Playlist',
-        to: '/'
-      }
-    ]
-  }
+        to: '/',
+      },
+    ],
+  },
 ]
 const acceptPayments = [
   '/images/icons/payments/visa.svg',
   '/images/icons/payments/mastercard.svg',
   '/images/icons/payments/paypal.svg',
   '/images/icons/payments/apple-pay.svg',
-  '/images/icons/payments/google-pay.svg'
+  '/images/icons/payments/google-pay.svg',
 ]
 const socialIcons = ['lucide:twitter', 'lucide:facebook', 'lucide:github', 'lucide:instagram']
 </script>
@@ -100,7 +100,7 @@ const socialIcons = ['lucide:twitter', 'lucide:facebook', 'lucide:github', 'luci
     <div class="translate-y-1/2">
       <UContainer>
         <div class="rounded-4xl bg-black text-white p-10 grid grid-cols-[6fr_4fr] gap-4 items-center">
-          <p class="font-bold text-4xl">STAY UPTO DATE ABOUT <br />OUR LATEST OFFERS</p>
+          <p class="font-bold text-4xl">STAY UPTO DATE ABOUT <br>OUR LATEST OFFERS</p>
           <div>
             <UInput
               size="xl"
@@ -135,12 +135,12 @@ const socialIcons = ['lucide:twitter', 'lucide:facebook', 'lucide:github', 'luci
             </ul>
           </div>
         </div>
-        <USeparator class="my-5"></USeparator>
+        <USeparator class="my-5" />
         <div class="flex items-center justify-between gap-4 text-sm">
           <p>Shop.co © 2000-2023, All Rights Reserved</p>
           <ul class="flex gap-3 items-center">
             <li v-for="item in acceptPayments" :key="item">
-              <img :src="item" alt="" class="block" />
+              <img :src="item" alt="" class="block">
             </li>
           </ul>
         </div>

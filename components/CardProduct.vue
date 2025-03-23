@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { defineProps, computed } from 'vue'
-import { formatCurrency } from '~/utils'
+import { computed, defineProps } from 'vue'
 import BaseRating from '~/components/BaseRating.vue'
+import { formatCurrency } from '~/utils'
 
-type Props = {
+interface Props {
   image: string
   title: string
   rating: number
@@ -22,7 +22,7 @@ const formattedOldPrice = computed(() => formatCurrency(props.oldPrice || 0))
     <!-- Square image -->
     <div class="aspect-square bg-gray-200 rounded-lg overflow-hidden">
       <NuxtLink :to="link" class="block">
-        <img :src="image" alt="Product Image" class="w-full h-full object-cover" />
+        <img :src="image" alt="Product Image" class="w-full h-full object-cover">
       </NuxtLink>
     </div>
 

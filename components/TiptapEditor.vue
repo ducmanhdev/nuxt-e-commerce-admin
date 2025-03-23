@@ -1,15 +1,6 @@
 <script lang="ts" setup>
 const modelValue = defineModel<string>({
-  required: true
-})
-
-watch(modelValue, (newModelValue) => {
-  if (!editor.value) return
-  const isSame = editor.value.getHTML() === newModelValue
-  if (isSame) {
-    return
-  }
-  editor.value.commands.setContent(newModelValue || '', false)
+  required: true,
 })
 
 const editor = useEditor({
@@ -20,9 +11,18 @@ const editor = useEditor({
   extensions: [TiptapStarterKit],
   editorProps: {
     attributes: {
-      class: 'prose dark:prose-invert prose-sm sm:prose-base focus:outline-none'
-    }
+      class: 'prose dark:prose-invert prose-sm sm:prose-base focus:outline-none',
+    },
+  },
+})
+
+watch(modelValue, (newModelValue) => {
+  if (!editor.value) return
+  const isSame = editor.value.getHTML() === newModelValue
+  if (isSame) {
+    return
   }
+  editor.value.commands.setContent(newModelValue || '', false)
 })
 
 onBeforeUnmount(() => {

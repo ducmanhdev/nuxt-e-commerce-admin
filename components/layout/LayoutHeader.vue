@@ -9,34 +9,34 @@ const navItems = ref([
     children: [
       {
         label: 'T-shirt',
-        to: '/products/?category=t-shirt'
+        to: '/products/?category=t-shirt',
       },
       {
         label: 'Trousers',
-        to: '/products/?category=trousers'
+        to: '/products/?category=trousers',
       },
       {
         label: 'Skirt',
-        to: '/products/?category=skirt'
-      }
-    ]
+        to: '/products/?category=skirt',
+      },
+    ],
   },
   {
     label: 'On sales',
-    to: '/sales'
+    to: '/sales',
   },
   {
     label: 'New Arrivals',
-    to: '/new-arrivals'
+    to: '/new-arrivals',
   },
   {
     label: 'Brands',
-    to: '/brands'
+    to: '/brands',
   },
   {
     label: 'Blogs',
-    to: '/blogs'
-  }
+    to: '/blogs',
+  },
 ])
 
 const { colorMode, isDark, handleToggleMode } = useThemeMode()
@@ -58,8 +58,8 @@ const handleSignOut = async () => {
           return
         }
         await navigateTo('/')
-      }
-    }
+      },
+    },
   })
 }
 const userDropdownItems = computed(() => {
@@ -67,17 +67,17 @@ const userDropdownItems = computed(() => {
     [
       {
         label: 'Profile',
-        icon: 'heroicons:user-circle'
-      }
+        icon: 'heroicons:user-circle',
+      },
     ],
     [
       {
         label: 'Sign Out',
         icon: 'lucide:log-out',
         color: 'error' as const,
-        onSelect: handleSignOut
-      }
-    ]
+        onSelect: handleSignOut,
+      },
+    ],
   ]
 })
 
@@ -128,7 +128,7 @@ const handleHidePromotionBar = () => {
               />
             </UTooltip>
             <template #fallback>
-              <UButton :icon="'lucide:sun'" variant="ghost" color="neutral" />
+              <UButton icon="lucide:sun" variant="ghost" color="neutral" />
             </template>
           </ClientOnly>
           <UDropdownMenu v-if="user" :items="userDropdownItems" :popper="{ placement: 'bottom-start' }">
@@ -137,12 +137,12 @@ const handleHidePromotionBar = () => {
                 src: user.user_metadata?.avatar_url,
                 alt: user.user_metadata?.name,
                 icon: 'lucide:circle-user',
-                size: 'md'
+                size: 'md',
               }"
               variant="ghost"
               color="neutral"
               :ui="{
-                base: 'p-0'
+                base: 'p-0',
               }"
             />
           </UDropdownMenu>

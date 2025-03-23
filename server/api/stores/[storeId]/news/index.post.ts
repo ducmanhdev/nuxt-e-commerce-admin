@@ -8,28 +8,28 @@ export default defineWrappedResponseHandler(async (event) => {
   const store = await prisma.store.findFirstOrThrow({
     where: {
       id: storeId,
-      userId: user.id
-    }
+      userId: user.id,
+    },
   })
 
   const { productIds, ...restBody } = await readValidatedBody(event, schema.parse)
   const news = await prisma.news.create({
     data: {
       storeId: store.id,
-      ...restBody
-    }
+      ...restBody,
+    },
   })
 
   if (productIds && productIds.length > 0) {
     await prisma.newsDetail.createMany({
-      data: productIds.map((productId) => ({
+      data: productIds.map(productId => ({
         newsId: news.id,
-        productId
-      }))
+        productId,
+      })),
     })
   }
 
   return {
-    data: news
+    data: news,
   }
 })

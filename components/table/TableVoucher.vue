@@ -1,28 +1,28 @@
 <script setup lang="ts">
-import {
-  DATE_TIME_FORMAT,
-  ROWS_PER_PAGE_OPTIONS,
-  VOUCHER_STATUSES,
-  VOUCHER_DISCOUNT_TYPES,
-  DATE_FORMAT
-} from '~/constants'
-import { upperFirst } from 'scule'
-import type { Voucher } from '~/types'
-import { refDebounced } from '@vueuse/core'
 import type { TableColumn } from '#ui/components/Table.vue'
 import type { Column, Row, SortingState, VisibilityState } from '@tanstack/vue-table'
-import { LazyModalVoucher, LazyModalConfirm } from '#components'
+import type { Voucher } from '~/types'
+import { LazyModalConfirm, LazyModalVoucher } from '#components'
+import { refDebounced } from '@vueuse/core'
+import { upperFirst } from 'scule'
+import {
+  DATE_FORMAT,
+  DATE_TIME_FORMAT,
+  ROWS_PER_PAGE_OPTIONS,
+  VOUCHER_DISCOUNT_TYPES,
+  VOUCHER_STATUSES,
+} from '~/constants'
 
+const props = defineProps<Props>()
 const UIcon = resolveComponent('UIcon')
 const UCheckbox = resolveComponent('UCheckbox')
 const UButton = resolveComponent('UButton')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
 const UBadge = resolveComponent('UBadge')
 
-type Props = {
+interface Props {
   storeId: string
 }
-const props = defineProps<Props>()
 const dayjs = useDayjs()
 const storeId = toRef(props, 'storeId')
 
@@ -33,23 +33,24 @@ const toast = useCustomToast()
 const overlay = useOverlay()
 const modalConfirm = overlay.create(LazyModalConfirm)
 const modalVoucher = overlay.create(LazyModalVoucher)
-const handleDelete = ({ storeId, id }: { storeId: string; id: string }) => {
+const handleDelete = ({ storeId, id }: { storeId: string, id: string }) => {
   modalConfirm.open({
     props: {
       message: 'Are you absolutely to delete this item?',
       onConfirm: async () => {
         try {
           await $fetch(`/api/stores/${storeId}/vouchers/${id}`, {
-            method: 'DELETE'
+            method: 'DELETE',
           })
           toast.success('Deleted successfully')
           refreshNuxtData('vouchers')
-        } catch (error) {
+        }
+        catch (error) {
           console.error(error)
           toast.error(error)
         }
-      }
-    }
+      },
+    },
   })
 }
 const getActionItems = (row: Row<Voucher>) => {
@@ -63,10 +64,10 @@ const getActionItems = (row: Row<Voucher>) => {
             props: {
               storeId: row.original.storeId,
               voucherId: row.original.id,
-              initialValues: { ...row.original }
-            }
-          })
-      }
+              initialValues: { ...row.original },
+            },
+          }),
+      },
     ],
     [
       {
@@ -76,22 +77,23 @@ const getActionItems = (row: Row<Voucher>) => {
         onSelect: () =>
           handleDelete({
             storeId: row.original.storeId,
-            id: row.original.id
-          })
-      }
-    ]
+            id: row.original.id,
+          }),
+      },
+    ],
   ]
 }
 const getHeader = (column: Column<Voucher>, label: string) => {
   const isEnableSort = column.getCanSort()
-  if (!isEnableSort) return label
+  if (!isEnableSort)
+    return label
 
   const isSorted = column.getIsSorted()
   return h(
     UDropdownMenu,
     {
       content: {
-        align: 'start'
+        align: 'start',
       },
       items: [
         {
@@ -102,10 +104,11 @@ const getHeader = (column: Column<Voucher>, label: string) => {
           onSelect: () => {
             if (isSorted === 'asc') {
               column.clearSorting()
-            } else {
+            }
+            else {
               column.toggleSorting(false)
             }
-          }
+          },
         },
         {
           label: 'Desc',
@@ -115,12 +118,13 @@ const getHeader = (column: Column<Voucher>, label: string) => {
           onSelect: () => {
             if (isSorted === 'desc') {
               column.clearSorting()
-            } else {
+            }
+            else {
               column.toggleSorting(true)
             }
-          }
-        }
-      ]
+          },
+        },
+      ],
     },
     () =>
       h(UButton, {
@@ -132,8 +136,8 @@ const getHeader = (column: Column<Voucher>, label: string) => {
             ? 'lucide:arrow-up-narrow-wide'
             : 'lucide:arrow-up-wide-narrow'
           : 'lucide:arrow-up-down',
-        class: '-mx-2.5 data-[state=open]:bg-[var(--ui-bg-elevated)]'
-      })
+        class: '-mx-2.5 data-[state=open]:bg-[var(--ui-bg-elevated)]',
+      }),
   )
 }
 const columns: TableColumn<Voucher>[] = [
@@ -142,17 +146,17 @@ const columns: TableColumn<Voucher>[] = [
     enableHiding: false,
     header: ({ table }) =>
       h(UCheckbox, {
-        modelValue: table.getIsAllPageRowsSelected(),
-        indeterminate: table.getIsSomePageRowsSelected(),
+        'modelValue': table.getIsAllPageRowsSelected(),
+        'indeterminate': table.getIsSomePageRowsSelected(),
         'onUpdate:modelValue': (value: boolean) => table.toggleAllPageRowsSelected(value),
-        ariaLabel: 'Select all'
+        'ariaLabel': 'Select all',
       }),
     cell: ({ row }) =>
       h(UCheckbox, {
-        modelValue: row.getIsSelected(),
+        'modelValue': row.getIsSelected(),
         'onUpdate:modelValue': (value: boolean) => row.toggleSelected(value),
-        ariaLabel: 'Select row'
-      })
+        'ariaLabel': 'Select row',
+      }),
   },
   {
     accessorKey: 'code',
@@ -173,25 +177,25 @@ const columns: TableColumn<Voucher>[] = [
       return h(
         'div',
         {
-          class: 'flex items-center gap-2'
+          class: 'flex items-center gap-2',
         },
         [
           h(UIcon, { name: 'lucide:ticket' }),
-          h('span', value)
+          h('span', value),
           // h(UButton, {
           //   icon: 'lucide:clipboard',
           //   variant: 'ghost',
           //   onClick: copyToClipboard,
           //   ariaLabel: 'Copy voucher code',
           // }),
-        ]
+        ],
       )
     },
     meta: {
       class: {
-        td: 'font-bold text-primary'
-      }
-    }
+        td: 'font-bold text-primary',
+      },
+    },
   },
   {
     accessorKey: 'discountType',
@@ -200,11 +204,11 @@ const columns: TableColumn<Voucher>[] = [
       const value = row.getValue('discountType')
       const color = {
         [VOUCHER_DISCOUNT_TYPES.FIXED]: 'primary' as const,
-        [VOUCHER_DISCOUNT_TYPES.PERCENTAGE]: 'secondary' as const
+        [VOUCHER_DISCOUNT_TYPES.PERCENTAGE]: 'secondary' as const,
       }[value as string]
       const label = Object.entries(VOUCHER_DISCOUNT_TYPES).find(([_, _value]) => _value === value)?.[0]
       return h(UBadge, { color, label, variant: 'subtle' })
-    }
+    },
   },
   {
     accessorKey: 'discountValue',
@@ -212,12 +216,12 @@ const columns: TableColumn<Voucher>[] = [
     cell: ({ row }) =>
       row.getValue('discountType') === VOUCHER_DISCOUNT_TYPES.PERCENTAGE
         ? `${row.getValue('discountValue')}%`
-        : formatCurrency(row.getValue('discountValue'))
+        : formatCurrency(row.getValue('discountValue')),
   },
   {
     accessorKey: 'minOrderValue',
     header: ({ column }) => getHeader(column, 'Min order value'),
-    cell: ({ row }) => formatCurrency(row.getValue('minOrderValue'))
+    cell: ({ row }) => formatCurrency(row.getValue('minOrderValue')),
   },
   {
     accessorKey: 'maxDiscount',
@@ -225,7 +229,7 @@ const columns: TableColumn<Voucher>[] = [
     cell: ({ row }) =>
       row.getValue('discountType') === VOUCHER_DISCOUNT_TYPES.PERCENTAGE
         ? formatCurrency(row.getValue('maxDiscount'))
-        : '-'
+        : '-',
   },
   {
     accessorKey: 'status',
@@ -236,33 +240,33 @@ const columns: TableColumn<Voucher>[] = [
         [VOUCHER_STATUSES.ACTIVE]: 'primary' as const,
         [VOUCHER_STATUSES.INACTIVE]: 'secondary' as const,
         [VOUCHER_STATUSES.EXPIRED]: 'warning' as const,
-        [VOUCHER_STATUSES.REVOKED]: 'error' as const
+        [VOUCHER_STATUSES.REVOKED]: 'error' as const,
       }[value as string]
       const label = Object.entries(VOUCHER_STATUSES).find(([_, _value]) => _value === value)?.[0]
       return h(UBadge, { color, label, variant: 'subtle' })
-    }
+    },
   },
   { accessorKey: 'usageLimit', header: ({ column }) => getHeader(column, 'Usage limit') },
   { accessorKey: 'usedCount', header: ({ column }) => getHeader(column, 'Usage count') },
   {
     accessorKey: 'startDate',
     header: ({ column }) => getHeader(column, 'Start date'),
-    cell: ({ row }) => dayjs(row.getValue('startDate')).format(DATE_FORMAT)
+    cell: ({ row }) => dayjs(row.getValue('startDate')).format(DATE_FORMAT),
   },
   {
     accessorKey: 'endDate',
     header: ({ column }) => getHeader(column, 'End date'),
-    cell: ({ row }) => dayjs(row.getValue('endDate')).format(DATE_FORMAT)
+    cell: ({ row }) => dayjs(row.getValue('endDate')).format(DATE_FORMAT),
   },
   {
     accessorKey: 'createdAt',
     header: ({ column }) => getHeader(column, 'Created at'),
-    cell: ({ row }) => dayjs(row.getValue('createdAt')).format(DATE_TIME_FORMAT)
+    cell: ({ row }) => dayjs(row.getValue('createdAt')).format(DATE_TIME_FORMAT),
   },
   {
     accessorKey: 'updatedAt',
     header: ({ column }) => getHeader(column, 'Updated at'),
-    cell: ({ row }) => dayjs(row.getValue('updatedAt')).format(DATE_TIME_FORMAT)
+    cell: ({ row }) => dayjs(row.getValue('updatedAt')).format(DATE_TIME_FORMAT),
   },
   {
     accessorKey: 'actions',
@@ -273,29 +277,29 @@ const columns: TableColumn<Voucher>[] = [
         UDropdownMenu,
         {
           content: {
-            align: 'end'
+            align: 'end',
           },
-          items: getActionItems(row)
+          items: getActionItems(row),
         },
         () =>
           h(UButton, {
             icon: 'lucide:ellipsis-vertical',
             color: 'neutral',
-            variant: 'ghost'
-          })
+            variant: 'ghost',
+          }),
       )
     },
     meta: {
       class: {
         th: 'text-right',
-        td: 'text-right'
-      }
-    }
-  }
+        td: 'text-right',
+      },
+    },
+  },
 ]
 const columnVisibility = ref<VisibilityState>({
   createdAt: false,
-  updatedAt: false
+  updatedAt: false,
 })
 
 const search = ref('')
@@ -310,8 +314,8 @@ const handleResetFilters = () => {
 const sorting = ref<SortingState>([
   {
     id: 'createdAt',
-    desc: true
-  }
+    desc: true,
+  },
 ])
 const page = ref(1)
 const itemsPerPage = ref(10)
@@ -325,14 +329,14 @@ const { data, status } = await useFetch(() => `/api/stores/${storeId.value}/vouc
   default: () => cachedVoucher.value,
   query: {
     search: searchDebounced,
-    page: page,
+    page,
     limit: itemsPerPage,
     sort: sortColumn,
-    order: sortDirection
+    order: sortDirection,
   },
   onResponseError({ response }) {
     toast.error(response._data?.statusMessage)
-  }
+  },
 })
 const isFetching = computed(() => status.value === 'pending')
 
@@ -370,7 +374,7 @@ const meta = computed(() => data.value?.meta)
                   },
                   onSelect(e?: Event) {
                     e?.preventDefault()
-                  }
+                  },
                 }))
             "
             :content="{ align: 'end' }"

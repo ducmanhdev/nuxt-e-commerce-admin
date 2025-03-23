@@ -1,6 +1,6 @@
 <script setup lang="ts">
 useHead({
-  title: 'Home'
+  title: 'Home',
 })
 
 const dressStyles = ['Casual', 'Formal', 'Party', 'Gym']

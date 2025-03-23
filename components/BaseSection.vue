@@ -1,5 +1,5 @@
 <script setup lang="ts">
-type Props = {
+interface Props {
   title?: string
 }
 
@@ -13,14 +13,14 @@ const slots = defineSlots()
     <UContainer>
       <h2 class="font-bold uppercase text-3xl text-center mb-6">
         <template v-if="slots.title">
-          <slot name="title"></slot>
+          <slot name="title" />
         </template>
         <template v-else>
           {{ title }}
         </template>
       </h2>
 
-      <slot></slot>
+      <slot />
     </UContainer>
   </section>
 </template>

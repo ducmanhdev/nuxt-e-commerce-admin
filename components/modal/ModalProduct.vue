@@ -1,36 +1,38 @@
 <script setup lang="ts">
-import type { z } from 'zod'
 import type { FormSubmitEvent } from '#ui/types'
-import schema, { attributeValidator } from '~/schemas/product.schema'
+import type { z } from 'zod'
 import type { Category, ProductAttribute } from '~/types'
+import schema, { attributeValidator } from '~/schemas/product.schema'
 
-const modal = useModal()
+const props = defineProps<Props>()
+
+const emit = defineEmits<{
+  (e: 'close', value: boolean): void
+}>()
 
 type SchemaInfer = z.infer<typeof schema>
 
-type Props = {
+interface Props {
   title?: string
   storeId: string
   productId?: string
   initialValues?: SchemaInfer
 }
-const props = defineProps<Props>()
-
 const modalTitle = computed(() => props.title || (props.productId ? 'Update product' : 'Create product'))
 const submitSuccessMessage = computed(() =>
-  props.productId ? 'Updated product successfully' : 'Created product successfully'
+  props.productId ? 'Updated product successfully' : 'Created product successfully',
 )
 
 const DEFAULT_ATTRIBUTE = {
   name: '',
-  value: ''
+  value: '',
 }
 
 const DEFAULT_STATE: Partial<SchemaInfer> = {
   name: '',
   description: '',
   categoryId: '',
-  attributes: [{ ...DEFAULT_ATTRIBUTE }]
+  attributes: [{ ...DEFAULT_ATTRIBUTE }],
 }
 
 const state = ref({ ...DEFAULT_STATE })
@@ -38,13 +40,14 @@ const attrs = useAttrs()
 watch(
   [() => props.initialValues, () => attrs.open],
   ([newInitialValues, isOpen]) => {
-    if (!isOpen) return
+    if (!isOpen)
+      return
     Object.assign(state.value, { ...DEFAULT_STATE, ...newInitialValues })
     state.value.attributes = [{ ...DEFAULT_ATTRIBUTE }]
   },
   {
-    immediate: true
-  }
+    immediate: true,
+  },
 )
 
 const toast = useCustomToast()
@@ -64,19 +67,44 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
     const method = props.productId ? 'PATCH' : 'POST'
     await $fetch(endpoint, {
       method,
-      body: event.data
+      body: event.data,
     })
 
     toast.success(submitSuccessMessage.value)
     refreshNuxtData('products')
-    await modal.close()
-  } catch (error) {
+    emit('close', true)
+  }
+  catch (error) {
     console.error(error)
     toast.error(error)
-  } finally {
+  }
+  finally {
     isSubmitLoading.value = false
   }
 }
+
+const useAttributeOptions = () => {
+  const searchTerm = ref('')
+  const searchTermDebounced = refDebounced(searchTerm, 200)
+  const { data, status } = useLazyFetch(`/api/stores/${props.storeId}/attributes`, {
+    params: { search: searchTermDebounced },
+    transform: ({ data }: { data: ProductAttribute[] }) => {
+      return data?.map(item => (item as unknown as ProductAttribute).name) || []
+    },
+  })
+
+  return {
+    searchTerm,
+    data,
+    status,
+  }
+}
+
+const {
+  searchTerm: attributeSearchTerm,
+  data: attributeOptions,
+  status: getAttributeOptionsStatus,
+} = useAttributeOptions()
 
 const handleAddAttribute = () => {
   state.value.attributes = [...(state.value.attributes || []), { ...DEFAULT_ATTRIBUTE }]
@@ -95,45 +123,23 @@ const useCategoryOptions = () => {
   const searchTermDebounced = refDebounced(searchTerm, 200)
   const { data, status } = useLazyFetch(`/api/stores/${props.storeId}/categories`, {
     params: { search: searchTermDebounced },
-    transform: ({ data }) => {
+    transform: ({ data }: { data: Category[] }) => {
       return (
-        data?.map((item) => ({
+        data?.map(item => ({
           label: (item as unknown as Category).name,
-          value: (item as unknown as Category).id
+          value: (item as unknown as Category).id,
         })) || []
       )
-    }
+    },
   })
 
   return {
     searchTerm,
     data,
-    status
+    status,
   }
 }
 const { searchTerm: categorySearchTerm, data: categoryOptions, status: getCategoryOptionsStatus } = useCategoryOptions()
-
-const useAttributeOptions = () => {
-  const searchTerm = ref('')
-  const searchTermDebounced = refDebounced(searchTerm, 200)
-  const { data, status } = useLazyFetch(`/api/stores/${props.storeId}/attributes`, {
-    params: { search: searchTermDebounced },
-    transform: ({ data }) => {
-      return data?.map((item) => (item as unknown as ProductAttribute).name) || []
-    }
-  })
-
-  return {
-    searchTerm,
-    data,
-    status
-  }
-}
-const {
-  searchTerm: attributeSearchTerm,
-  data: attributeOptions,
-  status: getAttributeOptionsStatus
-} = useAttributeOptions()
 </script>
 
 <template>
@@ -191,7 +197,7 @@ const {
             :disabled="isSubmitLoading"
             label="Cancel"
             variant="soft"
-            @click="modal.close()"
+            @click="emit('close', true)"
           />
           <UButton type="submit" block :loading="isSubmitLoading" label="Submit" />
         </div>

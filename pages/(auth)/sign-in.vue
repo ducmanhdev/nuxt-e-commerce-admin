@@ -3,29 +3,30 @@ import type { FormSubmitEvent } from '#ui/types'
 import { z } from 'zod'
 
 definePageMeta({
-  layout: false
+  layout: false,
 })
 
 useHead({
-  title: 'Sign In'
+  title: 'Sign In',
 })
 
 const user = useSupabaseUser()
 watchEffect(() => {
-  if (user.value) return navigateTo('/')
+  if (user.value)
+    return navigateTo('/')
 })
 
 const schema = z.object({
   email: z
     .string({
-      required_error: 'Please enter your email address'
+      required_error: 'Please enter your email address',
     })
     .email('Invalid email'),
   password: z
     .string({
-      required_error: 'Please enter your password'
+      required_error: 'Please enter your password',
     })
-    .min(8, 'Must be at least 8 characters')
+    .min(8, 'Must be at least 8 characters'),
 })
 
 type InferSchema = z.infer<typeof schema>
@@ -33,7 +34,7 @@ type OutputSchema = z.output<typeof schema>
 
 const state = ref<InferSchema>({
   email: '',
-  password: ''
+  password: '',
 })
 
 const supabase = useSupabaseClient()
@@ -43,14 +44,14 @@ const onSubmit = async (event: FormSubmitEvent<OutputSchema>) => {
   isSubmitLoading.value = true
   const { error } = await supabase.auth.signInWithPassword({
     email: event.data.email,
-    password: event.data.password
+    password: event.data.password,
   })
   if (error) {
     console.error('[LOGIN_ERROR]', error)
     toast.error(
       error.code === 'invalid_credentials'
         ? 'Wrong email or password. Please try again!'
-        : error.message || 'Something went wrong, please try again!'
+        : error.message || 'Something went wrong, please try again!',
     )
   }
   isSubmitLoading.value = false
@@ -59,14 +60,14 @@ const onSubmit = async (event: FormSubmitEvent<OutputSchema>) => {
 
 const handleSignInOAuth = async (provider: 'google' | 'facebook') => {
   const { error } = await supabase.auth.signInWithOAuth({
-    provider
+    provider,
   })
   if (error) {
     console.error('[LOGIN_ERROR]', error)
     toast.error(
       error.code === 'invalid_credentials'
         ? 'Wrong email or password. Please try again!'
-        : error.message || 'Something went wrong, please try again!'
+        : error.message || 'Something went wrong, please try again!',
     )
   }
   await navigateTo('/')

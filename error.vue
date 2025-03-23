@@ -2,8 +2,8 @@
 import type { NuxtError } from '#app'
 
 defineProps({
-  // eslint-disable-next-line vue/require-default-prop
-  error: Object as () => NuxtError
+
+  error: Object as () => NuxtError,
 })
 
 const handleError = () => clearError({ redirect: '/' })

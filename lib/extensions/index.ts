@@ -1,15 +1,15 @@
-import { Prisma } from '@prisma/client'
 import type { z } from 'zod'
 import type schema from '~/schemas/query.schema'
+import { Prisma } from '@prisma/client'
 
 type Query = Partial<z.output<typeof schema>>
-type PaginationMeta = {
+interface PaginationMeta {
   currentPage: number
   itemsPerPage: number
   totalPages: number
   total: number
 }
-type PaginatedResult<T> = {
+interface PaginatedResult<T> {
   data: T[]
   meta: PaginationMeta
 }
@@ -22,7 +22,7 @@ export const pagination = Prisma.defineExtension({
         this: T,
         queries: Query = {},
         filter: Prisma.Args<T, 'findMany'>['where'] = {},
-        options: Prisma.Args<T, 'findMany'> = {} as Prisma.Args<T, 'findMany'>
+        options: Prisma.Args<T, 'findMany'> = {} as Prisma.Args<T, 'findMany'>,
       ): Promise<PaginatedResult<T>> {
         const context = Prisma.getExtensionContext(this)
 
@@ -34,18 +34,16 @@ export const pagination = Prisma.defineExtension({
         const offset = (page - 1) * limit
 
         const [data, total] = await Promise.all([
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (context as any).findMany({
+          context.findMany({
             ...options,
             where: filter,
             orderBy: { [sort]: order },
             skip: offset,
-            take: limit
+            take: limit,
           }),
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (context as any).count({
-            where: filter
-          })
+          context.count({
+            where: filter,
+          }),
         ])
 
         const totalPages = Math.ceil(total / limit)
@@ -56,10 +54,10 @@ export const pagination = Prisma.defineExtension({
             total,
             currentPage: page,
             itemsPerPage: limit,
-            totalPages
-          }
+            totalPages,
+          },
         }
-      }
-    }
-  }
+      },
+    },
+  },
 })

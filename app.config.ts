@@ -1,27 +1,27 @@
 export default defineAppConfig({
   ui: {
     colors: {
-      primary: 'primary'
+      primary: 'primary',
     },
     input: {
       slots: {
-        root: 'w-full'
-      }
+        root: 'w-full',
+      },
     },
     inputNumber: {
       slots: {
-        root: 'w-full'
-      }
+        root: 'w-full',
+      },
     },
     select: {
       slots: {
-        base: 'w-full'
-      }
+        base: 'w-full',
+      },
     },
     selectMenu: {
       slots: {
-        base: 'w-full'
-      }
-    }
-  }
+        base: 'w-full',
+      },
+    },
+  },
 })

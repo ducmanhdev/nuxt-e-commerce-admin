@@ -2,7 +2,7 @@
 useHead({
   titleTemplate: (titleChunk) => {
     return titleChunk ? `Shop.CO - ${titleChunk}` : 'Shop.CO'
-  }
+  },
 })
 </script>
 

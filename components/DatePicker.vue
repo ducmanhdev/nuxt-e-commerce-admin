@@ -2,27 +2,26 @@
 import type { DateValue } from '@internationalized/date'
 import { CalendarDate, DateFormatter, getLocalTimeZone } from '@internationalized/date'
 
-const dayjs = useDayjs()
-const isOpen = ref(false)
-
-const df = new DateFormatter('en-US', {
-  dateStyle: 'medium'
-})
-
 const props = withDefaults(
   defineProps<{
     range?: boolean
     isDateDisabled?: (date: DateValue) => boolean
     isDateUnavailable?: (date: DateValue) => boolean
   }>(),
-  { range: false }
+  { range: false },
 )
+const dayjs = useDayjs()
+const isOpen = ref(false)
 
-const model = defineModel({
-  required: true
+const df = new DateFormatter('en-US', {
+  dateStyle: 'medium',
 })
 
-type ModelForRange = {
+const model = defineModel({
+  required: true,
+})
+
+interface ModelForRange {
   start: CalendarDate
   end: CalendarDate
 }
@@ -30,12 +29,13 @@ type ModelForSingle = CalendarDate
 const parsedModel = computed({
   get() {
     if (props.range) {
-      const { start, end } = model.value as { start: Date; end: Date }
+      const { start, end } = model.value as { start: Date, end: Date }
       return {
         start: new CalendarDate(dayjs(start).year(), dayjs(start).month() + 1, dayjs(start).date()),
-        end: new CalendarDate(dayjs(end).year(), dayjs(end).month() + 1, dayjs(end).date())
+        end: new CalendarDate(dayjs(end).year(), dayjs(end).month() + 1, dayjs(end).date()),
       }
-    } else {
+    }
+    else {
       const date = model.value as Date
       return new CalendarDate(dayjs(date).year(), dayjs(date).month() + 1, dayjs(date).date())
     }
@@ -44,24 +44,26 @@ const parsedModel = computed({
     if (props.range) {
       model.value = {
         start: (value as ModelForRange).start.toDate(getLocalTimeZone()),
-        end: (value as ModelForRange).end.toDate(getLocalTimeZone())
+        end: (value as ModelForRange).end.toDate(getLocalTimeZone()),
       }
-    } else {
+    }
+    else {
       model.value = (value as ModelForSingle).toDate(getLocalTimeZone())
     }
     isOpen.value = false
-  }
+  },
 })
 
 const formattedDate = computed(() => {
   if (props.range) {
-    const { start, end } = parsedModel.value as { start: CalendarDate; end: CalendarDate }
+    const { start, end } = parsedModel.value as { start: CalendarDate, end: CalendarDate }
     return start && end
       ? `${df.format(start.toDate(getLocalTimeZone()))} - ${df.format(end.toDate(getLocalTimeZone()))}`
       : start
         ? df.format(start.toDate(getLocalTimeZone()))
         : 'Pick a date'
-  } else {
+  }
+  else {
     return df.format((parsedModel.value as CalendarDate).toDate(getLocalTimeZone()))
   }
 })

@@ -1,10 +1,10 @@
 export type {
-  Store,
-  Product,
+  Brand,
   Category,
-  Voucher,
+  News,
+  Product,
   ProductAttribute,
   ProductAttributeValue,
-  News,
-  Brand
+  Store,
+  Voucher,
 } from '@prisma/client'

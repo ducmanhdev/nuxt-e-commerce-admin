@@ -1,41 +1,43 @@
 <script setup lang="ts">
-import { z } from 'zod'
 import type { FormSubmitEvent } from '#ui/types'
-import schema from '~/schemas/news.schema'
+import { z } from 'zod'
 import TiptapEditor from '~/components/TiptapEditor.vue'
+import schema from '~/schemas/news.schema'
 
-const modal = useModal()
+const props = defineProps<Props>()
+
+const emit = defineEmits<{
+  (e: 'close', value: boolean): void
+}>()
 
 const validationSchema = schema
   .merge(
     z.object({
       imageUrl: z.string().optional(),
       newImageFiles: z.instanceof(File).array().optional(),
-      deletedImages: z.string().array().optional()
-    })
+      deletedImages: z.string().array().optional(),
+    }),
   )
-  .refine((data) => data.imageUrl || data.newImageFiles?.length, {
+  .refine(data => data.imageUrl || data.newImageFiles?.length, {
     message: 'Image must not be empty',
-    path: ['imageUrl']
+    path: ['imageUrl'],
   })
 
 type SchemaInfer = z.infer<typeof validationSchema>
 
-type Props = {
+interface Props {
   title?: string
   storeId: string
   newsId?: string
   initialValues?: SchemaInfer
 }
-const props = defineProps<Props>()
-
 const modalTitle = computed(() => props.title || (props.newsId ? 'Update news' : 'Create news'))
 const submitSuccessMessage = computed(() => (props.newsId ? 'Updated news successfully' : 'Created news successfully'))
 
 const DEFAULT_STATE: SchemaInfer = {
   title: '',
   content: '',
-  imageUrl: ''
+  imageUrl: '',
 }
 
 const state = ref({ ...DEFAULT_STATE })
@@ -43,12 +45,13 @@ const attrs = useAttrs()
 watch(
   [() => props.initialValues, () => attrs.open],
   ([newInitialValues, isOpen]) => {
-    if (!isOpen) return
+    if (!isOpen)
+      return
     Object.assign(state.value, { ...DEFAULT_STATE, ...newInitialValues })
   },
   {
-    immediate: true
-  }
+    immediate: true,
+  },
 )
 
 const toast = useCustomToast()
@@ -68,22 +71,23 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
     if (deletedImages?.length) {
       await $fetch('/api/images/delete', {
         method: 'DELETE',
-        body: { imageUrls: deletedImages, bucketName }
+        body: { imageUrls: deletedImages, bucketName },
       })
     }
 
     if (newImageFiles?.length) {
       const formData = new FormData()
-      newImageFiles.forEach((file) => formData.append('files', file))
+      newImageFiles.forEach(file => formData.append('files', file))
       formData.append('bucketName', bucketName)
       const { data } = await $fetch('/api/images/upload', {
         method: 'POST',
-        body: formData
+        body: formData,
       })
       event.data.imageUrl = data[0]
     }
 
-    if (!event.data.imageUrl) throw new Error('Image URL is required')
+    if (!event.data.imageUrl)
+      throw new Error('Image URL is required')
 
     const endpoint = props.newsId
       ? `/api/stores/${props.storeId}/news/${props.newsId}`
@@ -95,17 +99,19 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
       body: {
         title: event.data.title,
         content: event.data.content,
-        imageUrl: event.data.imageUrl
-      }
+        imageUrl: event.data.imageUrl,
+      },
     })
 
     toast.success(submitSuccessMessage.value)
     refreshNuxtData('news')
-    await modal.close()
-  } catch (error) {
+    emit('close', true)
+  }
+  catch (error) {
     console.error(error)
     toast.error(error)
-  } finally {
+  }
+  finally {
     isSubmitLoading.value = false
   }
 }
@@ -117,7 +123,7 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
     :dismissible="!isSubmitLoading"
     :close="!isSubmitLoading"
     :ui="{
-      content: 'sm:max-w-2xl'
+      content: 'sm:max-w-2xl',
     }"
   >
     <template #body>
@@ -143,7 +149,7 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
             :disabled="isSubmitLoading"
             label="Cancel"
             variant="soft"
-            @click="modal.close()"
+            @click="emit('close', true)"
           />
           <UButton type="submit" block :loading="isSubmitLoading" label="Submit" />
         </div>

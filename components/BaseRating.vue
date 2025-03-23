@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-type Props = {
+interface Props {
   rating: number
 }
 const props = defineProps<Props>()

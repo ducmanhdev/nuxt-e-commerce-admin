@@ -1,30 +1,31 @@
 <script setup lang="ts">
-type Props = {
-  title?: string
-  description?: string
-  onConfirm?: () => void | Promise<void>
-}
 const {
   title = 'Confirm',
   description = 'Are you absolutely to do this?',
   onConfirm = () => {
-    const modal = useModal()
-    modal.close()
-  }
-} = defineProps<Props>()
+    // eslint-disable-next-line ts/no-use-before-define
+    emit('close', true)
+  },
+} = defineProps<{
+  title?: string
+  description?: string
+  onConfirm?: () => void | Promise<void>
+}>()
+
+const emit = defineEmits<{
+  (e: 'close', value: boolean): void
+}>()
 
 const onCancel = () => {
-  const modal = useModal()
-  modal.close()
+  emit('close', true)
 }
 
-const modal = useModal()
 const isConfirmLoading = ref(false)
 const onConfirmWrapper = async () => {
   isConfirmLoading.value = true
   await onConfirm()
   isConfirmLoading.value = false
-  await modal.close()
+  emit('close', true)
 }
 </script>
 

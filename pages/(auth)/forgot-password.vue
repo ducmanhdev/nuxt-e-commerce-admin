@@ -3,26 +3,26 @@ import type { FormSubmitEvent } from '#ui/types'
 import { z } from 'zod'
 
 definePageMeta({
-  layout: false
+  layout: false,
 })
 
 useHead({
-  title: 'Forgot Password'
+  title: 'Forgot Password',
 })
 
 const schema = z.object({
   email: z
     .string({
-      required_error: 'Please enter your email address'
+      required_error: 'Please enter your email address',
     })
-    .email('Invalid email')
+    .email('Invalid email'),
 })
 
 type InferSchema = z.infer<typeof schema>
 type OutputSchema = z.output<typeof schema>
 
 const state = ref<InferSchema>({
-  email: ''
+  email: '',
 })
 
 const supabase = useSupabaseClient()
@@ -32,14 +32,15 @@ const toast = useCustomToast()
 const onSubmit = async (event: FormSubmitEvent<OutputSchema>) => {
   isSubmitLoading.value = true
   const { error } = await supabase.auth.resetPasswordForEmail(event.data.email, {
-    redirectTo: `${window.location.origin}/reset-password`
+    redirectTo: `${window.location.origin}/reset-password`,
   })
   isSubmitLoading.value = false
 
   if (error) {
     console.error('[FORGOT_PASSWORD_ERROR]', error)
     toast.error(error.message || 'Something went wrong, please try again!')
-  } else {
+  }
+  else {
     toast.success('Password reset email sent successfully!')
   }
 }

@@ -2,7 +2,7 @@
 import { LazyModalCategory } from '#components'
 
 useHead({
-  title: 'Categories'
+  title: 'Categories',
 })
 
 const route = useRoute()
@@ -13,8 +13,8 @@ const modalCategory = overlay.create(LazyModalCategory)
 const handeShowCreateModal = () => {
   modalCategory.open({
     props: {
-      storeId: storeId.value
-    }
+      storeId: storeId.value,
+    },
   })
 }
 </script>

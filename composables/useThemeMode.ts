@@ -6,13 +6,13 @@ export const useThemeMode = () => {
     },
     set() {
       colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
-    }
+    },
   })
   const handleToggleMode = () => (isDark.value = !isDark.value)
 
   return {
     colorMode,
     isDark,
-    handleToggleMode
+    handleToggleMode,
   }
 }

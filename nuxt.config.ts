@@ -1,14 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2024-04-03',
-  devtools: {
-    enabled: true
-  },
-  runtimeConfig: {
-    public: {
-      baseUrl: process.env.BASE_URL || 'http://localhost:3000'
-    }
-  },
   modules: [
     '@nuxtjs/supabase',
     '@nuxt/ui',
@@ -19,49 +10,58 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@nuxt/image',
     'nuxt-security',
-    'nuxt-tiptap-editor'
+    'nuxt-tiptap-editor',
   ],
+  devtools: {
+    enabled: true,
+  },
   css: ['~/assets/css/main.css'],
+  colorMode: {
+    preference: 'system',
+  },
+  runtimeConfig: {
+    public: {
+      baseUrl: process.env.BASE_URL || 'http://localhost:3000',
+    },
+  },
+  compatibilityDate: '2024-04-03',
+  dayjs: {
+    plugins: ['isSameOrAfter'],
+  },
+  eslint: {
+    config: {
+      standalone: false,
+      stylistic: true,
+    },
+  },
+  fonts: {
+    experimental: {
+      processCSSVariables: true,
+    },
+    provider: 'google',
+  },
+  image: {
+    domains: [process.env.SUPABASE_URL!],
+  },
+  prisma: {
+    autoSetupPrisma: true,
+  },
+  security: {
+    headers: {
+      contentSecurityPolicy: {
+        'img-src': ['\'self\'', 'data:', 'blob:', process.env.SUPABASE_URL!, '*'],
+      },
+    },
+  },
   supabase: {
     redirect: false,
     redirectOptions: {
       login: '/sign-in',
       callback: '/confirm',
-      cookieRedirect: false
-    }
-  },
-  prisma: {
-    autoSetupPrisma: true
-  },
-  colorMode: {
-    preference: 'system'
-  },
-  dayjs: {
-    plugins: ['isSameOrAfter']
-  },
-  security: {
-    headers: {
-      contentSecurityPolicy: {
-        'img-src': ["'self'", 'data:', 'blob:', process.env.SUPABASE_URL!, '*']
-      }
-    }
-  },
-  image: {
-    domains: [process.env.SUPABASE_URL!]
+      cookieRedirect: false,
+    },
   },
   tiptap: {
-    prefix: 'Tiptap'
+    prefix: 'Tiptap',
   },
-  fonts: {
-    experimental: {
-      processCSSVariables: true
-    },
-    provider: 'google'
-  },
-  eslint: {
-    config: {
-      standalone: false,
-      stylistic: true
-    }
-  }
 })

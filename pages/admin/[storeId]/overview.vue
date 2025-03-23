@@ -1,21 +1,21 @@
 <script setup lang="ts">
+import type { Store } from '~/types'
+import { LazyModalConfirm, LazyModalStore } from '#components'
 import {
   ArcElement,
   BarElement,
   CategoryScale,
   Chart as ChartJS,
   Colors,
+  Filler,
   Legend,
   LinearScale,
   LineElement,
   PointElement,
   Title,
   Tooltip,
-  Filler
 } from 'chart.js'
 import { Bar, Line } from 'vue-chartjs'
-import { LazyModalConfirm, LazyModalStore } from '#components'
-import type { Store } from '~/types'
 
 ChartJS.register(
   Title,
@@ -28,11 +28,11 @@ ChartJS.register(
   PointElement,
   LineElement,
   Colors,
-  Filler
+  Filler,
 )
 
 useHead({
-  title: 'Overview'
+  title: 'Overview',
 })
 
 const route = useRoute()
@@ -48,9 +48,9 @@ const handleShowEditModal = () => {
     props: {
       storeId: cachedStore.value?.id,
       initialValues: {
-        name: cachedStore.value?.name
-      }
-    }
+        name: cachedStore.value?.name,
+      },
+    },
   })
 }
 
@@ -64,40 +64,42 @@ const handleDelete = () => {
         try {
           isDeleteLoading.value = true
           await $fetch(`/api/stores/${storeId.value}`, {
-            method: 'DELETE'
+            method: 'DELETE',
           })
           toast.success('Deleted successfully')
           await refreshNuxtData('stores')
           await navigateTo('/')
-        } catch (error) {
+        }
+        catch (error) {
           console.error(error)
           toast.error(error)
-        } finally {
+        }
+        finally {
           isDeleteLoading.value = false
         }
-      }
-    }
+      },
+    },
   })
 }
 
 const chartOptions = {
   responsive: true,
-  maintainAspectRatio: true
+  maintainAspectRatio: true,
 }
 const chartBarData = {
   labels: ['T-Shirt', 'Jeans', 'Sneakers', 'Handbag', 'Cap', 'T-Shirt', 'Jeans', 'Sneakers', 'Handbag', 'Cap'],
   datasets: [
     {
       label: 'Previous month',
-      data: [120, 85, 300, 150, 90, 120, 85, 300, 150, 90]
+      data: [120, 85, 300, 150, 90, 120, 85, 300, 150, 90],
       // backgroundColor: 'rgb(75, 192, 192)',
     },
     {
       label: 'This month',
-      data: [120, 85, 300, 150, 90, 120, 85, 300, 150, 90]
+      data: [120, 85, 300, 150, 90, 120, 85, 300, 150, 90],
       // backgroundColor: 'rgba(75, 192, 192, 0.2)',
-    }
-  ]
+    },
+  ],
 }
 const chartLineData = {
   labels: ['January', 'February', 'March', 'April', 'May', 'June'],
@@ -107,9 +109,9 @@ const chartLineData = {
       data: [5000, 7000, 6000, 8000, 9000, 10000],
       borderColor: 'rgb(75, 192, 192)',
       backgroundColor: 'rgba(75, 192, 192, 0.2)',
-      fill: true
-    }
-  ]
+      fill: true,
+    },
+  ],
 }
 </script>
 

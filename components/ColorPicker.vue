@@ -1,5 +1,5 @@
 <script setup lang="ts">
-type Props = {
+interface Props {
   disabled?: boolean
 }
 const { disabled = false } = defineProps<Props>()

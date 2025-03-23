@@ -10,7 +10,7 @@ export function useCustomToast() {
       title: 'Success',
       color: 'success',
       icon: 'lucide:circle-check',
-      ...(typeof arg === 'string' ? { description: arg } : arg)
+      ...(typeof arg === 'string' ? { description: arg } : arg),
     })
   }
 
@@ -19,13 +19,16 @@ export function useCustomToast() {
 
     if (typeof arg === 'string') {
       finalRest = { description: arg }
-    } else if (arg instanceof FetchError) {
-      const description =
-        arg.data?.data?.issues?.[0]?.message || arg.statusMessage || arg.message || 'An error occurred'
+    }
+    else if (arg instanceof FetchError) {
+      const description
+        = arg.data?.data?.issues?.[0]?.message || arg.statusMessage || arg.message || 'An error occurred'
       finalRest = { description }
-    } else if (arg instanceof Error) {
+    }
+    else if (arg instanceof Error) {
       finalRest = { description: arg.message || 'An error occurred' }
-    } else {
+    }
+    else {
       finalRest = arg as Options
     }
 
@@ -33,13 +36,13 @@ export function useCustomToast() {
       title: 'Error',
       color: 'error',
       icon: 'lucide:circle-x',
-      ...finalRest
+      ...finalRest,
     })
   }
 
   return {
     ...toast,
     success,
-    error
+    error,
   }
 }

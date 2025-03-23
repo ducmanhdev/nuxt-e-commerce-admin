@@ -1,11 +1,12 @@
 <script setup lang="ts">
 definePageMeta({
-  layout: false
+  layout: false,
 })
 
 const user = useSupabaseUser()
 watchEffect(() => {
-  if (user.value) return navigateTo('/')
+  if (user.value)
+    return navigateTo('/')
 })
 </script>
 

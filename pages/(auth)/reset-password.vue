@@ -3,29 +3,29 @@ import type { FormSubmitEvent } from '#ui/types'
 import { z } from 'zod'
 
 definePageMeta({
-  layout: false
+  layout: false,
 })
 
 useHead({
-  title: 'Reset Password'
+  title: 'Reset Password',
 })
 
 const schema = z
   .object({
     password: z
       .string({
-        required_error: 'Please enter your password'
+        required_error: 'Please enter your password',
       })
       .min(8, 'Must be at least 8 characters'),
     confirmPassword: z
       .string({
-        required_error: 'Please confirm password'
+        required_error: 'Please confirm password',
       })
-      .min(8, 'Must be at least 8 characters')
+      .min(8, 'Must be at least 8 characters'),
   })
-  .refine((data) => data.password === data.confirmPassword, {
+  .refine(data => data.password === data.confirmPassword, {
     message: 'Passwords do not match',
-    path: ['confirmPassword']
+    path: ['confirmPassword'],
   })
 
 type InferSchema = z.infer<typeof schema>
@@ -33,7 +33,7 @@ type OutputSchema = z.output<typeof schema>
 
 const state = ref<InferSchema>({
   password: '',
-  confirmPassword: ''
+  confirmPassword: '',
 })
 
 const supabase = useSupabaseClient()
@@ -50,7 +50,7 @@ const onSubmit = async (event: FormSubmitEvent<OutputSchema>) => {
     return
   }
   const { error } = await supabase.auth.updateUser({
-    password: event.data.password
+    password: event.data.password,
     // access_token: access_token
   })
   isSubmitLoading.value = false

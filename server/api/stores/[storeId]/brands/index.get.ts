@@ -7,13 +7,13 @@ export default defineWrappedResponseHandler(async (event) => {
 
   const queries = await getValidatedQuery(event, schema.parse)
   return await prisma.brand.paginate(queries, {
-    storeId: storeId,
+    storeId,
     store: {
-      userId: user.id
+      userId: user.id,
     },
     name: {
       contains: queries.search || '',
-      mode: 'insensitive'
-    }
+      mode: 'insensitive',
+    },
   })
 })

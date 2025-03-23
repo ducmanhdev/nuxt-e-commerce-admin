@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
-  layout: false
+  layout: false,
   // middleware: 'auth'
 })
 </script>
@@ -10,7 +10,7 @@ definePageMeta({
     <header
       class="py-4 shadow border-b border-transparent dark:border-[var(--ui-border)] text-[var(--ui-text)] bg-[var(--ui-bg)] sticky top-0 z-50"
     >
-      <UContainer></UContainer>
+      <UContainer />
     </header>
     <main class="overflow-hidden">
       <NuxtPage />

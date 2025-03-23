@@ -2,7 +2,7 @@
 import { LazyModalNews } from '#components'
 
 useHead({
-  title: 'News'
+  title: 'News',
 })
 
 const route = useRoute()
@@ -13,8 +13,8 @@ const modalNews = overlay.create(LazyModalNews)
 const handeShowCreateModal = () => {
   modalNews.open({
     props: {
-      storeId: storeId.value
-    }
+      storeId: storeId.value,
+    },
   })
 }
 </script>

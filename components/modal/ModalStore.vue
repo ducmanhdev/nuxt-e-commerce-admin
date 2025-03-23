@@ -1,24 +1,27 @@
 <script setup lang="ts">
-import type { z } from 'zod'
 import type { FormSubmitEvent } from '#ui/types'
+import type { z } from 'zod'
 import schema from '~/schemas/store.schema'
 
 type SchemaInfer = z.infer<typeof schema>
 
-type Props = {
+interface Props {
   title?: string
   storeId?: string
   initialValues?: SchemaInfer
 }
 const props = defineProps<Props>()
+const emit = defineEmits<{
+  (e: 'close', value: boolean): void
+}>()
 
 const modalTitle = computed(() => props.title || (props.storeId ? 'Update store' : 'Create store'))
 const submitSuccessMessage = computed(() =>
-  props.storeId ? 'Updated store successfully' : 'Created store successfully'
+  props.storeId ? 'Updated store successfully' : 'Created store successfully',
 )
 
 const DEFAULT_STATE: SchemaInfer = {
-  name: ''
+  name: '',
 }
 
 const state = ref({ ...DEFAULT_STATE })
@@ -26,16 +29,16 @@ const attrs = useAttrs()
 watch(
   [() => props.initialValues, () => attrs.open],
   ([newInitialValues, isOpen]) => {
-    if (!isOpen) return
+    if (!isOpen)
+      return
     Object.assign(state.value, { ...DEFAULT_STATE, ...newInitialValues })
   },
   {
-    immediate: true
-  }
+    immediate: true,
+  },
 )
 
 const toast = useCustomToast()
-const modal = useModal()
 const isSubmitLoading = ref(false)
 const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
   try {
@@ -45,17 +48,19 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
     const method = props.storeId ? 'PATCH' : 'POST'
     await $fetch(endpoint, {
       method,
-      body: event.data
+      body: event.data,
     })
 
     toast.success(submitSuccessMessage.value)
     refreshNuxtData('stores')
     refreshNuxtData('store')
-    await modal.close()
-  } catch (error) {
+    emit('close', true)
+  }
+  catch (error) {
     console.error(error)
     toast.error(error)
-  } finally {
+  }
+  finally {
     isSubmitLoading.value = false
   }
 }
@@ -75,7 +80,7 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
             :disabled="isSubmitLoading"
             label="Cancel"
             variant="soft"
-            @click="modal.close()"
+            @click="emit('close', true)"
           />
           <UButton type="submit" block :loading="isSubmitLoading" label="Submit" />
         </div>

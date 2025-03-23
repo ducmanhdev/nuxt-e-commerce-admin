@@ -10,15 +10,15 @@ export const formatCurrency = (
   amount: number,
   currency: string = 'USD',
   locale: string = 'en-US',
-  minimumFractionDigits: number = 2
+  minimumFractionDigits: number = 2,
 ): string => {
-  if (isNaN(amount)) {
+  if (Number.isNaN(amount)) {
     return 'NaN'
   }
   return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency,
-    minimumFractionDigits
+    minimumFractionDigits,
   }).format(amount)
 }
 

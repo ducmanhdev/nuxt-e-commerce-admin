@@ -1,34 +1,35 @@
 <script setup lang="ts">
-import { z } from 'zod'
 import type { FormSubmitEvent } from '#ui/types'
+import { z } from 'zod'
 import _schema from '~/schemas/category.schema'
 
-const modal = useModal()
-
-const schema = _schema.merge(
-  z.object({
-    imageUrl: z.union([z.string(), z.instanceof(File)])
-  })
-)
-
-type SchemaInfer = z.infer<typeof schema>
-
-type Props = {
+const props = defineProps<{
   title?: string
   storeId: string
   categoryId?: string
   initialValues?: SchemaInfer
-}
-const props = defineProps<Props>()
+}>()
+
+const emit = defineEmits<{
+  (e: 'close', value: boolean): void
+}>()
+
+const schema = _schema.merge(
+  z.object({
+    imageUrl: z.union([z.string(), z.instanceof(File)]),
+  }),
+)
+
+type SchemaInfer = z.infer<typeof schema>
 
 const modalTitle = computed(() => props.title || (props.categoryId ? 'Update category' : 'Create category'))
 const submitSuccessMessage = computed(() =>
-  props.categoryId ? 'Updated category successfully' : 'Created category successfully'
+  props.categoryId ? 'Updated category successfully' : 'Created category successfully',
 )
 
 const DEFAULT_STATE: SchemaInfer = {
   name: '',
-  imageUrl: ''
+  imageUrl: '',
 }
 
 const state = ref({ ...DEFAULT_STATE })
@@ -36,12 +37,13 @@ const attrs = useAttrs()
 watch(
   [() => props.initialValues, () => attrs.open],
   ([newInitialValues, isOpen]) => {
-    if (!isOpen) return
+    if (!isOpen)
+      return
     Object.assign(state.value, { ...DEFAULT_STATE, ...newInitialValues })
   },
   {
-    immediate: true
-  }
+    immediate: true,
+  },
 )
 
 const toast = useCustomToast()
@@ -56,7 +58,7 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
       formData.append('bucketName', bucketName)
       const { data } = await $fetch('/api/images/upload', {
         method: 'POST',
-        body: formData
+        body: formData,
       })
       event.data.imageUrl = data[0]
     }
@@ -68,10 +70,12 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
     await $fetch(endpoint, { method, body: event.data })
     toast.success(submitSuccessMessage.value)
     refreshNuxtData('categories')
-    await modal.close()
-  } catch (error) {
+    emit('close', true)
+  }
+  catch (error) {
     toast.error(error)
-  } finally {
+  }
+  finally {
     isSubmitLoading.value = false
   }
 }
@@ -97,7 +101,7 @@ const handleSubmit = async (event: FormSubmitEvent<SchemaInfer>) => {
             :disabled="isSubmitLoading"
             label="Cancel"
             variant="soft"
-            @click="modal.close()"
+            @click="emit('close', true)"
           />
           <UButton type="submit" block :loading="isSubmitLoading" label="Submit" />
         </div>

@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import { COMMON_STATUSES, DATE_TIME_FORMAT, ROWS_PER_PAGE_OPTIONS } from '~/constants'
-import { upperFirst } from 'scule'
-import type { Product } from '~/types'
-import { refDebounced } from '@vueuse/core'
 import type { TableColumn } from '#ui/components/Table.vue'
 import type { Column, Row, SortingState, VisibilityState } from '@tanstack/vue-table'
+import type { Product } from '~/types'
 import { LazyModalConfirm, LazyModalProduct } from '#components'
+import { refDebounced } from '@vueuse/core'
+import { upperFirst } from 'scule'
+import { COMMON_STATUSES, DATE_TIME_FORMAT, ROWS_PER_PAGE_OPTIONS } from '~/constants'
 
+const props = defineProps<Props>()
 const UCheckbox = resolveComponent('UCheckbox')
 const UBadge = resolveComponent('UBadge')
 const UButton = resolveComponent('UButton')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
 
-type Props = {
+interface Props {
   storeId: string
 }
-const props = defineProps<Props>()
 const dayjs = useDayjs()
 const storeId = toRef(props, 'storeId')
 
@@ -27,23 +27,24 @@ const overlay = useOverlay()
 const modalConfirm = overlay.create(LazyModalConfirm)
 const modalProduct = overlay.create(LazyModalProduct)
 
-const handleDelete = ({ storeId, id }: { storeId: string; id: string }) => {
+const handleDelete = ({ storeId, id }: { storeId: string, id: string }) => {
   modalConfirm.open({
     props: {
       message: 'Are you absolutely to delete this item?',
       onConfirm: async () => {
         try {
           await $fetch(`/api/stores/${storeId}/products/${id}`, {
-            method: 'DELETE'
+            method: 'DELETE',
           })
           toast.success('Deleted successfully')
           refreshNuxtData('products')
-        } catch (error) {
+        }
+        catch (error) {
           console.error(error)
           toast.error(error)
         }
-      }
-    }
+      },
+    },
   })
 }
 const getActionItems = (row: Row<Product>) => {
@@ -57,10 +58,10 @@ const getActionItems = (row: Row<Product>) => {
             props: {
               storeId: row.original.storeId,
               productId: row.original.id,
-              initialValues: { ...row.original }
-            }
-          })
-      }
+              initialValues: { ...row.original },
+            },
+          }),
+      },
     ],
     [
       {
@@ -70,22 +71,23 @@ const getActionItems = (row: Row<Product>) => {
         onSelect: () =>
           handleDelete({
             storeId: row.original.storeId,
-            id: row.original.id
-          })
-      }
-    ]
+            id: row.original.id,
+          }),
+      },
+    ],
   ]
 }
 const getHeader = (column: Column<Product>, label: string) => {
   const isEnableSort = column.getCanSort()
-  if (!isEnableSort) return label
+  if (!isEnableSort)
+    return label
 
   const isSorted = column.getIsSorted()
   return h(
     UDropdownMenu,
     {
       content: {
-        align: 'start'
+        align: 'start',
       },
       items: [
         {
@@ -96,10 +98,11 @@ const getHeader = (column: Column<Product>, label: string) => {
           onSelect: () => {
             if (isSorted === 'asc') {
               column.clearSorting()
-            } else {
+            }
+            else {
               column.toggleSorting(false)
             }
-          }
+          },
         },
         {
           label: 'Desc',
@@ -109,12 +112,13 @@ const getHeader = (column: Column<Product>, label: string) => {
           onSelect: () => {
             if (isSorted === 'desc') {
               column.clearSorting()
-            } else {
+            }
+            else {
               column.toggleSorting(true)
             }
-          }
-        }
-      ]
+          },
+        },
+      ],
     },
     () =>
       h(UButton, {
@@ -126,8 +130,8 @@ const getHeader = (column: Column<Product>, label: string) => {
             ? 'lucide:arrow-up-narrow-wide'
             : 'lucide:arrow-up-wide-narrow'
           : 'lucide:arrow-up-down',
-        class: '-mx-2.5 data-[state=open]:bg-[var(--ui-bg-elevated)]'
-      })
+        class: '-mx-2.5 data-[state=open]:bg-[var(--ui-bg-elevated)]',
+      }),
   )
 }
 const columns: TableColumn<Product>[] = [
@@ -136,17 +140,17 @@ const columns: TableColumn<Product>[] = [
     enableHiding: false,
     header: ({ table }) =>
       h(UCheckbox, {
-        modelValue: table.getIsAllPageRowsSelected(),
-        indeterminate: table.getIsSomePageRowsSelected(),
+        'modelValue': table.getIsAllPageRowsSelected(),
+        'indeterminate': table.getIsSomePageRowsSelected(),
         'onUpdate:modelValue': (value: boolean) => table.toggleAllPageRowsSelected(value),
-        ariaLabel: 'Select all'
+        'ariaLabel': 'Select all',
       }),
     cell: ({ row }) =>
       h(UCheckbox, {
-        modelValue: row.getIsSelected(),
+        'modelValue': row.getIsSelected(),
         'onUpdate:modelValue': (value: boolean) => row.toggleSelected(value),
-        ariaLabel: 'Select row'
-      })
+        'ariaLabel': 'Select row',
+      }),
   },
   { accessorKey: 'name', header: ({ column }) => getHeader(column, 'Name') },
   { accessorKey: 'description', header: ({ column }) => getHeader(column, 'Description') },
@@ -158,22 +162,22 @@ const columns: TableColumn<Product>[] = [
       const color = {
         [COMMON_STATUSES.VISIBLE]: 'primary' as const,
         [COMMON_STATUSES.ARCHIVED]: 'secondary' as const,
-        [COMMON_STATUSES.HIDDEN]: 'error' as const
+        [COMMON_STATUSES.HIDDEN]: 'error' as const,
       }[value as string]
       const label = Object.entries(COMMON_STATUSES).find(([_, _value]) => _value === value)?.[0]
       return h(UBadge, { color, label, variant: 'subtle' })
-    }
+    },
   },
   { accessorKey: 'category.name', header: ({ column }) => getHeader(column, 'Category') },
   {
     accessorKey: 'createdAt',
     header: ({ column }) => getHeader(column, 'Created at'),
-    cell: ({ row }) => dayjs(row.getValue('createdAt')).format(DATE_TIME_FORMAT)
+    cell: ({ row }) => dayjs(row.getValue('createdAt')).format(DATE_TIME_FORMAT),
   },
   {
     accessorKey: 'updatedAt',
     header: ({ column }) => getHeader(column, 'Updated at'),
-    cell: ({ row }) => dayjs(row.getValue('updatedAt')).format(DATE_TIME_FORMAT)
+    cell: ({ row }) => dayjs(row.getValue('updatedAt')).format(DATE_TIME_FORMAT),
   },
   {
     accessorKey: 'actions',
@@ -184,25 +188,25 @@ const columns: TableColumn<Product>[] = [
         UDropdownMenu,
         {
           content: {
-            align: 'end'
+            align: 'end',
           },
-          items: getActionItems(row)
+          items: getActionItems(row),
         },
         () =>
           h(UButton, {
             icon: 'lucide:ellipsis-vertical',
             color: 'neutral',
-            variant: 'ghost'
-          })
+            variant: 'ghost',
+          }),
       )
     },
     meta: {
       class: {
         th: 'text-right',
-        td: 'text-right'
-      }
-    }
-  }
+        td: 'text-right',
+      },
+    },
+  },
 ]
 const columnVisibility = ref<VisibilityState>({})
 
@@ -218,8 +222,8 @@ const handleResetFilters = () => {
 const sorting = ref<SortingState>([
   {
     id: 'createdAt',
-    desc: true
-  }
+    desc: true,
+  },
 ])
 const page = ref(1)
 const itemsPerPage = ref(10)
@@ -233,14 +237,14 @@ const { data, status } = await useFetch(() => `/api/stores/${storeId.value}/prod
   default: () => cachedProducts.value,
   query: {
     search: searchDebounced,
-    page: page,
+    page,
     limit: itemsPerPage,
     sort: sortColumn,
-    order: sortDirection
+    order: sortDirection,
   },
   onResponseError({ response }) {
     toast.error(response._data?.statusMessage)
-  }
+  },
 })
 const isFetching = computed(() => status.value === 'pending')
 
@@ -278,7 +282,7 @@ const meta = computed(() => data.value?.meta)
                   },
                   onSelect(e?: Event) {
                     e?.preventDefault()
-                  }
+                  },
                 }))
             "
             :content="{ align: 'end' }"

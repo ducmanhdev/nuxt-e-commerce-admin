@@ -9,11 +9,11 @@ export default defineWrappedResponseHandler(async (event) => {
   const product = await prisma.product.findFirstOrThrow({
     where: {
       id: productId,
-      storeId: storeId,
+      storeId,
       store: {
-        userId: user.id
-      }
-    }
+        userId: user.id,
+      },
+    },
   })
 
   const { attributes, variants, ...body } = await readValidatedBody(event, schema.parse)
@@ -21,11 +21,11 @@ export default defineWrappedResponseHandler(async (event) => {
   const data = await prisma.$transaction(async (tx) => {
     const updatedProduct = await tx.product.update({
       where: {
-        id: product.id
+        id: product.id,
       },
       data: {
-        ...body
-      }
+        ...body,
+      },
     })
 
     if (attributes?.length) {
@@ -33,63 +33,64 @@ export default defineWrappedResponseHandler(async (event) => {
         let attribute = await tx.productAttribute.findFirst({
           where: {
             name: attr.name,
-            storeId: storeId
-          }
+            storeId,
+          },
         })
 
         if (!attribute) {
           attribute = await tx.productAttribute.create({
             data: {
               name: attr.name,
-              storeId: storeId
-            }
+              storeId,
+            },
           })
         }
 
         const productAttributeValue = await tx.productAttributeValue.findFirst({
           where: {
             productId: product.id,
-            attributeId: attribute.id
-          }
+            attributeId: attribute.id,
+          },
         })
 
         if (productAttributeValue) {
           await tx.productAttributeValue.update({
             where: {
-              id: productAttributeValue.id
+              id: productAttributeValue.id,
             },
             data: {
-              value: attr.value
-            }
+              value: attr.value,
+            },
           })
-        } else {
+        }
+        else {
           await tx.productAttributeValue.create({
             data: {
               productId: product.id,
               attributeId: attribute.id,
-              value: attr.value
-            }
+              value: attr.value,
+            },
           })
         }
       }
 
       const existingAttributes = await tx.productAttributeValue.findMany({
         where: {
-          productId: product.id
+          productId: product.id,
         },
         include: {
-          attribute: true
-        }
+          attribute: true,
+        },
       })
 
       await tx.productAttributeValue.deleteMany({
         where: {
           id: {
             in: existingAttributes
-              .filter((existingAttr) => !attributes.find((attr) => attr.name === existingAttr.attribute.name))
-              .map((existingAttr) => existingAttr.id)
-          }
-        }
+              .filter(existingAttr => !attributes.find(attr => attr.name === existingAttr.attribute.name))
+              .map(existingAttr => existingAttr.id),
+          },
+        },
       })
     }
 
@@ -97,6 +98,6 @@ export default defineWrappedResponseHandler(async (event) => {
   })
 
   return {
-    data
+    data,
   }
 })

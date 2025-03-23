@@ -7,17 +7,17 @@ export default defineWrappedResponseHandler(async (event) => {
   const brand = await prisma.brand.findFirstOrThrow({
     where: {
       id: brandId,
-      storeId: storeId,
+      storeId,
       store: {
-        userId: user.id
-      }
-    }
+        userId: user.id,
+      },
+    },
   })
 
   await prisma.brand.delete({
     where: {
-      id: brand.id
-    }
+      id: brand.id,
+    },
   })
 
   setResponseStatus(event, 204)

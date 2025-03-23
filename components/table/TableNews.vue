@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import { DATE_TIME_FORMAT, ROWS_PER_PAGE_OPTIONS } from '~/constants'
-import { upperFirst } from 'scule'
-import type { News } from '~/types'
-import { refDebounced } from '@vueuse/core'
 import type { TableColumn } from '#ui/components/Table.vue'
 import type { Column, Row, SortingState, VisibilityState } from '@tanstack/vue-table'
-import { LazyModalNews, LazyModalConfirm } from '#components'
+import type { News } from '~/types'
+import { LazyModalConfirm, LazyModalNews } from '#components'
+import { refDebounced } from '@vueuse/core'
+import { upperFirst } from 'scule'
+import { DATE_TIME_FORMAT, ROWS_PER_PAGE_OPTIONS } from '~/constants'
 
+const props = defineProps<Props>()
 const UCheckbox = resolveComponent('UCheckbox')
 const UButton = resolveComponent('UButton')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
 const NuxtImg = resolveComponent('NuxtImg')
 
-type Props = {
+interface Props {
   storeId: string
 }
-const props = defineProps<Props>()
 const dayjs = useDayjs()
 const storeId = toRef(props, 'storeId')
 
@@ -26,23 +26,24 @@ const toast = useCustomToast()
 const overlay = useOverlay()
 const modalConfirm = overlay.create(LazyModalConfirm)
 const modalNews = overlay.create(LazyModalNews)
-const handleDelete = ({ storeId, id }: { storeId: string; id: string }) => {
+const handleDelete = ({ storeId, id }: { storeId: string, id: string }) => {
   modalConfirm.open({
     props: {
       message: 'Are you absolutely to delete this item?',
       onConfirm: async () => {
         try {
           await $fetch(`/api/stores/${storeId}/news/${id}`, {
-            method: 'DELETE'
+            method: 'DELETE',
           })
           toast.success('Deleted successfully')
           refreshNuxtData('news')
-        } catch (error) {
+        }
+        catch (error) {
           console.error(error)
           toast.error(error)
         }
-      }
-    }
+      },
+    },
   })
 }
 const getActionItems = (row: Row<News>) => {
@@ -56,10 +57,10 @@ const getActionItems = (row: Row<News>) => {
             props: {
               storeId: row.original.storeId,
               newsId: row.original.id,
-              initialValues: { ...row.original }
-            }
-          })
-      }
+              initialValues: { ...row.original },
+            },
+          }),
+      },
     ],
     [
       {
@@ -69,22 +70,23 @@ const getActionItems = (row: Row<News>) => {
         onSelect: () =>
           handleDelete({
             storeId: row.original.storeId,
-            id: row.original.id
-          })
-      }
-    ]
+            id: row.original.id,
+          }),
+      },
+    ],
   ]
 }
 const getHeader = (column: Column<News>, label: string) => {
   const isEnableSort = column.getCanSort()
-  if (!isEnableSort) return label
+  if (!isEnableSort)
+    return label
 
   const isSorted = column.getIsSorted()
   return h(
     UDropdownMenu,
     {
       content: {
-        align: 'start'
+        align: 'start',
       },
       items: [
         {
@@ -95,10 +97,11 @@ const getHeader = (column: Column<News>, label: string) => {
           onSelect: () => {
             if (isSorted === 'asc') {
               column.clearSorting()
-            } else {
+            }
+            else {
               column.toggleSorting(false)
             }
-          }
+          },
         },
         {
           label: 'Desc',
@@ -108,12 +111,13 @@ const getHeader = (column: Column<News>, label: string) => {
           onSelect: () => {
             if (isSorted === 'desc') {
               column.clearSorting()
-            } else {
+            }
+            else {
               column.toggleSorting(true)
             }
-          }
-        }
-      ]
+          },
+        },
+      ],
     },
     () =>
       h(UButton, {
@@ -125,8 +129,8 @@ const getHeader = (column: Column<News>, label: string) => {
             ? 'lucide:arrow-up-narrow-wide'
             : 'lucide:arrow-up-wide-narrow'
           : 'lucide:arrow-up-down',
-        class: '-mx-2.5 data-[state=open]:bg-[var(--ui-bg-elevated)]'
-      })
+        class: '-mx-2.5 data-[state=open]:bg-[var(--ui-bg-elevated)]',
+      }),
   )
 }
 const columns: TableColumn<News>[] = [
@@ -135,17 +139,17 @@ const columns: TableColumn<News>[] = [
     enableHiding: false,
     header: ({ table }) =>
       h(UCheckbox, {
-        modelValue: table.getIsAllPageRowsSelected(),
-        indeterminate: table.getIsSomePageRowsSelected(),
+        'modelValue': table.getIsAllPageRowsSelected(),
+        'indeterminate': table.getIsSomePageRowsSelected(),
         'onUpdate:modelValue': (value: boolean) => table.toggleAllPageRowsSelected(value),
-        ariaLabel: 'Select all'
+        'ariaLabel': 'Select all',
       }),
     cell: ({ row }) =>
       h(UCheckbox, {
-        modelValue: row.getIsSelected(),
+        'modelValue': row.getIsSelected(),
         'onUpdate:modelValue': (value: boolean) => row.toggleSelected(value),
-        ariaLabel: 'Select row'
-      })
+        'ariaLabel': 'Select row',
+      }),
   },
   { accessorKey: 'name', header: ({ column }) => getHeader(column, 'Name') },
   {
@@ -158,19 +162,19 @@ const columns: TableColumn<News>[] = [
         fit: 'cover',
         width: 80,
         quality: 80,
-        class: ['aspect-square object-cover']
+        class: ['aspect-square object-cover'],
       })
-    }
+    },
   },
   {
     accessorKey: 'createdAt',
     header: ({ column }) => getHeader(column, 'Created at'),
-    cell: ({ row }) => dayjs(row.getValue('createdAt')).format(DATE_TIME_FORMAT)
+    cell: ({ row }) => dayjs(row.getValue('createdAt')).format(DATE_TIME_FORMAT),
   },
   {
     accessorKey: 'updatedAt',
     header: ({ column }) => getHeader(column, 'Updated at'),
-    cell: ({ row }) => dayjs(row.getValue('updatedAt')).format(DATE_TIME_FORMAT)
+    cell: ({ row }) => dayjs(row.getValue('updatedAt')).format(DATE_TIME_FORMAT),
   },
   {
     accessorKey: 'actions',
@@ -181,25 +185,25 @@ const columns: TableColumn<News>[] = [
         UDropdownMenu,
         {
           content: {
-            align: 'end'
+            align: 'end',
           },
-          items: getActionItems(row)
+          items: getActionItems(row),
         },
         () =>
           h(UButton, {
             icon: 'lucide:ellipsis-vertical',
             color: 'neutral',
-            variant: 'ghost'
-          })
+            variant: 'ghost',
+          }),
       )
     },
     meta: {
       class: {
         th: 'text-center',
-        td: 'flex justify-center'
-      }
-    }
-  }
+        td: 'flex justify-center',
+      },
+    },
+  },
 ]
 const columnVisibility = ref<VisibilityState>({})
 
@@ -215,8 +219,8 @@ const handleResetFilters = () => {
 const sorting = ref<SortingState>([
   {
     id: 'createdAt',
-    desc: true
-  }
+    desc: true,
+  },
 ])
 const page = ref(1)
 const itemsPerPage = ref(10)
@@ -230,14 +234,14 @@ const { data, status } = await useFetch(() => `/api/stores/${storeId.value}/news
   default: () => cachedNews.value,
   query: {
     search: searchDebounced,
-    page: page,
+    page,
     limit: itemsPerPage,
     sort: sortColumn,
-    order: sortDirection
+    order: sortDirection,
   },
   onResponseError({ response }) {
     toast.error(response._data?.statusMessage)
-  }
+  },
 })
 const isFetching = computed(() => status.value === 'pending')
 
@@ -275,7 +279,7 @@ const meta = computed(() => data.value?.meta)
                   },
                   onSelect(e?: Event) {
                     e?.preventDefault()
-                  }
+                  },
                 }))
             "
             :content="{ align: 'end' }"

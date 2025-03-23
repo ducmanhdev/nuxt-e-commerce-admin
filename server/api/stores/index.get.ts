@@ -5,14 +5,14 @@ export default defineWrappedResponseHandler(async (event) => {
 
   const stores = await prisma.store.findMany({
     where: {
-      userId: user.id
+      userId: user.id,
     },
     orderBy: {
-      createdAt: 'desc'
-    }
+      createdAt: 'desc',
+    },
   })
 
   return {
-    data: stores
+    data: stores,
   }
 })

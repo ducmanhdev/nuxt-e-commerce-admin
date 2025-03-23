@@ -4,7 +4,7 @@
   <div>
     <LayoutHeader />
     <main>
-      <slot></slot>
+      <slot />
     </main>
     <LayoutFooter />
   </div>
