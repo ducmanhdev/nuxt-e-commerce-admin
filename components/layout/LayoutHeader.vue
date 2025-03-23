@@ -43,19 +43,22 @@ const { colorMode, isDark, handleToggleMode } = useThemeMode()
 
 const user = useSupabaseUser()
 const toast = useCustomToast()
-const modal = useModal()
+const overlay = useOverlay()
+const modalConfirm = overlay.create(LazyModalConfirm)
 const supabase = useSupabaseClient()
 const handleSignOut = async () => {
-  modal.open(LazyModalConfirm, {
-    description: 'Are you to logout?',
-    onConfirm: async () => {
-      const { error } = await supabase.auth.signOut()
-      if (error) {
-        console.error('[SIGN_OUT_ERROR]', error)
-        toast.error(error)
-        return
+  await modalConfirm.open({
+    props: {
+      description: 'Are you to logout?',
+      onConfirm: async () => {
+        const { error } = await supabase.auth.signOut()
+        if (error) {
+          console.error('[SIGN_OUT_ERROR]', error)
+          toast.error(error)
+          return
+        }
+        await navigateTo('/')
       }
-      await navigateTo('/')
     }
   })
 }

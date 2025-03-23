@@ -39,12 +39,17 @@ const route = useRoute()
 const storeId = computed(() => route.params.storeId as string)
 const { data: cachedStore } = useNuxtData<Store>(`store`)
 
-const modal = useModal()
+const overlay = useOverlay()
+const modalConfirm = overlay.create(LazyModalConfirm)
+const modalStore = overlay.create(LazyModalStore)
+
 const handleShowEditModal = () => {
-  modal.open(LazyModalStore, {
-    storeId: cachedStore.value?.id,
-    initialValues: {
-      name: cachedStore.value?.name
+  modalStore.open({
+    props: {
+      storeId: cachedStore.value?.id,
+      initialValues: {
+        name: cachedStore.value?.name
+      }
     }
   })
 }
@@ -52,22 +57,24 @@ const handleShowEditModal = () => {
 const toast = useCustomToast()
 const isDeleteLoading = ref(false)
 const handleDelete = () => {
-  modal.open(LazyModalConfirm, {
-    description: 'Are you sure you want to delete this item?',
-    onConfirm: async () => {
-      try {
-        isDeleteLoading.value = true
-        await $fetch(`/api/stores/${storeId.value}`, {
-          method: 'DELETE'
-        })
-        toast.success('Deleted successfully')
-        await refreshNuxtData('stores')
-        await navigateTo('/')
-      } catch (error) {
-        console.error(error)
-        toast.error(error)
-      } finally {
-        isDeleteLoading.value = false
+  modalConfirm.open({
+    props: {
+      description: 'Are you sure you want to delete this item?',
+      onConfirm: async () => {
+        try {
+          isDeleteLoading.value = true
+          await $fetch(`/api/stores/${storeId.value}`, {
+            method: 'DELETE'
+          })
+          toast.success('Deleted successfully')
+          await refreshNuxtData('stores')
+          await navigateTo('/')
+        } catch (error) {
+          console.error(error)
+          toast.error(error)
+        } finally {
+          isDeleteLoading.value = false
+        }
       }
     }
   })

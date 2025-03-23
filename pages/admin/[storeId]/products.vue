@@ -8,10 +8,13 @@ useHead({
 const route = useRoute()
 const storeId = computed(() => route.params.storeId as string)
 
-const modal = useModal()
+const overlay = useOverlay()
+const modalProduct = overlay.create(LazyModalProduct)
 const handeShowCreateModal = () => {
-  modal.open(LazyModalProduct, {
-    storeId: storeId.value
+  modalProduct.open({
+    props: {
+      storeId: storeId.value
+    }
   })
 }
 </script>

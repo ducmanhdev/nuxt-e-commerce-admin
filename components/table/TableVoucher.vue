@@ -30,20 +30,24 @@ const table = useTemplateRef('table')
 const rowSelection = ref({})
 
 const toast = useCustomToast()
-const modal = useModal()
+const overlay = useOverlay()
+const modalConfirm = overlay.create(LazyModalConfirm)
+const modalVoucher = overlay.create(LazyModalVoucher)
 const handleDelete = ({ storeId, id }: { storeId: string; id: string }) => {
-  modal.open(LazyModalConfirm, {
-    message: 'Are you absolutely to delete this item?',
-    onConfirm: async () => {
-      try {
-        await $fetch(`/api/stores/${storeId}/vouchers/${id}`, {
-          method: 'DELETE'
-        })
-        toast.success('Deleted successfully')
-        refreshNuxtData('vouchers')
-      } catch (error) {
-        console.error(error)
-        toast.error(error)
+  modalConfirm.open({
+    props: {
+      message: 'Are you absolutely to delete this item?',
+      onConfirm: async () => {
+        try {
+          await $fetch(`/api/stores/${storeId}/vouchers/${id}`, {
+            method: 'DELETE'
+          })
+          toast.success('Deleted successfully')
+          refreshNuxtData('vouchers')
+        } catch (error) {
+          console.error(error)
+          toast.error(error)
+        }
       }
     }
   })
@@ -55,10 +59,12 @@ const getActionItems = (row: Row<Voucher>) => {
         label: 'Edit',
         icon: 'lucide:pencil-line',
         onSelect: () =>
-          modal.open(LazyModalVoucher, {
-            storeId: row.original.storeId,
-            voucherId: row.original.id,
-            initialValues: { ...row.original }
+          modalVoucher.open({
+            props: {
+              storeId: row.original.storeId,
+              voucherId: row.original.id,
+              initialValues: { ...row.original }
+            }
           })
       }
     ],

@@ -23,20 +23,25 @@ const table = useTemplateRef('table')
 const rowSelection = ref({})
 
 const toast = useCustomToast()
-const modal = useModal()
+const overlay = useOverlay()
+const modalConfirm = overlay.create(LazyModalConfirm)
+const modalProduct = overlay.create(LazyModalProduct)
+
 const handleDelete = ({ storeId, id }: { storeId: string; id: string }) => {
-  modal.open(LazyModalConfirm, {
-    message: 'Are you absolutely to delete this item?',
-    onConfirm: async () => {
-      try {
-        await $fetch(`/api/stores/${storeId}/products/${id}`, {
-          method: 'DELETE'
-        })
-        toast.success('Deleted successfully')
-        refreshNuxtData('products')
-      } catch (error) {
-        console.error(error)
-        toast.error(error)
+  modalConfirm.open({
+    props: {
+      message: 'Are you absolutely to delete this item?',
+      onConfirm: async () => {
+        try {
+          await $fetch(`/api/stores/${storeId}/products/${id}`, {
+            method: 'DELETE'
+          })
+          toast.success('Deleted successfully')
+          refreshNuxtData('products')
+        } catch (error) {
+          console.error(error)
+          toast.error(error)
+        }
       }
     }
   })
@@ -48,10 +53,12 @@ const getActionItems = (row: Row<Product>) => {
         label: 'Edit',
         icon: 'lucide:pencil-line',
         onSelect: () =>
-          modal.open(LazyModalProduct, {
-            storeId: row.original.storeId,
-            productId: row.original.id,
-            initialValues: { ...row.original }
+          modalProduct.open({
+            props: {
+              storeId: row.original.storeId,
+              productId: row.original.id,
+              initialValues: { ...row.original }
+            }
           })
       }
     ],
